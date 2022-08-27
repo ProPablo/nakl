@@ -8,8 +8,9 @@
  * @format
  */
 
-import React, { useCallback, useEffect, useState, type PropsWithChildren } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState, type PropsWithChildren } from 'react';
 import {
+  Button,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -34,6 +35,9 @@ import ChatScreen from './components/Chat';
 
 import QRCode from "react-qr-code";
 
+// @ts-ignore
+import Peer from 'react-native-peerjs';
+
 
 function QRScanScreen() {
   return (
@@ -47,26 +51,67 @@ function QRScanScreen() {
   );
 }
 
+export const PeerContext = React.createContext<Peer|null>(null);
+
+export interface GlobalState {
+  peerId: string,
+}
+
+const initialState: GlobalState = {
+  peerId: '',
+}
+
+// @ts-ignore
+export const GlobalContext = React.createContext<[GlobalState, React.Dispatch<React.SetStateAction<GlobalState>>]>(null);
+
 function QRGenerateScreen() {
+  const peer = useContext(PeerContext);
+  const [state, useState] = useContext(GlobalContext);  
+
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <QRCode value="nice"/>
+      <QRCode value={state.peerId}/>
+      {/* <Button
+        title="disconnect"
+      /> */}
     </View>
   );
 }
 
 
-
 const App = () => {
+  const stateAndDispatch = useState(initialState);
+  const peer = useRef<Peer | null>(null);
+
+  useEffect(() => {
+
+    const peerInstance = new Peer();
+    peerInstance.on('open', (id: any) => {
+      console.log(peerInstance);
+      stateAndDispatch[1]({
+        ...initialState,
+        peerId: id,
+      })
+      console.log(id)
+      // console.log(stateAndDispatch[0]);
+    })
+    peer.current = peerInstance;
+  }, [])
+
   const Tab = createMaterialTopTabNavigator();
+
   return (
-    <NavigationContainer>
-      <Tab.Navigator>
-        <Tab.Screen name="Scan" component={QRScanScreen} />
-        <Tab.Screen name="Chat" component={ChatScreen} />
-        <Tab.Screen name="Generate" component={QRGenerateScreen} />
-      </Tab.Navigator>
-    </NavigationContainer>    
+    <GlobalContext.Provider value={stateAndDispatch}>
+      <PeerContext.Provider value={peer.current}>
+        <NavigationContainer>
+          <Tab.Navigator>
+            <Tab.Screen name="Scan" component={QRScanScreen} />
+            <Tab.Screen name="Chat" component={ChatScreen} />
+            <Tab.Screen name="Generate" component={QRGenerateScreen} />
+          </Tab.Navigator>
+        </NavigationContainer>    
+      </PeerContext.Provider>
+    </GlobalContext.Provider>
   );
 };
 
