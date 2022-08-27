@@ -6,6 +6,9 @@ import Peer from "peerjs";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
+
+
+
 const IndexPage = () => {
 
   const peer = useContext(SocketContext);
@@ -17,6 +20,11 @@ const IndexPage = () => {
   useEffect(() => {
     //Confirm if current already exists otherwise this page can be used to 
     peer.current = new Peer();
+    // peer.current = new Peer('newpeer', {
+    //   host: 'localhost',
+    //   port: 9000,
+    //   path: '/myapp'
+    // });
     setGlobalState({
       ...state,
       isLoadingPeer: true,
@@ -36,7 +44,6 @@ const IndexPage = () => {
       connRef.current = conn;
       console.log("Someone decided to join ")
       navigate("/chat");
-      connRef.current.close();
     })
 
   }, [])

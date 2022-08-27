@@ -10,6 +10,7 @@ const JoinIndex = () => {
   const peer = useContext(SocketContext);
   const connRef = useContext(CurrentConnectionContext);
   const navigate = useNavigate();
+  const [isLoadingChat, setisLoadingChat] = useState(false);
 
 
   useEffect(() => {
@@ -17,26 +18,45 @@ const JoinIndex = () => {
   }, [])
 
   const handleResult: OnResultFunction = (res, err) => {
-    if (!!res) {
-      var id = res.getText();
-      var conn = peer.current.connect(id);
-      if (!conn) return;
-      console.log("Connecting to chat...");
-      conn.on("open", () => {
-        connRef.current = conn;
+    if (!!res && !isLoadingChat) {
+      const id = res.getText();
+
+      // const conn = peer.current.connect(id);
+      // console.log("Connecting to chat...", conn);
+      // setisLoadingChat(true);
+      // conn.on("open", () => {
+      // console.log("Connected !!");
+      //   setisLoadingChat(false);
+      //   connRef.current = conn;
+      //   navigate('/chat');
+      // })
+
+      connRef.current = peer.current.connect(id);
+      console.log("Connecting to chat...", connRef.current, id);
+      setisLoadingChat(true);
+
+
+      connRef.current.on("open", () => {
+        console.log("Connected !!");
+        setisLoadingChat(false);
+        connRef.current.send("Yo Joining from client pc");
         navigate('/chat');
       })
+
     }
   }
 
 
   return (
     <>
-      <QrReader
-        onResult={handleResult}
-        //@ts-ignore
-        style={{ width: '100%' }}
-      />
+      {isLoadingChat ? <div>LOADING...</div> :
+
+        < QrReader
+          onResult={handleResult}
+          //@ts-ignore
+          style={{ width: '100%' }}
+        />
+      }
     </>
   );
 }

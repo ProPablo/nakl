@@ -1,8 +1,9 @@
-import { Message, MessageList, MessageModel } from "@chatscope/chat-ui-kit-react";
+import { ChatContainer, MainContainer, Message, MessageInput, MessageList, MessageModel } from "@chatscope/chat-ui-kit-react";
 import { useState } from "react";
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { CurrentConnectionContext, SocketContext } from "../App";
+import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 
 const ChatPage = () => {
 
@@ -33,22 +34,33 @@ const ChatPage = () => {
     });
 
     return () => {
-      conn.current.removeAllListeners();
-      conn.current.close();
+      // conn.current.removeAllListeners();
+      // conn.current.close();
     }
 
   }, [])
   //On disconnect go to root, you will get a new peer
-  return (<div>
-    <MessageList >
-      {messages.map((m, i) =>
-        <Message
-          key={i}
-          model={m}
-        />
-      )}
-    </MessageList>
-    ALL MESSAGE</div>)
+  return (<div style={{
+    height: "90vh",
+    width: "100vw"
+
+  }}>
+    <MainContainer >
+      <ChatContainer >
+        <MessageList >
+          {messages.map((m, i) =>
+            <Message
+              key={i}
+              model={m}
+            />
+          )}
+
+          <MessageInput placeholder="Type message here" />
+
+        </MessageList>
+      </ChatContainer>
+    </MainContainer>
+    IN CHAT</div>)
 
 }
 

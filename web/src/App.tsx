@@ -41,7 +41,6 @@ function App() {
     //This use effect gets run for all routs every time
 
     if (peerRef.current == null) {
-
       navigate("/");
     }
 
