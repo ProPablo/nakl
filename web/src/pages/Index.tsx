@@ -1,18 +1,26 @@
 import { useContext, useEffect } from "react";
-import { connection, SocketContext } from "../App";
+import './../App.css';
+import QRCode from "react-qr-code";
+import { connection, GlobalContext, SocketContext } from "../App";
 
 const IndexPage = () => {
 
   const peer = useContext(SocketContext);
+  const [state, setGlobalState] = useContext(GlobalContext);
+
   useEffect(() => {
-    
-    connection.on("data", (data) =>  {
-      console.log("Got message" + data)
-    });
 
 
   }, [])
-  return (<div> ALL MESSAGE</div>)
+
+  return (<div> ALL MESSAGE
+    
+    <QRCode 
+    style={{margin: 10}}
+    className="qr-code" value={state.peerId} />
+
+    {state.peerId}
+  </div>)
 
 }
 

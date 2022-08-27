@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useRef, useState } from 'react';
+import React, { createContext, RefObject, useEffect, useRef, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Peer, { DataConnection } from 'peerjs';
@@ -7,6 +7,8 @@ import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import JoinIndex from './pages/JoinIndex';
 import JoinPage from './pages/JoinPage';
 import ChatPage from './pages/ChatPage';
+import { Ref } from 'react';
+import IndexPage from './pages/Index';
 
 
 export let peer: Peer;
@@ -26,12 +28,21 @@ export let connection: DataConnection;
 
 export const SocketContext = createContext<Peer | null>(null);
 // export const CurrentConnectionContext = createContext<DataConnection | null>(null);
-export const CurrentConnectionContext = createContext<any>(null);
+export const CurrentConnectionContext = createContext<RefObject<DataConnection | null>>(null);
+export const GlobalContext = React.createContext<[GlobalState, React.Dispatch<React.SetStateAction<GlobalState>>]>(null);
+
+export interface GlobalState {
+  peerId: string,
+}
+
+const initialState: GlobalState = {
+  peerId: '',
+}
 
 
 function App() {
-  const [peerId, setPeerId] = useState("");
-  const connRef = useRef<any>(null);
+  const connRef = useRef<DataConnection>(null);
+  const stateAndDispatch = useState(initialState);
 
   let navigate = useNavigate();
 
@@ -39,11 +50,16 @@ function App() {
     peer = new Peer();
     console.log("Making new peer");
     peer.on("open", (id) => {
-      setPeerId(id);
+      // setPeerId(id);
+       stateAndDispatch[1]({
+        ...initialState,
+        peerId: id,
+      })
     })
     //This is when a peer connects to us
     peer.on("connection", (conn) => {
       connRef.current = conn;
+      console.log("Someone decided to join ")
       navigate("/chat");
     })
 
@@ -72,11 +88,11 @@ function App() {
   //   </div>
   // );
   return (
+        <GlobalContext.Provider value={stateAndDispatch}>
     <SocketContext.Provider value={peer} >
       <CurrentConnectionContext.Provider value={connRef} >
-        <BrowserRouter>
           <Routes>
-            <Route path="/" element={<App />} />
+            <Route path="/" element={<IndexPage />} />
             <Route path="chat" element={<ChatPage />} />
             <Route path="join" element={<JoinIndex />} >
               <Route path=":peerId" element={<JoinPage />} />
@@ -91,8 +107,7 @@ function App() {
               }
             />
           </Routes>
-        </BrowserRouter>
-      </CurrentConnectionContext.Provider></SocketContext.Provider>
+      </CurrentConnectionContext.Provider></SocketContext.Provider> </GlobalContext.Provider>
   )
 }
 

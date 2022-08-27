@@ -1,16 +1,15 @@
 import { useContext, useEffect } from "react";
-import { connection, SocketContext } from "../App";
+import { CurrentConnectionContext, SocketContext } from "../App";
 
 const ChatPage = () => {
 
-  // const peer = useContext(SocketContext);
+  const conn = useContext(CurrentConnectionContext);
 
   useEffect(() => {
-    
-    connection.on("data", (data) =>  {
-      console.log("Got message" + data)
-    });
 
+    conn.current.on("data", (data) => {
+      console.log("data recieved ", data);
+    })
 
   }, [])
   return (<div> ALL MESSAGE</div>)
