@@ -1,8 +1,25 @@
 import React, { useState, useCallback, useEffect } from 'react'
 import { View, Text, TouchableOpacity, Button, Image, Platform } from 'react-native';
-import { GiftedChat, IMessage } from 'react-native-gifted-chat'
+import { Bubble, GiftedChat, IMessage, Message } from 'react-native-gifted-chat'
 import DocumentPicker, { DocumentPickerResponse, isInProgress, types } from "react-native-document-picker";
 import Clipboard from '@react-native-clipboard/clipboard';
+
+const renderMessage = (props) => {
+  const isLastMessage = props.nextMessage && !props.nextMessage._id
+  return (
+    <Message
+      {...props}
+      containerStyle={{
+        left: {
+          marginBottom: !isLastMessage ? 0 : 40,
+        },
+        right: {
+          marginBottom: !isLastMessage ? 0 : 40,
+        },
+      }}
+    />
+  )
+}
 
 export default function ChatScreen() {
   const [copiedText, setCopiedText] = useState('');
@@ -11,10 +28,10 @@ export default function ChatScreen() {
   const [image, setImage] = useState<string | null>(null);
   // const [imageString, setImageString] = useState<string>('');
 
-  useEffect(() => {
-    console.log(JSON.stringify(attachment, null, 2))
-    // const x : ImageSourcePropType;
-  }, [attachment])
+  // useEffect(() => {
+  //   console.log(JSON.stringify(attachment, null, 2))
+  //   // const x : ImageSourcePropType;
+  // }, [attachment])
   
   useEffect(() => {
     setMessages([
@@ -86,6 +103,7 @@ export default function ChatScreen() {
       user={{
         _id: 1,
       }}
+      renderMessage={renderMessage}
       renderActions={() => (  
         <View style={{ height: '100%', justifyContent: 'center', left: 5, alignItems: 'center', flexDirection: 'row' }}> 
           
