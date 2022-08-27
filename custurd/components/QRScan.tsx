@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useContext } from 'react';
 
 import {
   AppRegistry,
@@ -11,37 +11,30 @@ import {
 
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import { RNCamera } from 'react-native-camera';
+import { ConnectionContext, PeerContext } from '../App';
 
-class ScanScreen extends Component {
-  onSuccess = (e: { data: string; }) => {
-    Linking.openURL(e.data).catch(err =>
-      console.error('An error occured', err)
-    );
+export function QRScanScreen({ navigation }) {
+  const conn = useContext(ConnectionContext)
+  const peer = useContext(PeerContext)
+  const onSuccess = (e: { data: string; }) => {
+    conn.current = peer.current.connect(e.data); 
+    conn.current.on("open", () => {
+      navigation.navigate("Chat");
+      console.log("Fully connected!")
+      conn.current.send("Sent from client :(")
+    })
+    console.log(`Connecting to this peer ${e.data}`)
   };
 
-  render() {
-    return (
-      <QRCodeScanner
-        onRead={this.onSuccess}
-        flashMode={RNCamera.Constants.FlashMode.torch}
-        topContent={
-          <Text style={styles.centerText}>
-            Go to{' '}
-            <Text style={styles.textBold}>wikipedia.org/wiki/QR_code</Text> on
-            your computer and scan the QR code.
-          </Text>
-        }
-        bottomContent={
-          <TouchableOpacity style={styles.buttonTouchable}>
-            <Text style={styles.buttonText}>OK. Got it!</Text>
-          </TouchableOpacity>
-        }
-      />
-    );
-  }
+  return (
+    <QRCodeScanner
+      onRead={onSuccess}
+      reactivate={false}
+      showMarker={true}
+    />
+  );
+
 }
-
-
 
 const styles = StyleSheet.create({
   centerText: {
@@ -62,5 +55,3 @@ const styles = StyleSheet.create({
     padding: 16
   }
 });
-
-AppRegistry.registerComponent('default', () => ScanScreen);
