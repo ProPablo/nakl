@@ -1,19 +1,24 @@
 import { useContext, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { SocketContext } from "../App";
+import { useNavigate, useParams } from "react-router-dom";
+import { CurrentConnectionContext, SocketContext } from "../App";
 
+//Depreciated
 const JoinPage = () => {
 
   let params = useParams();
 
   const peer = useContext(SocketContext);
+  const connRef = useContext(CurrentConnectionContext);
+  const navigate = useNavigate();
+
   useEffect(() => {
 
     if (params.id) {
-      var conn = peer?.connect(params.id);
+      var conn = peer.current.connect(params.id);
       if (!conn) return;
       conn.on("open", () => {
-
+        connRef.current = conn;
+        navigate('/chat');
       })
 
     }
