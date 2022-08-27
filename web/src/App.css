@@ -24,6 +24,10 @@
   color: white;
 }
 
+.qr-code {
+  margin: 50;
+}
+
 .App-link {
   color: #61dafb;
 }
