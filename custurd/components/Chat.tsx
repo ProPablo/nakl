@@ -32,7 +32,22 @@ export default function ChatScreen() {
   }, [])
 
   const onSend = useCallback((messages = []) => {
+    const testMessage = [
+      {
+        _id: 2,
+        text: 'Hello developer',
+        createdAt: new Date(),
+        user: {
+          _id: 2,
+          name: 'React Native',
+          avatar: 'https://placeimg.com/140/140/any',
+        },
+      },
+    ]
     setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
+    const timer = setTimeout(() => {
+      setMessages(previousMessages => GiftedChat.append(previousMessages, testMessage))
+    }, 1000);
   }, [])
 
   const getClipboard = async () => {
@@ -74,7 +89,8 @@ export default function ChatScreen() {
       renderActions={() => (  
         <View style={{ height: '100%', justifyContent: 'center', left: 5, alignItems: 'center', flexDirection: 'row' }}> 
           
-          { (attachment != null) || (image != null) ||
+          { // Conditional rendering of buttons based image attachment or picker
+            (attachment != null) || (image != null) ||
             <View>
               <Button
                 title="cl"
