@@ -46,16 +46,22 @@ export default function ChatScreen() {
     }
     const text = await Clipboard.getString();
     setCopiedText(text);
-    console.log(text)
   }
 
   const getAttachment = async () => {
-    const pickerResult = await DocumentPicker.pickSingle({
-      presentationStyle: 'fullScreen',
-      copyTo: 'cachesDirectory',
-    })
-    setAttachment(pickerResult)
-    // console.log(pickerResult)
+    try {
+      const pickerResult = await DocumentPicker.pickSingle({
+        presentationStyle: 'fullScreen',
+        copyTo: 'cachesDirectory',
+      })
+      setAttachment(pickerResult)
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+      } else {
+        throw err;
+      }
+    }
+
   }
 
   return (
