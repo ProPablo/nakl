@@ -5,7 +5,8 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  Linking
+  Linking,
+  View,
 } from 'react-native';
 
 import QRCodeScanner from 'react-native-qrcode-scanner';
@@ -39,6 +40,8 @@ class ScanScreen extends Component {
     );
   }
 }
+
+
 
 const styles = StyleSheet.create({
   centerText: {

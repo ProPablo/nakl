@@ -17,8 +17,6 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
-import { IMessage, GiftedChat, InputToolbar } from 'react-native-gifted-chat';
-import ScanScreen from 'react-native-qrcode-scanner';
 
 // import {
 //   Colors,
@@ -29,70 +27,46 @@ import ScanScreen from 'react-native-qrcode-scanner';
 // } from 'react-native/Libraries/NewAppScreen';
 import Chat from './components/Chat';
 
+import { NavigationContainer } from '@react-navigation/native';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import ScanScreen from 'react-native-qrcode-scanner';
+import ChatScreen from './components/Chat';
+
+import QRCode from "react-qr-code";
+
+
+function QRScanScreen() {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <ScanScreen 
+        onRead={(e) => (console.log(e.data))}
+        reactivate={true}
+        showMarker={true}
+      />
+    </View>
+  );
+}
+
+function QRGenerateScreen() {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <QRCode value="nice"/>
+    </View>
+  );
+}
+
 
 
 const App = () => {
-
-  const [messages, setMessages] = useState<IMessage[]>([]);
-
-  useEffect(() => {
-    setMessages([
-      {
-        _id: 1,
-        text: 'Hello developer',
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: 'React Native',
-          avatar: 'https://placeimg.com/140/140/any',
-        },
-      },
-    ])
-  }, [])
-
-  const onSend = useCallback((messages = []) => {
-    setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
-  }, [])
-  const RenderInputToolbar = (props: any) => (
-    <InputToolbar
-      containerStyle={{
-        backgroundColor: '#222B45',
-        paddingTop: 6,
-        color: "black"
-      }}
-      // primaryStyle={{
-      //   alignItems: 'center',
-      //   color: "black"
-      // }}
-      // accessoryStyle={{ color:"black" }}
-      {...props} />
-  );
-
-  const messagePressed = (context: any, message: IMessage) => {
-    console.log({ message, context });
-    //https://github.com/FaridSafi/react-native-gifted-chat/blob/master@%7B2017-09-25%7D/src/Bubble.js#L96-L119
-  }
-
+  const Tab = createMaterialTopTabNavigator();
   return (
-    //https://stackoverflow.com/questions/60078901/react-native-gifted-chat-change-color-under-inputtoolbar
-    //https://github.com/FaridSafi/react-native-gifted-chat/issues/662
-    // <GiftedChat
-    //   messages={messages}
-    //   onSend={messages => onSend(messages as any)}
-    //   onPress={messagePressed}
-    //   user={{
-    //     _id: 1,
-    //   }}
-    //   renderInputToolbar={RenderInputToolbar}
-    // />
-
-    // https://github.com/facebook/react-native/issues/32952
-    <ScanScreen 
-      onRead={(e) => (console.log(e.data))}
-      reactivate={true}
-      showMarker={true}
-    />
-    
+    <NavigationContainer>
+      <Tab.Navigator>
+        <Tab.Screen name="Scan" component={QRScanScreen} />
+        <Tab.Screen name="Chat" component={ChatScreen} />
+        <Tab.Screen name="Generate" component={QRGenerateScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>    
   );
 };
 
