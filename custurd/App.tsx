@@ -18,6 +18,7 @@ import {
   View,
 } from 'react-native';
 import { IMessage, GiftedChat, InputToolbar } from 'react-native-gifted-chat';
+import ScanScreen from 'react-native-qrcode-scanner';
 
 // import {
 //   Colors,
@@ -75,15 +76,23 @@ const App = () => {
   return (
     //https://stackoverflow.com/questions/60078901/react-native-gifted-chat-change-color-under-inputtoolbar
     //https://github.com/FaridSafi/react-native-gifted-chat/issues/662
-    <GiftedChat
-      messages={messages}
-      onSend={messages => onSend(messages as any)}
-      onPress={messagePressed}
-      user={{
-        _id: 1,
-      }}
-      renderInputToolbar={RenderInputToolbar}
+    // <GiftedChat
+    //   messages={messages}
+    //   onSend={messages => onSend(messages as any)}
+    //   onPress={messagePressed}
+    //   user={{
+    //     _id: 1,
+    //   }}
+    //   renderInputToolbar={RenderInputToolbar}
+    // />
+
+    // https://github.com/facebook/react-native/issues/32952
+    <ScanScreen 
+      onRead={(e) => (console.log(e.data))}
+      reactivate={true}
+      showMarker={true}
     />
+    
   );
 };
 
