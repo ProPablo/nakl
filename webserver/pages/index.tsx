@@ -1,9 +1,58 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
+import { RefObject, useContext, useEffect, useState } from 'react'
+import QRCode from 'react-qr-code'
 import styles from '../styles/Home.module.css'
 
+import io, { Socket } from "socket.io-client";
+import { SocketContext, SocketStateContext } from './_app'
+
+interface Message {
+  type: string,
+  data: string
+}
+
 const Home: NextPage = () => {
+  const [roomId, setRoomId] = useState<string | null>(null);
+
+  const socket = useContext(SocketContext) as any;
+  const socketReducer = useContext(SocketStateContext);
+
+  const [messages, setMessages] = useState<Array<Message>>([{ type: "hey", data: "man" }]);
+  useEffect(() => {
+    // setRoom("example.com");
+    socketInit();
+    return () => {
+    }
+  }, []);
+
+  const socketInit = async () => {
+    await fetch("/api/socket");
+
+    socket.current = io();
+    let currSock = socket.current as Socket;
+    console.log(socket.current.id);
+
+    //use this to reconnect with another friend
+    // socket.close();
+    // socket.emit("joinRoom");
+    // socket.on("joinedRoom", (room) => {setRoomId(room)});
+
+    socket.on("getMessage", (msg: Message) => {
+      setMessages((currentMsg) => [
+        ...currentMsg,
+        msg
+      ]);
+      console.log(messages);
+    });
+  }
+
+  const onBtnClick = () => {
+    // socket.emit("sendMessage", {data: "bruh", type: "nans"});
+    socket.emit("sendMessage", { data: "bruh", type: "nans" });
+  }
+
   return (
     <div className={styles.container}>
       <Head>
@@ -28,6 +77,16 @@ const Home: NextPage = () => {
             <p>Find in-depth information about Next.js features and API.</p>
           </a>
 
+          {selfId &&
+            <QRCode value={selfId} />
+          }
+          {
+            roomId
+          }
+          <pre>
+            {messages.map(m => m.type + m.data)}
+          </pre>
+          <button onClick={onBtnClick} > send Hey man</button>
           <a href="https://nextjs.org/learn" className={styles.card}>
             <h2>Learn &rarr;</h2>
             <p>Learn about Next.js in an interactive course with quizzes!</p>
