@@ -57,9 +57,19 @@ const Home: NextPage = () => {
             <p>Find in-depth information about Next.js features and API.</p>
           </a>
           {
-            peer &&
-            <QRCode value={peer?.id} />
+            // peer.current &&
+            // <div>
+            // <QRCode value={peer.current.id} />
+            // THe url is on {peer.current.id}
+            // </div>
+            peer&&
+            <div>
+            {/* <QRCode value={peer.id} /> */}
+            THe url is on {peer.id}
+            </div>
+
           }
+
 
           <pre>
             {messages.map(m => m.type + m.data)}

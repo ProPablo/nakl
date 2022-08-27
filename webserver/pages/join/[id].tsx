@@ -4,12 +4,14 @@ import { SocketContext } from "../_app";
 
 const JoinPage = () => {
   const router = useRouter();
-  const { id:friendId } = router.query;
+  const { id } = router.query;
+  if(typeof(id) !="string") return;
+
   
   const peer = useContext(SocketContext);
   useEffect(() => {
 
-    peer?.on()
+    peer?.connect(id);
   
     return () => {
     }
@@ -17,5 +19,6 @@ const JoinPage = () => {
   
 
 }
+
 
 export default JoinPage;
