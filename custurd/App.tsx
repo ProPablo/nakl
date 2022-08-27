@@ -33,11 +33,10 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import ScanScreen from 'react-native-qrcode-scanner';
 import ChatScreen from './components/Chat';
 
-import QRCode from "react-qr-code";
-
 // @ts-ignore
 import Peer from 'react-native-peerjs';
 import { QRScanScreen } from './components/QRScan';
+import { QRGenerateScreen } from './components/QRGenerate';
 
 // @ts-ignore
 export const GlobalContext = React.createContext<[GlobalState, React.Dispatch<React.SetStateAction<GlobalState>>]>(null);
@@ -51,22 +50,6 @@ export interface GlobalState {
 const initialState: GlobalState = {
   peerId: '',
 }
-
-
-function QRGenerateScreen() {
-  const peer = useContext(PeerContext);
-  const [state, useState] = useContext(GlobalContext); 
-
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <QRCode value={state.peerId}/>
-      {/* <Button
-        title="disconnect"
-      /> */}
-    </View>
-  );
-}
-
 
 const App = () => {
   const stateAndDispatch = useState(initialState);
