@@ -37,6 +37,7 @@ import ChatScreen from './components/Chat';
 import Peer from 'react-native-peerjs';
 import { QRScanScreen } from './components/QRScan';
 import { QRGenerateScreen } from './components/QRGenerate';
+import ChatWrapper from './components/ChatWrapper';
 
 // @ts-ignore
 export const GlobalContext = React.createContext<[GlobalState, React.Dispatch<React.SetStateAction<GlobalState>>]>(null);
@@ -45,16 +46,19 @@ export const ConnectionContext = React.createContext<any>(null);
 
 export interface GlobalState {
   peerId: string,
+  isConnected: boolean
 }
 
 const initialState: GlobalState = {
   peerId: '',
+  isConnected: false
 }
 
 const App = () => {
   const stateAndDispatch = useState(initialState);
   const peer = useRef<Peer | null>(null);
   const conRef = useRef<any>(null);
+
 
   useEffect(() => {
     const peerInstance = new Peer();
@@ -67,7 +71,11 @@ const App = () => {
     peer.current = peerInstance;
 
     peerInstance.on("connection", (conn: any) => {
-      conRef.current = conn; 
+      conRef.current = conn;
+      stateAndDispatch[1]({
+        ...initialState,
+        isConnected: true,
+      })
     })
   }, [])
 
@@ -80,10 +88,10 @@ const App = () => {
           <NavigationContainer>
             <Tab.Navigator>
               <Tab.Screen name="Scan" component={QRScanScreen} />
-              <Tab.Screen name="Chat" component={ChatScreen} />
+              <Tab.Screen name="Chat" options={{lazy: true}} component={ChatWrapper} />
               <Tab.Screen name="Generate" component={QRGenerateScreen} />
             </Tab.Navigator>
-          </NavigationContainer>    
+          </NavigationContainer>
         </PeerContext.Provider>
       </ConnectionContext.Provider>
     </GlobalContext.Provider>
