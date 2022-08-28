@@ -1,39 +1,43 @@
-import React, { Component, useContext } from 'react';
+import React, { useContext, useState } from 'react';
 
 import {
-  AppRegistry,
   StyleSheet,
-  Text,
-  TouchableOpacity,
-  Linking,
   View,
 } from 'react-native';
 
 import QRCodeScanner from 'react-native-qrcode-scanner';
-import { RNCamera } from 'react-native-camera';
-import { ConnectionContext, PeerContext } from '../App';
+// import { RNCamera } from 'react-native-camera';
+import { ConnectionContext, GlobalContext, PeerContext } from '../App';
 
 export function QRScanScreen({ navigation }) {
   const conn = useContext(ConnectionContext)
   const peer = useContext(PeerContext)
+  const [isLoadingChat, setisLoadingChat] = useState(false);
+  const [globalState, setGlobalState] = useContext(GlobalContext);
+
   const onSuccess = (e: { data: string; }) => {
-    conn.current = peer.current.connect(e.data); 
-    conn.current.on("open", () => {
-      navigation.navigate("Chat");
-      console.log("Fully connected!")
-      conn.current.send("Sent from client :(")
-    })
+    const connTemp = peer.current.connect(e.data);
     console.log(`Connecting to this peer ${e.data}`)
+    setisLoadingChat(true);
+    connTemp.on("open", () => {
+      conn.current = connTemp;
+      setisLoadingChat(false);
+      // setGlobalState({...globalState, isConnected:true});
+      setGlobalState((prev) => ({...prev, isConnected: true}));
+      console.log("Fully connected!");
+      navigation.navigate("Chat");
+    })
   };
 
   return (
-    <QRCodeScanner
-      onRead={onSuccess}
-      reactivate={false}
-      showMarker={true}
-    />
+    <View>
+      <QRCodeScanner
+        onRead={onSuccess}
+        reactivate={false}
+        showMarker={true}
+      />
+    </View>
   );
-
 }
 
 const styles = StyleSheet.create({
