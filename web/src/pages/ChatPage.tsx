@@ -6,6 +6,18 @@ import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { CurrentConnectionContext, SocketContext } from "../App";
 
+
+//TODO: use this interface
+
+
+// type SettingsAction =
+//   { type: SettingsActionName.TOGGLE_AUTO_PLAY } |
+//   { type: SettingsActionName.FINISH_APP_TOUR } |
+//   { type: SettingsActionName.REPLACE_SETTINGS, settings: LocalSettingsState }
+
+
+
+
 const ChatPage = () => {
 
   const inputRef = useRef<HTMLDivElement>(null);
@@ -23,6 +35,25 @@ const ChatPage = () => {
     connRef.current.on("data", (data) => {
       console.log("data recieved ", data);
       if (typeof (data) == "string") {
+
+        if (data.startsWith("data:image")) {
+
+          setMessages(existing => {
+            const newModel: MessageModel = {
+              type:'image',
+              direction: "incoming",
+              position: "single",
+              payload: {
+                src: data
+              }
+            }
+            return [...existing, newModel];
+          });
+
+          return;
+        }
+
+
         setMessages(existing => {
           const newModel: MessageModel = {
             direction: "incoming",
@@ -33,6 +64,18 @@ const ChatPage = () => {
         });
       }
       else if (data instanceof Blob) {
+        console.log("we have imgae");
+
+        setMessages(existing => {
+          const newModel: MessageModel = {
+            direction: "incoming",
+            position: "single",
+            payload: {
+              src: data
+            }
+          }
+          return [...existing, newModel];
+        });
 
       }
     })
