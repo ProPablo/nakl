@@ -1,8 +1,15 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, useContext } from 'react'
 import { View, Text, TouchableOpacity, Button, Image, Platform } from 'react-native';
-import { Bubble, GiftedChat, IMessage, Message } from 'react-native-gifted-chat'
+import { Bubble, GiftedChat, IMessage, Message, MessageImageProps } from 'react-native-gifted-chat'
 import DocumentPicker, { DocumentPickerResponse, isInProgress, types } from "react-native-document-picker";
 import Clipboard from '@react-native-clipboard/clipboard';
+import { ConnectionContext, GlobalContext } from '../App';
+import { useFocusEffect } from '@react-navigation/native';
+
+
+interface ChatScreenProps {
+  navigation: any,
+}
 
 const renderMessage = (props) => {
   const isLastMessage = props.nextMessage && !props.nextMessage._id
@@ -21,58 +28,108 @@ const renderMessage = (props) => {
   )
 }
 
-export default function ChatScreen() {
+const renderMessageImage = (props: MessageImageProps<IMessage>) => {
+
+  if (props.currentMessage?.image == null) {
+    return (
+      <></>
+    )
+  }
+  return (
+    <Image
+      style={{ height: 100, width: 100 }}
+      source={{ uri: props.currentMessage?.image }}
+    />
+  )
+}
+
+export default function ChatScreen<ChatScreenProps>(props) {
   const [copiedText, setCopiedText] = useState('');
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [attachment, setAttachment] = React.useState<DocumentPickerResponse | null>(null)
-  const [image, setImage] = useState<string | null>(null);
-  // const [imageString, setImageString] = useState<string>('');
+  const [image, setImage] = useState<string | undefined>(undefined);
 
+  const connRef = useContext(ConnectionContext);
   // useEffect(() => {
   //   console.log(JSON.stringify(attachment, null, 2))
   //   // const x : ImageSourcePropType;
   // }, [attachment])
-  
+  const [globalState, setGlobalState] = useContext(GlobalContext);
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     connRef.current.removeAllListeners();
+  //     connRef.current.close();
+  //     setGlobalState((prev) => ({ ...prev, isConnected: false }));
+  //     console.log("CHAT FOCUS")
+  //   }, [])
+  // )
   useEffect(() => {
-    setMessages([
-      {
-        _id: 1,
-        text: 'Hello developer',
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: 'React Native',
-          avatar: 'https://placeimg.com/140/140/any',
-        },
-      },
-    ])
-  }, [])
+    const unsubscribe = props.navigation.addListener('blur', (e) => {
+      connRef.current.removeAllListeners();
+      connRef.current.close();
+      setGlobalState((prev) => ({ ...prev, isConnected: false }));
+      console.log("CHAT FOCUS")
+    });
+
+    connRef.current.on("data", (data) => {
+      console.log("Data recieved: ", data);
+      if (typeof (data) == "string") {
+        setMessages((previousMessages) => {
+          const newModel: IMessage = {
+            _id: previousMessages.length,
+            text: data,
+            createdAt: new Date(),
+            user: {
+              _id: 2,
+            },
+          }
+          return GiftedChat.append(previousMessages, [newModel])
+        })
+      }
+      else if (data instanceof Blob) {
+
+      }
+    })
+
+    return () => {
+      connRef.current.removeAllListeners();
+      connRef.current.close();
+      setGlobalState((prev) => ({ ...prev, isConnected: false }));
+    }
+  }, []);
+
 
   const onSend = useCallback((messages = []) => {
-    const testMessage = [
-      {
-        _id: 2,
-        text: 'Hello developer',
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: 'React Native',
-          avatar: 'https://placeimg.com/140/140/any',
-        },
-      },
-    ]
     setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
-    const timer = setTimeout(() => {
-      setMessages(previousMessages => GiftedChat.append(previousMessages, testMessage))
-    }, 1000);
-  }, [])
+    messages.forEach((msg: IMessage) => {
+      connRef.current.send(msg.text);
+    });
+    // Image send
+    if (image != undefined) {
+      connRef.current.send(image);
+      setMessages(previousMessages => {
+
+        const imageMessage: IMessage = {
+          _id: previousMessages.length,
+          text: "",
+          image: image,
+          createdAt: new Date(),
+          user: {
+            _id: 2,
+          },
+        }
+        return GiftedChat.append(previousMessages, [imageMessage])
+      });
+      setImage(undefined);
+    }
+  }, [image]);
 
   const getClipboard = async () => {
     if (Platform.OS === 'android') {
       const image = await Clipboard.getImage();
-
       if (image) {
         setImage(image);
+        console.log(image);
         return;
       }
     }
@@ -93,7 +150,6 @@ export default function ChatScreen() {
         throw err;
       }
     }
-
   }
 
   return (
@@ -104,11 +160,12 @@ export default function ChatScreen() {
         _id: 1,
       }}
       renderMessage={renderMessage}
-      renderActions={() => (  
-        <View style={{ height: '100%', justifyContent: 'center', left: 5, alignItems: 'center', flexDirection: 'row' }}> 
-          
+      renderMessageImage={renderMessageImage}
+      renderActions={() => (
+        <View style={{ height: '100%', justifyContent: 'center', left: 5, alignItems: 'center', flexDirection: 'row' }}>
+
           { // Conditional rendering of buttons based image attachment or picker
-            (attachment != null) || (image != null) ||
+            (attachment != null) || (image != undefined) ||
             <View>
               <Button
                 title="cl"
@@ -121,9 +178,9 @@ export default function ChatScreen() {
               />
             </View>
           }
-          
+
           { // Attachment handling
-            (attachment && attachment.fileCopyUri) && 
+            (attachment && attachment.fileCopyUri) &&
             <View>
               <Image
                 source={{
@@ -142,7 +199,7 @@ export default function ChatScreen() {
           }
 
           { // Image clipboard handling
-            image && 
+            image &&
             <View>
               <Image
                 source={{
@@ -154,12 +211,12 @@ export default function ChatScreen() {
               <Button
                 title='kill'
                 onPress={() => {
-                  setImage(null)
+                  setImage(undefined)
                 }}
               />
             </View>
           }
-        </View> 
+        </View>
       )}
     />
   )
