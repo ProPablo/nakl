@@ -4,7 +4,12 @@ import { Bubble, GiftedChat, IMessage, Message, MessageImageProps } from 'react-
 import DocumentPicker, { DocumentPickerResponse, isInProgress, types } from "react-native-document-picker";
 import Clipboard from '@react-native-clipboard/clipboard';
 import { ConnectionContext, GlobalContext } from '../App';
+import { useFocusEffect } from '@react-navigation/native';
 
+
+interface ChatScreenProps {
+  navigation: any,
+}
 
 const renderMessage = (props) => {
   const isLastMessage = props.nextMessage && !props.nextMessage._id
@@ -24,21 +29,21 @@ const renderMessage = (props) => {
 }
 
 const renderMessageImage = (props: MessageImageProps<IMessage>) => {
-  
+
   if (props.currentMessage?.image == null) {
     return (
       <></>
     )
   }
   return (
-    <Image 
-      style={{height:100, width: 100}}
-      source={{uri: props.currentMessage?.image}}
+    <Image
+      style={{ height: 100, width: 100 }}
+      source={{ uri: props.currentMessage?.image }}
     />
   )
 }
 
-export default function ChatScreen() {
+export default function ChatScreen<ChatScreenProps>(props) {
   const [copiedText, setCopiedText] = useState('');
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [attachment, setAttachment] = React.useState<DocumentPickerResponse | null>(null)
@@ -50,8 +55,22 @@ export default function ChatScreen() {
   //   // const x : ImageSourcePropType;
   // }, [attachment])
   const [globalState, setGlobalState] = useContext(GlobalContext);
-
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     connRef.current.removeAllListeners();
+  //     connRef.current.close();
+  //     setGlobalState((prev) => ({ ...prev, isConnected: false }));
+  //     console.log("CHAT FOCUS")
+  //   }, [])
+  // )
   useEffect(() => {
+    const unsubscribe = props.navigation.addListener('blur', (e) => {
+      connRef.current.removeAllListeners();
+      connRef.current.close();
+      setGlobalState((prev) => ({ ...prev, isConnected: false }));
+      console.log("CHAT FOCUS")
+    });
+
     connRef.current.on("data", (data) => {
       console.log("Data recieved: ", data);
       if (typeof (data) == "string") {
@@ -59,10 +78,10 @@ export default function ChatScreen() {
           const newModel: IMessage = {
             _id: previousMessages.length,
             text: data,
-              createdAt: new Date(),
-              user: {
-                _id: 2,
-              },
+            createdAt: new Date(),
+            user: {
+              _id: 2,
+            },
           }
           return GiftedChat.append(previousMessages, [newModel])
         })
@@ -71,18 +90,6 @@ export default function ChatScreen() {
 
       }
     })
-
-    // const testMessage: IMessage = {
-    //   _id: 0,
-    //   text: "data",
-    //   createdAt: new Date(),
-    //   user: {
-    //     _id: 2,
-    //   },
-    // }
-    // const timer = setInterval(() => {
-    //   setMessages(previousMessages => GiftedChat.append(previousMessages, [testMessage]))
-    // }, 1000);
 
     return () => {
       connRef.current.removeAllListeners();
@@ -100,7 +107,7 @@ export default function ChatScreen() {
     // Image send
     if (image != undefined) {
       connRef.current.send(image);
-      setMessages(previousMessages =>  {
+      setMessages(previousMessages => {
 
         const imageMessage: IMessage = {
           _id: previousMessages.length,
@@ -111,8 +118,9 @@ export default function ChatScreen() {
             _id: 2,
           },
         }
-        return GiftedChat.append(previousMessages, [imageMessage])});
-        setImage(undefined);
+        return GiftedChat.append(previousMessages, [imageMessage])
+      });
+      setImage(undefined);
     }
   }, [image]);
 

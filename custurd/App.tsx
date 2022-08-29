@@ -66,6 +66,7 @@ const App = () => {
       stateAndDispatch[1]({
         ...initialState,
         peerId: id,
+
       })
     })
     peer.current = peerInstance;

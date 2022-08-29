@@ -7,6 +7,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 const PEER_SERVER = 'https://peer.kongroo.xyz';
+import logo from '../custard.svg';
+
 
 
 const IndexPage = () => {
@@ -49,10 +51,19 @@ const IndexPage = () => {
   }, [])
 
   return (<div>
+    <img src={logo} alt="logo" style={{ justifyContent: "center" }} />
+    <img src="https://commons.wikimedia.org/wiki/File:563-custard.svg" />
     {state.isLoadingPeer ? <div> Loading </div> :
-      <div>
+      <div style={{flex: 1}}>
         <QRCode
-          style={{ margin: 10 }}
+          style={{
+            flex: 1,
+            margin: "auto",
+            justifyContent: "center",
+            alignContent: "center",
+            display: "block",
+            
+          }}
           className="qr-code" value={state.peerId} />
 
         {state.peerId}

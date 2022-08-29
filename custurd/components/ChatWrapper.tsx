@@ -1,12 +1,12 @@
+import { useFocusEffect } from "@react-navigation/native";
 import React, { useContext } from "react";
 import { View, Text } from "react-native";
 import { ConnectionContext, GlobalContext } from "../App";
 import ChatScreen from "./Chat";
 
-
-const ChatWrapper = () => {
-    // const connRef = useContext(ConnectionContext);
-    const [globalState, setGlobalState] = useContext(GlobalContext);;
+const ChatWrapper = ({navigation}) => {
+    const [globalState, setGlobalState] = useContext(GlobalContext);
+    
     if (!globalState.isConnected) {
         return (
             <View>
@@ -15,7 +15,7 @@ const ChatWrapper = () => {
         )
     }
     else {
-        return (<ChatScreen />)
+        return (<ChatScreen navigation={navigation}/>)
     }
 
 }
