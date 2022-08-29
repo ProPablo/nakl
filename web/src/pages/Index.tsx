@@ -6,7 +6,7 @@ import Peer from "peerjs";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-
+const PEER_SERVER = 'https://peer.kongroo.xyz';
 
 
 const IndexPage = () => {
@@ -19,12 +19,12 @@ const IndexPage = () => {
   //Only create peer on this page
   useEffect(() => {
     //Confirm if current already exists otherwise this page can be used to 
-    peer.current = new Peer();
-    // peer.current = new Peer('newpeer', {
-    //   host: 'localhost',
-    //   port: 9000,
-    //   path: '/myapp'
-    // });
+    // peer.current = new Peer();
+    peer.current = new Peer('signal', {
+      host: PEER_SERVER,
+      port: 9000,
+      path: '/server'
+    });
     setGlobalState({
       ...state,
       isLoadingPeer: true,
@@ -48,7 +48,7 @@ const IndexPage = () => {
 
   }, [])
 
-  return (<div> ALL MESSAGE
+  return (<div>
     {state.isLoadingPeer ? <div> Loading </div> :
       <div>
         <QRCode
