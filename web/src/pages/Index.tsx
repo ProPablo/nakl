@@ -3,13 +3,11 @@ import './../App.css';
 import QRCode from "react-qr-code";
 import { CurrentConnectionContext, GlobalContext, SocketContext } from "../App";
 import Peer from "peerjs";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 const PEER_SERVER = 'https://peer.kongroo.xyz';
 import logo from '../custard.svg';
-
-
 
 const IndexPage = () => {
 
@@ -17,16 +15,23 @@ const IndexPage = () => {
   const [state, setGlobalState] = useContext(GlobalContext);
   const connRef = useContext(CurrentConnectionContext);
   let navigate = useNavigate();
+  const location = useLocation();
 
   //Only create peer on this page
   useEffect(() => {
-    //Confirm if current already exists otherwise this page can be used to 
-    // peer.current = new Peer();
-    peer.current = new Peer('signal', {
-      host: PEER_SERVER,
-      port: 9000,
-      path: '/server'
-    });
+    console.log({ location });
+    //check query if has fallback in params
+    if (location.hash == "fallback") {
+      peer.current = new Peer();
+    }
+    else {
+      peer.current = new Peer('signal', {
+        host: PEER_SERVER,
+        port: 9000,
+        path: '/server'
+      });
+    }
+
     setGlobalState({
       ...state,
       isLoadingPeer: true,
@@ -50,33 +55,38 @@ const IndexPage = () => {
 
   }, [])
 
-  return (<div>
-    <img src={logo} alt="logo" style={{ justifyContent: "center" }} />
-    <img src="https://commons.wikimedia.org/wiki/File:563-custard.svg" />
-    {state.isLoadingPeer ? <div> Loading </div> :
-      <div style={{flex: 1}}>
-        <QRCode
-          style={{
-            flex: 1,
-            margin: "auto",
-            justifyContent: "center",
-            alignContent: "center",
-            display: "block",
-            
-          }}
-          className="qr-code" value={state.peerId} />
+  return (
+    // TODO: add threejs canvas for miasma shader or some kind of movement that indicates something is happening
+    //Is a custard jiggle based on mouse using ammo js and softbodies
+    //While loading have animation for custard maybe even using marching cubes
 
-        {state.peerId}
+    <div>
+      <img src={logo} alt="logo" style={{ justifyContent: "center" }} />
+      {state.isLoadingPeer ? <div> Loading </div> :
+        <div style={{ flex: 1 }}>
+          <QRCode
+            style={{
+              flex: 1,
+              margin: "auto",
+              justifyContent: "center",
+              alignContent: "center",
+              display: "block",
 
-        <Link to="/join">
-          <button type="button">
-            Want to join a dude?
-          </button>
-        </Link>
+            }}
+            className="qr-code" value={state.peerId} />
 
-      </div>
-    }
-  </div>)
+          {state.peerId}
+
+          <Link to="/join">
+            <button type="button">
+              Want to join a dude?
+            </button>
+          </Link>
+
+        </div>
+      }
+    </div>
+    )
 
 }
 

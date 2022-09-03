@@ -1,0 +1,15 @@
+{
+  "name": "nakl-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "pm2": "NODE_ENV=production pm2 delete nakl; pm2 start index.js --name nakl"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "peer": "^0.6.1"
+  }
+}
