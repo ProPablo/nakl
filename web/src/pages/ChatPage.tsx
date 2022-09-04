@@ -66,21 +66,13 @@ const ChatPage = () => {
           return [...existing, newModel];
         });
       }
+      else if (data instanceof ArrayBuffer) {
+        const newBlob = new Blob([data]);
+        addImage(newBlob);
+      }
       else if (data instanceof Blob) {
         console.log("we have imgae");
-
-        setMessages(existing => {
-          const newModel: MessageModel = {
-            type: 'image',
-            direction: "incoming",
-            position: "single",
-            payload: {
-              src: URL.createObjectURL(data),
-            }
-          }
-          return [...existing, newModel];
-        });
-
+        addImage(data);
       }
     })
 
@@ -91,6 +83,19 @@ const ChatPage = () => {
     }
   }, [])
 
+  const addImage = (data: Blob) => {
+    setMessages(existing => {
+      const newModel: MessageModel = {
+        type: 'image',
+        direction: "incoming",
+        position: "single",
+        payload: {
+          src: URL.createObjectURL(data),
+        }
+      }
+      return [...existing, newModel];
+    });
+  }
 
 
 
@@ -120,16 +125,7 @@ const ChatPage = () => {
   };
 
   const sendAttachHandler = (event) => {
-    setMessages([...messages,
-    {
-      type: 'image',
-      position: 'single',
-      payload: {
-        src: URL.createObjectURL(file),
-      },
-      direction: 'outgoing'
-    }
-    ]);
+    addImage(file);
     connRef.current.send(file);
     setFile(null);
   };

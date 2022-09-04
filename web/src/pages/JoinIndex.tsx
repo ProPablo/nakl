@@ -21,6 +21,7 @@ const JoinIndex = () => {
   }, [])
 
   const handleResult: OnResultFunction = (res, err) => {
+    console.log("hey man", res)
     if (!!res && !isLoadingChat) {
       const id = res.getText();
 
@@ -34,8 +35,9 @@ const JoinIndex = () => {
       //   navigate('/chat');
       // })
 
+      console.log("Connecting to chat...", id);
       connRef.current = peer.current.connect(id);
-      console.log("Connecting to chat...", connRef.current, id);
+      console.log(connRef.current);
       setisLoadingChat(true);
 
 
@@ -60,11 +62,13 @@ const JoinIndex = () => {
   return (
     <div className='container qr-scanner'>
       {isLoadingChat ? <h3>LOADING...</h3> :
+          //@ts-ignore
         < QrReader
-          videoStyle={videoStyle}
-          videoContainerStyle={videoContainerStyle}
+          // videoStyle={videoStyle}
+          // videoContainerStyle={videoContainerStyle}
           onResult={handleResult}
-          constraints={{ facingMode: 'environment' }}
+          // constraints={{ facingMode: 'environment' }}
+          // constraints={{ facingMode: 'user' }}
         />
       }
           <Link to="/">
