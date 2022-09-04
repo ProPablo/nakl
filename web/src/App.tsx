@@ -5,10 +5,9 @@ import Peer, { DataConnection } from 'peerjs';
 import QRCode from 'react-qr-code';
 import { BrowserRouter, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import JoinIndex from './pages/JoinIndex';
-import JoinPage from './pages/JoinPage';
 import ChatPage from './pages/ChatPage';
 import { Ref } from 'react';
-import IndexPage from './pages/Index';
+import HomePage, { HomePageType } from './pages/HomePage';
 
 
 // export let peer: Peer;
@@ -28,19 +27,23 @@ export interface GlobalState {
 const initialState: GlobalState = {
   peerId: '', isLoadingPeer: true
 }
+const FALLBACK_PAGE = "fallback";
+const MONIKER_PAGE = "pc";
+const HomePages = [FALLBACK_PAGE, MONIKER_PAGE];
 
 
 function App() {
   const peerRef = useRef<Peer>(null);
   const connRef = useRef<DataConnection | null>(null);
   const stateAndDispatch = useState(initialState);
-  const location = useLocation();
   const navigate = useNavigate();
+  const location = useLocation();
+
 
   useEffect(() => {
     //This use effect gets run for all routs every time
 
-    if (peerRef.current == null) {
+    if (peerRef.current == null && !HomePages.some(h => h == location.pathname)) {
       navigate("/");
     }
 
@@ -73,7 +76,9 @@ function App() {
       <SocketContext.Provider value={peerRef} >
         <CurrentConnectionContext.Provider value={connRef} >
           <Routes>
-            <Route path="/" element={<IndexPage />} />
+            <Route path="/" element={<HomePage type={HomePageType.DEFAULT}/>} />
+            <Route path="fallback" element={<HomePage type={HomePageType.FALLBACK}/>} />
+            <Route path="pc" element={<HomePage type={HomePageType.MONIKER}/>} />
             <Route path="chat" element={<ChatPage />} />
             <Route path="join" element={<JoinIndex />} >
               {/* <Route path=":peerId" element={<JoinPage />} /> */}

@@ -1,8 +1,11 @@
 import { useContext } from 'react';
 import { useEffect, useState } from 'react';
 import { OnResultFunction, QrReader } from 'react-qr-reader';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { CurrentConnectionContext, SocketContext } from '../App';
+import './Join.css';
+
+
 const JoinIndex = () => {
   //TODO: this would be a great place to do the epic google check of numbers to make sure someone in public didnt just scan ur code by accident
   //THis would be handled by socket.io implementation
@@ -45,19 +48,31 @@ const JoinIndex = () => {
 
     }
   }
+  const videoStyle: React.CSSProperties = {
+    // height: "85%",
+    paddingTop:"1rem"
+  }
+  const videoContainerStyle: React.CSSProperties = {
+    paddingTop:"60%"
+  }
 
 
   return (
-    <>
-      {isLoadingChat ? <div>LOADING...</div> :
-
+    <div className='container qr-scanner'>
+      {isLoadingChat ? <h3>LOADING...</h3> :
         < QrReader
+          videoStyle={videoStyle}
+          videoContainerStyle={videoContainerStyle}
           onResult={handleResult}
-          //@ts-ignore
-          style={{ width: '100%' }}
+          constraints={{ facingMode: 'user' }}
         />
       }
-    </>
+          <Link to="/">
+            <button data-tooltip="Tooltip" type="button">
+              Home
+            </button>
+          </Link>
+    </div>
   );
 }
 
