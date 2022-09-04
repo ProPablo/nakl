@@ -64,7 +64,7 @@ const JoinIndex = () => {
           videoStyle={videoStyle}
           videoContainerStyle={videoContainerStyle}
           onResult={handleResult}
-          constraints={{ facingMode: 'user' }}
+          constraints={{ facingMode: 'environment' }}
         />
       }
           <Link to="/">

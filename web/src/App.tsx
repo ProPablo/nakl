@@ -44,6 +44,8 @@ function App() {
     //This use effect gets run for all routs every time
 
     if (peerRef.current == null && !HomePages.some(h => h == location.pathname)) {
+      if (process.env.NODE_ENV == "development") return;
+      console.log("going home");
       navigate("/");
     }
 

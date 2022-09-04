@@ -26,3 +26,4 @@ const peerServer = ExpressPeerServer(server, {
 
 app.use('/', peerServer);
 app.use(cors());
+console.log(`Started peer server `);

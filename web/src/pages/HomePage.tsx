@@ -8,6 +8,9 @@ import custard from '../custard.svg';
 import './Home.css';
 
 const PEER_SERVER = 'peer.kongroo.xyz';
+
+const HOST = process.env.NODE_ENV == "development" ? '192.168.5.130' : PEER_SERVER;
+const PORT = process.env.NODE_ENV == "development" ? 9000 : 443;
 export enum HomePageType {
   DEFAULT,
   FALLBACK,
@@ -27,9 +30,10 @@ const HomePage = ({ type }: HomePageProps) => {
   useEffect(() => {
     switch (type) {
       case HomePageType.DEFAULT:
+        //If on http, the ws content also has to be http and vice versa for https
         peer.current = new Peer({
-          host: PEER_SERVER,
-          port: process.env.NODE_ENV == "development" ? 80 : 443,
+          host: HOST,
+          port: PORT,
           path: '/peer'
         });
         break;
@@ -38,8 +42,8 @@ const HomePage = ({ type }: HomePageProps) => {
         break;
       case HomePageType.MONIKER:
         peer.current = new Peer("Hey man", {
-          host: PEER_SERVER,
-          port: 80,
+          host: HOST,
+          port: PORT,
           path: '/peer'
         });
         break;

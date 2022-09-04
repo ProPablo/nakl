@@ -26,8 +26,11 @@ const ChatPage = () => {
   const [messages, setMessages] = useState<MessageModel[]>([]);
   const connRef = useContext(CurrentConnectionContext);
   const navigate = useNavigate();
+  const [file, setFile] = useState<File | null>(null);
+
   useEffect(() => {
     if (connRef.current == null) {
+      if (process.env.NODE_ENV == "development") return;
       navigate("/");
       return;
     }
@@ -40,7 +43,7 @@ const ChatPage = () => {
 
           setMessages(existing => {
             const newModel: MessageModel = {
-              type:'image',
+              type: 'image',
               direction: "incoming",
               position: "single",
               payload: {
@@ -68,10 +71,11 @@ const ChatPage = () => {
 
         setMessages(existing => {
           const newModel: MessageModel = {
+            type: 'image',
             direction: "incoming",
             position: "single",
             payload: {
-              src: data
+              src: URL.createObjectURL(data),
             }
           }
           return [...existing, newModel];
@@ -105,6 +109,30 @@ const ChatPage = () => {
 
   }
 
+  const changeAttachHandler: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+    console.log(event);
+    if (event.target.files.length == 0) {
+      setFile(null);
+    }
+    else {
+      setFile(event.target.files[0]);
+    }
+  };
+
+  const sendAttachHandler = (event) => {
+    setMessages([...messages,
+    {
+      type: 'image',
+      position: 'single',
+      payload: {
+        src: URL.createObjectURL(file),
+      },
+      direction: 'outgoing'
+    }
+    ]);
+    connRef.current.send(file);
+    setFile(null);
+  };
 
 
   return (<div style={{
@@ -129,9 +157,17 @@ const ChatPage = () => {
           onChange={setMsgInputValue}
           value={msgInputValue}
           ref={inputRef}
+          onAttachClick={sendAttachHandler}
+          attachDisabled={!!!file}
         />
       </ChatContainer>
     </MainContainer>
+    {/* TODO: style according to this  https://stackoverflow.com/questions/572768/styling-an-input-type-file-button
+    and make responsive to page so on desktop it takes half and half of the screen, on mobile, it is below chat
+    if image it can display image
+    using lflex wrap or grid
+    */}
+    <input id='file_input' type="file" name="file" onChange={changeAttachHandler} title="Choose File or drag file here" />
   </div>)
 }
 
