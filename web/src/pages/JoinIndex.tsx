@@ -44,7 +44,6 @@ const JoinIndex = () => {
       connRef.current.on("open", () => {
         console.log("Connected !!");
         setisLoadingChat(false);
-        connRef.current.send("Yo Joining from client pc");
         navigate('/chat');
       })
 
