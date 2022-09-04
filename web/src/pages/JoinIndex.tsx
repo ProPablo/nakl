@@ -64,10 +64,10 @@ const JoinIndex = () => {
       {isLoadingChat ? <h3>LOADING...</h3> :
           //@ts-ignore
         < QrReader
-          // videoStyle={videoStyle}
-          // videoContainerStyle={videoContainerStyle}
+          videoStyle={videoStyle}
+          videoContainerStyle={videoContainerStyle}
           onResult={handleResult}
-          // constraints={{ facingMode: 'environment' }}
+          constraints={{ facingMode: 'environment' }}
           // constraints={{ facingMode: 'user' }}
         />
       }
