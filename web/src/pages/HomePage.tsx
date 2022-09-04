@@ -29,7 +29,7 @@ const HomePage = ({ type }: HomePageProps) => {
       case HomePageType.DEFAULT:
         peer.current = new Peer({
           host: PEER_SERVER,
-          port: 80,
+          port: process.env.NODE_ENV == "development" ? 80 : 443,
           path: '/peer'
         });
         break;
