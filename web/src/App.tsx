@@ -9,13 +9,10 @@ import ChatPage from './pages/ChatPage';
 import { Ref } from 'react';
 import HomePage, { HomePageType } from './pages/HomePage';
 
+//https://fonts.google.com/specimen/Permanent+Marker
 
-// export let peer: Peer;
-// export let connection: DataConnection;
 
-//Use this everywhere please
 export const SocketContext = createContext<MutableRefObject<Peer>>(null);
-// export const CurrentConnectionContext = createContext<DataConnection | null>(null);
 export const CurrentConnectionContext = createContext<MutableRefObject<DataConnection>>(null);
 export const GlobalContext = createContext<[GlobalState, React.Dispatch<React.SetStateAction<GlobalState>>]>(null);
 
@@ -42,7 +39,6 @@ function App() {
 
   useEffect(() => {
     //This use effect gets run for all routs every time
-
     if (peerRef.current == null && !HomePages.some(h => h == location.pathname)) {
       if (process.env.NODE_ENV == "development") return;
       console.log("going home");
