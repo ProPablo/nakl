@@ -43,6 +43,9 @@ const JoinIndex = () => {
 
       connRef.current.on("open", () => {
         console.log("Connected !!");
+        // https://github.com/ythy/blog/issues/124
+        //peerjs sets the default to arraybuffer
+        // connRef.current.dataChannel.binaryType = 'blob';
         setisLoadingChat(false);
         navigate('/chat');
       })
@@ -51,30 +54,30 @@ const JoinIndex = () => {
   }
   const videoStyle: React.CSSProperties = {
     // height: "85%",
-    paddingTop:"1rem"
+    paddingTop: "1rem"
   }
   const videoContainerStyle: React.CSSProperties = {
-    paddingTop:"60%"
+    paddingTop: "60%"
   }
 
 
   return (
     <div className='container qr-scanner'>
       {isLoadingChat ? <h3>LOADING...</h3> :
-          //@ts-ignore
+        //@ts-ignore
         < QrReader
           videoStyle={videoStyle}
           videoContainerStyle={videoContainerStyle}
           onResult={handleResult}
           constraints={{ facingMode: 'environment' }}
-          // constraints={{ facingMode: 'user' }}
+        // constraints={{ facingMode: 'user' }}
         />
       }
-          <Link to="/">
-            <button data-tooltip="Tooltip" type="button">
-              Home
-            </button>
-          </Link>
+      <Link to="/">
+        <button data-tooltip="Tooltip" type="button">
+          Home
+        </button>
+      </Link>
     </div>
   );
 }

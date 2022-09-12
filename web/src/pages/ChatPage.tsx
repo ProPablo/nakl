@@ -5,6 +5,7 @@ import { Ref, useRef, useState } from "react";
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { CurrentConnectionContext, SocketContext } from "../App";
+import { gzipSync, zlibSync, decompress} from 'fflate';
 
 
 //TODO: use this interface
@@ -16,6 +17,25 @@ import { CurrentConnectionContext, SocketContext } from "../App";
 //   { type: SettingsActionName.REPLACE_SETTINGS, settings: LocalSettingsState }
 
 
+interface AttachementDTO {
+  /**
+   * Compressed data in zlib
+   */
+  data: Uint8Array,
+  /**
+   * The mimetype of the file, stored on the blob of the file
+   */
+  fileType: string,
+
+  /**
+   * Stored on the file itself
+   */
+  fileName: string,
+  /**
+   * Generated on sender, used for ACK
+   */
+  attachmentID: string
+}
 
 
 const ChatPage = () => {
@@ -35,7 +55,7 @@ const ChatPage = () => {
       return;
     }
 
-    connRef.current.on("data", (data) => {
+    connRef.current.on("data", async (data: string | AttachementDTO) => {
       console.log("data recieved ", data);
       if (typeof (data) == "string") {
 
@@ -55,8 +75,6 @@ const ChatPage = () => {
 
           return;
         }
-
-
         setMessages(existing => {
           const newModel: MessageModel = {
             direction: "incoming",
@@ -68,14 +86,13 @@ const ChatPage = () => {
       }
       else if (data instanceof ArrayBuffer) {
         const newBlob = new Blob([data]);
-        addImage(newBlob);
+        addImage(newBlob, true);
       }
-      else if (data instanceof Blob) {
-        console.log("we have imgae");
-        addImage(data);
+      else {
+        const decompressed = decompress(data.data, res => {});
+
       }
     })
-
 
     return () => {
       connRef.current.removeAllListeners();
@@ -83,7 +100,8 @@ const ChatPage = () => {
     }
   }, [])
 
-  const addImage = (data: Blob) => {
+  const addImage = (data: Blob, received: boolean) => {
+
     setMessages(existing => {
       const newModel: MessageModel = {
         type: 'image',
@@ -124,47 +142,63 @@ const ChatPage = () => {
     }
   };
 
-  const sendAttachHandler = (event) => {
-    addImage(file);
-    connRef.current.send(file);
+  const sendAttachHandler = async (event) => {
+    addImage(file, false);
+    const data = new Uint8Array(await file.arrayBuffer());
+    // const compressed = zlibSync(data);
+    const sendDTO: AttachementDTO = {
+      // data: compressed,
+      data,
+      attachmentID: crypto.randomUUID(),
+      fileName: file.name,
+      fileType: file.type
+    }
+    connRef.current.send(sendDTO);
+
+    //Confirm the ack 
+    //then close file access
+    //Implement timeout here for the ack?
     setFile(null);
   };
 
 
-  return (<div style={{
-    height: "90vh",
-    width: "100vw"
+  return (
+    <div style={{
+      height: "90vh",
+      width: "100vw"
 
-  }}>
-    <MainContainer >
-      <ChatContainer >
-        <MessageList >
-          {messages.map((m, i) =>
-            <Message
-              key={i}
-              model={m}
-            />
-          )}
+    }}>
+      <MainContainer >
+        <ChatContainer >
+          <MessageList >
+            {messages.map((m, i) =>
+              <Message
+                key={i}
+                model={m}
+              />
+            )}
 
-        </MessageList>
-        <MessageInput
-          placeholder="Type message here"
-          onSend={handleSend}
-          onChange={setMsgInputValue}
-          value={msgInputValue}
-          ref={inputRef}
-          onAttachClick={sendAttachHandler}
-          attachDisabled={!!!file}
-        />
-      </ChatContainer>
-    </MainContainer>
-    {/* TODO: style according to this  https://stackoverflow.com/questions/572768/styling-an-input-type-file-button
+          </MessageList>
+          <MessageInput
+            placeholder="Type message here"
+            onSend={handleSend}
+            onChange={setMsgInputValue}
+            value={msgInputValue}
+            ref={inputRef}
+            onAttachClick={sendAttachHandler}
+            attachDisabled={!!!file}
+          />
+        </ChatContainer>
+      </MainContainer>
+      {/* TODO: style according to this  https://stackoverflow.com/questions/572768/styling-an-input-type-file-button
     and make responsive to page so on desktop it takes half and half of the screen, on mobile, it is below chat
     if image it can display image
     using lflex wrap or grid
     */}
-    <input id='file_input' type="file" name="file" onChange={changeAttachHandler} title="Choose File or drag file here" />
-  </div>)
+      <input id='file_input' type="file" name="file" onChange={changeAttachHandler} title="Choose File or drag file here" />
+      {/* <a href={file} >Download File here</a> */}
+    </div>
+    )
 }
 
 export default ChatPage;

@@ -28,6 +28,11 @@ const HomePage = ({ type }: HomePageProps) => {
   let navigate = useNavigate();
 
   useEffect(() => {
+
+    if (process.env.NODE_ENV == "development") {
+      type = HomePageType.FALLBACK;
+    }
+
     switch (type) {
       case HomePageType.DEFAULT:
         //If on http, the ws content also has to be http and vice versa for https
