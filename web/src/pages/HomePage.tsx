@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import QRCode from "react-qr-code";
 import { CurrentConnectionContext, GlobalContext, SocketContext } from "../App";
-import Peer from "peerjs";
+import Peer, { LogLevel } from "peerjs";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import custard from '../custard.svg';
@@ -28,6 +28,8 @@ const HomePage = ({ type }: HomePageProps) => {
   let navigate = useNavigate();
 
   useEffect(() => {
+    if(process.env.NODE_ENV == "development")
+    type = HomePageType.FALLBACK;
     switch (type) {
       case HomePageType.DEFAULT:
         //If on http, the ws content also has to be http and vice versa for https
@@ -38,7 +40,7 @@ const HomePage = ({ type }: HomePageProps) => {
         });
         break;
       case HomePageType.FALLBACK:
-        peer.current = new Peer();
+        peer.current = new Peer({debug: 3});
         break;
       case HomePageType.MONIKER:
         peer.current = new Peer("Hey man", {
@@ -67,7 +69,7 @@ const HomePage = ({ type }: HomePageProps) => {
     //This is when a peer connects to us
     peer.current.on("connection", (conn) => {
       connRef.current = conn;
-      console.log("Someone decided to join ")
+      console.log("Someone decided to join ", connRef.current)
       navigate("/chat");
     })
 

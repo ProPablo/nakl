@@ -16,7 +16,7 @@ import { CurrentConnectionContext, SocketContext } from "../App";
 //   { type: SettingsActionName.REPLACE_SETTINGS, settings: LocalSettingsState }
 
 
-
+const CHUNK_SIZE = 16384;
 
 const ChatPage = () => {
 

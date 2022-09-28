@@ -36,13 +36,13 @@ const JoinIndex = () => {
       // })
 
       console.log("Connecting to chat...", id);
-      connRef.current = peer.current.connect(id);
+      connRef.current = peer.current.connect(id, {reliable: true});
       console.log(connRef.current);
       setisLoadingChat(true);
 
 
       connRef.current.on("open", () => {
-        console.log("Connected !!");
+        console.log("Connected !!", connRef.current);
         setisLoadingChat(false);
         navigate('/chat');
       })
