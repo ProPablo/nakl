@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import QRCode from "react-qr-code";
 import { CurrentConnectionContext, GlobalContext, SocketContext } from "../App";
-import Peer, { LogLevel } from "peerjs";
+import Peer, { LogLevel} from "peerjs";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import custard from '../custard.svg';
@@ -36,8 +36,10 @@ const HomePage = ({ type }: HomePageProps) => {
         peer.current = new Peer({
           host: HOST,
           port: PORT,
-          path: '/peer'
+          path: '/peer',
+          debug: LogLevel.All
         });
+        peer.current.
         break;
       case HomePageType.FALLBACK:
         peer.current = new Peer({debug: 3});
@@ -46,7 +48,8 @@ const HomePage = ({ type }: HomePageProps) => {
         peer.current = new Peer("Hey man", {
           host: HOST,
           port: PORT,
-          path: '/peer'
+          path: '/peer',
+          debug: LogLevel.All
         });
         break;
 

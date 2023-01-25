@@ -74,9 +74,9 @@ function App() {
       <SocketContext.Provider value={peerRef} >
         <CurrentConnectionContext.Provider value={connRef} >
           <Routes>
-            <Route path="/" element={<HomePage type={HomePageType.DEFAULT}/>} />
-            <Route path="fallback" element={<HomePage type={HomePageType.FALLBACK}/>} />
-            <Route path="pc" element={<HomePage type={HomePageType.MONIKER}/>} />
+            <Route path="/" element={<HomePage type={HomePageType.DEFAULT} />} />
+            <Route path="fallback" element={<HomePage type={HomePageType.FALLBACK} />} />
+            <Route path="pc" element={<HomePage type={HomePageType.MONIKER} />} />
             <Route path="chat" element={<ChatPage />} />
             <Route path="join" element={<JoinIndex />} >
               {/* <Route path=":peerId" element={<JoinPage />} /> */}
@@ -90,7 +90,9 @@ function App() {
               }
             />
           </Routes>
-        </CurrentConnectionContext.Provider></SocketContext.Provider> </GlobalContext.Provider>
+        </CurrentConnectionContext.Provider>
+      </SocketContext.Provider>
+    </GlobalContext.Provider>
   )
 }
 
