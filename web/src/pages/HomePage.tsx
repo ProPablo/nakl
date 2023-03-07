@@ -37,9 +37,8 @@ const HomePage = ({ type }: HomePageProps) => {
           host: HOST,
           port: PORT,
           path: '/peer',
-          debug: LogLevel.All
+          debug: 3
         });
-        peer.current.
         break;
       case HomePageType.FALLBACK:
         peer.current = new Peer({debug: 3});
@@ -49,7 +48,7 @@ const HomePage = ({ type }: HomePageProps) => {
           host: HOST,
           port: PORT,
           path: '/peer',
-          debug: LogLevel.All
+          debug: 3
         });
         break;
 
