@@ -1,12 +1,14 @@
 import Head from 'next/head'
-
 import styles from '@/styles/Home.module.css'
 import QRCode from "react-qr-code";
 import { useContext, useEffect } from 'react';
 import { CurrentConnectionContext, GlobalContext, SocketContext } from './_app';
 import { useRouter } from 'next/router';
+import type { Peer } from "peerjs"
 
 const PEER_SERVER = 'peer.kongroo.xyz';
+
+let peerDynamic: any = null;
 
 export default function Home() {
   const peer = useContext(SocketContext);
@@ -14,12 +16,10 @@ export default function Home() {
   const connRef = useContext(CurrentConnectionContext);
   const router = useRouter();
 
-  let Peer, DataConnection;
-
   const importPeer = async () => {
-    Peer = (await import('peerjs')).default
-    DataConnection = (await import('peerjs')).default
-    peer.current = new Peer(); //fallback for now 
+    peerDynamic = (await import('peerjs')).default
+    // peer.current will be re-generated everytime page is loaded
+    peer.current = new peerDynamic() as Peer; //fallback for now 
     setGlobalState({
       ...state, 
       isLoadingPeer: true,
