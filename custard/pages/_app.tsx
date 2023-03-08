@@ -2,10 +2,7 @@ import type { AppProps } from 'next/app'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 
-import { useEffect, useRef, useState } from 'react';
-
-import type { Peer, DataConnection } from 'peerjs'
-export let peer: Peer;
+import { Component, useEffect, useRef, useState } from 'react';
 
 import '@/styles/globals.css'
 
@@ -16,22 +13,25 @@ export default function App({ Component, pageProps }: AppProps) {
 
   const connRef = useRef<any>(null);
 
-  useEffect(() => {
-    // const Dynamic = dynamic(() => import('peerjs')
-    //   .then(({ default: Peer }) => (
-    //     peer = new Peer();
-    // const Peer = (require('peerjs'))
-    
-    // console.log("Making new peer");
-    // Peer.on("open", (id: any) => {
-    //   setPeerId(id);
-    // })
-    // //This is when a peer connects to us
-    // Peer.on("connection", (conn: any) => {
-    //   connRef.current = conn;
-    //   router.push("/chat");
+  const importPeer = async () => {
+    const Peer = (await import('peerjs')).default
+    const peer = new Peer();
 
-    // })
+    peer.on("open", (id: any) => {
+      setPeerId(id);
+    })
+
+    //This is when a peer connects to us
+    peer.on("connection", (conn: any) => {
+      connRef.current = conn;
+      router.push("/chat");
+    })
+  }
+  useEffect(() => {
+    importPeer();
+
+    console.log("Making new peer");
+
   }, []);
 
   return <Component {...pageProps} />
