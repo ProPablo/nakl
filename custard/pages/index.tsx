@@ -2,12 +2,22 @@ import Head from 'next/head'
 
 import styles from '@/styles/Home.module.css'
 import QRCode from "react-qr-code";
+import { useState } from 'react';
 
 // Constants
 const PEER_SERVER = 'peer.kongroo.xyz';
 
 
 export default function Home() {
+  const [peerId, setPeerId] = useState("");
+  const asyncFunc = async () => {
+    const PeerImported = (await import('peerjs')).default;
+    const peer = new PeerImported();
+    peer.on("open", (id: any) => {
+      setPeerId(id);
+    });
+  }
+
 
   return (
     <>
@@ -28,6 +38,7 @@ export default function Home() {
           <button className="btn btn-primary">Join</button>
           <QRCode
             className="qr-code justify-centre" value={"custard"} />
+          <button onClick={asyncFunc}> Open peer</button>
           {/* value={state.peerId} /> */}
 
           {/* 
