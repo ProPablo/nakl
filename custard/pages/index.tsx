@@ -6,15 +6,14 @@ import { useContext, useEffect } from 'react';
 import { CurrentConnectionContext, GlobalContext, SocketContext } from './_app';
 import { useRouter } from 'next/router';
 
-// Constants
 const PEER_SERVER = 'peer.kongroo.xyz';
-
 
 export default function Home() {
   const peer = useContext(SocketContext);
   const [state, setGlobalState] = useContext(GlobalContext);
   const connRef = useContext(CurrentConnectionContext);
   const router = useRouter();
+
   let Peer, DataConnection;
 
   const importPeer = async () => {

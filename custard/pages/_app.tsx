@@ -8,7 +8,6 @@ export const GlobalContext = createContext(null);
 export const SocketContext = createContext(null);
 export const CurrentConnectionContext = createContext(null);
 
-
 // Defining global state interfaces and default values
 export interface GlobalState {
   peerId: string, 
@@ -20,38 +19,22 @@ const initialState: GlobalState = {
   isLoadingPeer: true,
 }
 
-
-
 // Defining constants to be used for state
 const FALLBACK_PAGE = "fallback";
 const MONIKER_PAGE = "pc"; 
 const HomePages = [FALLBACK_PAGE, MONIKER_PAGE]
 
 export default function App({ Component, pageProps }: AppProps) {
-  let Peer, DataConnection;
-  const importPeer = async () => {
-    Peer = (await import('peerjs')).default
-    DataConnection = (await import('peerjs')).default
-  }
-
-
-  const peerRef = useRef<typeof Peer>(null);
-  const connRef = useRef<typeof DataConnection | null>(null);
-
+  const peerRef = useRef<Peer | null>(null);
+  const connRef = useRef<DataConnection | null>(null);
   const stateAndDispatch = useState(initialState);
   const router = useRouter(); // for navigation
   
-
-  // const [peerId, setPeerId] = useState("");
-
   useEffect(() => {
-    importPeer();
     if (peerRef.current == null && !HomePages.some(h => h == router.pathname)) {
       console.log("Going home.");
-      router.push("/")
+      router.push("/");
     }
-    console.log("Making new peer");
-
   }, []);
 
   return (
