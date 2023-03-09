@@ -6,43 +6,48 @@ import { CurrentConnectionContext, GlobalContext, SocketContext } from './_app';
 import { useRouter } from 'next/router';
 import type { Peer } from "peerjs"
 
-const PEER_SERVER = 'peer.kongroo.xyz';
-
-let peerDynamic: any = null;
 
 export default function Home() {
   const peer = useContext(SocketContext);
   const [state, setGlobalState] = useContext(GlobalContext);
   const connRef = useContext(CurrentConnectionContext);
   const router = useRouter();
+  
+  useEffect(() => {
+    const HOST = process.env.NEXT_PUBLIC_HOST;
+    const PORT = parseInt(process.env.NEXT_PUBLIC_PORT);
+    const importPeer = async () => {
+      const PeerClass = (await import('peerjs')).default // loading library first
+      peer.current = new PeerClass({
+        host: HOST,
+        port: PORT,
+        path: '/peer'
+      }) as Peer;
+      console.log(HOST, PORT)
 
-  const importPeer = async () => {
-    peerDynamic = (await import('peerjs')).default
-    // peer.current will be re-generated everytime page is loaded
-    peer.current = new peerDynamic() as Peer; //fallback for now 
-    setGlobalState({
-      ...state, 
-      isLoadingPeer: true,
-      peerId: "",
-    })
-
-    console.log("Making new peer.");
-    peer.current.on("open", (id) => {
+      // peer.current will be re-generated everytime page is loaded
       setGlobalState({
         ...state,
-        isLoadingPeer: false,
-        peerId: id,
+        isLoadingPeer: true,
+        peerId: "",
       })
-    })
 
-    // when peer connects to us
-    peer.current.on("connection", (conn) => {
-      connRef.current = conn;
-      console.log("Someone decided to join.");
-      router.push("/chat");
-    })
-  }
-  useEffect(() => {
+      console.log("Making new peer.");
+      peer.current.on("open", (id) => {
+        setGlobalState({
+          ...state,
+          isLoadingPeer: false,
+          peerId: id,
+        })
+      })
+
+      // when peer connects to us
+      peer.current.on("connection", (conn) => {
+        connRef.current = conn;
+        console.log("Someone decided to join.");
+        router.push("/chat");
+      })
+    }
     importPeer();
   }, [])
 
@@ -61,7 +66,7 @@ export default function Home() {
           <h1 className="text-3xl font-bold underline text-center">
             Custard
           </h1>
-          {state.isLoadingPeer ? 
+          {state.isLoadingPeer ?
             <div>
               <h1 className="text-3xl font-bold underline text-center">LOADING</h1>
             </div>
