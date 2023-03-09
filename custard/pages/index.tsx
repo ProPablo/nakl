@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import styles from '@/styles/Home.module.css'
 import QRCode from "react-qr-code";
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { CurrentConnectionContext, GlobalContext, SocketContext } from './_app';
 import { useRouter } from 'next/router';
 import type { Peer } from "peerjs"
@@ -10,9 +10,25 @@ import type { Peer } from "peerjs"
 export default function Home() {
   const peer = useContext(SocketContext);
   const [state, setGlobalState] = useContext(GlobalContext);
+  const [code, setCode] = useState("");
   const connRef = useContext(CurrentConnectionContext);
   const router = useRouter();
+  const [isLoadingChat, setisLoadingChat] = useState(false);
+
   
+  function onPressJoin () { 
+    console.log("Connecting to chat...", code);
+      connRef.current = peer.current.connect(code);
+      console.log(connRef.current);
+      setisLoadingChat(true);
+
+    connRef.current.on("open", () => {
+      console.log("Connected!");
+      setisLoadingChat(false);
+      router.push('/chat');
+    })
+  }
+
   useEffect(() => {
     const HOST = process.env.NEXT_PUBLIC_HOST;
     const PORT = parseInt(process.env.NEXT_PUBLIC_PORT);
@@ -74,7 +90,16 @@ export default function Home() {
             <div>
               <QRCode className="qr-code justify-centre" value={state.peerId} />
               <code>{state.peerId}</code>
-              <button className="btn btn-primary">Join</button>
+              <input 
+                type="text" 
+                placeholder="Connection code here" 
+                className="input input-bordered input-primary w-full max-w-xs" 
+                onChange={(e) => {setCode(e.target.value)}}
+              />              
+              <button 
+                className="btn btn-primary"
+                onClick={onPressJoin}>Join
+              </button>
             </div>
           }
         </div>
