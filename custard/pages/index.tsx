@@ -15,12 +15,12 @@ export default function Home() {
   const router = useRouter();
   const [isLoadingChat, setisLoadingChat] = useState(false);
 
-  
-  function onPressJoin () { 
+
+  function onPressJoin() {
     console.log("Connecting to chat...", code);
-      connRef.current = peer.current.connect(code);
-      console.log(connRef.current);
-      setisLoadingChat(true);
+    connRef.current = peer.current.connect(code);
+    console.log(connRef.current);
+    setisLoadingChat(true);
 
     connRef.current.on("open", () => {
       console.log("Connected!");
@@ -39,7 +39,6 @@ export default function Home() {
         port: PORT,
         path: '/peer'
       }) as Peer;
-      console.log(HOST, PORT)
 
       // peer.current will be re-generated everytime page is loaded
       setGlobalState({
@@ -75,31 +74,46 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/custard.svg" />
       </Head>
+      <div className="navbar bg-lavender">
+        <div className="flex-1 flex justify-center mr-auto navbar-center">
+          <button className="btn btn-ghost flex justify-center align-items h-28">
+            <img className="object-contain h-full w-full" src="/wlogo.svg" />
+          </button>
+        </div>
+      </div>
 
-      <main className={styles.main}>
-        <div className="flex flex-col justify-center items-center h-screen">
-          <img className="w-16 md:w-32 lg:w-48" src='/custard.svg' />
-          <h1 className="text-3xl font-bold underline text-center">
-            Custard
-          </h1>
+      <main className={styles.main + "min-h-screen bg-french-gray"}>
+        <div className="flex flex-col items-center h-screen">
           {state.isLoadingPeer ?
             <div>
               <h1 className="text-3xl font-bold underline text-center">LOADING</h1>
             </div>
             :
-            <div>
-              <QRCode className="qr-code justify-centre" value={state.peerId} />
-              <code>{state.peerId}</code>
-              <input 
-                type="text" 
-                placeholder="Connection code here" 
-                className="input input-bordered input-primary w-full max-w-xs" 
-                onChange={(e) => {setCode(e.target.value)}}
-              />              
-              <button 
-                className="btn btn-primary"
-                onClick={onPressJoin}>Join
-              </button>
+            <div className="flex flex-col justify-center items-center pt-16">
+              <h1 className="text-5xl text-ultra-violet">SCAN</h1>
+              <h2 className="text-2xl text-ultra-violet">someone joins you</h2>
+              <QRCode className="qr-code justify-centre py-6" value={state.peerId} />
+              <code className="text-dim-gray bg-french-gray-lite rounded-lg">{state.peerId}</code>
+              <div className="flex flex-row pt-6">
+                <input
+                  type="text"
+                  placeholder="enter code..."
+                  className="input w-full max-w-xs"
+                  onChange={(e) => { setCode(e.target.value) }}
+                />
+                <button
+                  className="btn"
+                  onClick={onPressJoin}>Join
+                </button>
+              </div>
+              
+              <div className="p-6">
+                <button
+                  className="btn"
+                  onClick={() => console.log('SHOW CAMERA')}>
+                  <img className="object-contain h-full w-full " src="/camera.svg" />
+                </button>
+              </div>
             </div>
           }
         </div>

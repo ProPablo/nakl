@@ -9,7 +9,21 @@ module.exports = {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      backgroundColor: '#BBB7CD',
+    },
+    colors: {
+      transparent: 'transparent',
+      current: 'currentColor',
+      'lavender': '#D5D3DF',
+      'french-gray': '#BBB7CD',
+      'french-gray-lite': '#CCCAD7',
+      'ultra-violet': '#5F588B',
+      'dim-gray': '#6A6264',
+    },
   },
-  plugins: [require("daisyui")],
+  plugins: [
+    require("daisyui"),
+  ]
+
 }
