@@ -1,11 +1,9 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '@/styles/Home.module.css'
+//@ts-ignore
+import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { ChatContainer, MainContainer, Message, MessageInput, MessageList, MessageModel } from "@chatscope/chat-ui-kit-react";
 import { CurrentConnectionContext } from './_app';
 import { useRouter } from 'next/router';
-
 
 export default function Home() {
   const inputRef = useRef<HTMLDivElement>(null);
@@ -114,7 +112,7 @@ export default function Home() {
           </button>
         </div>
       </div>
-      <main className={styles.main + "min-h-screen bg-french-gray"}>
+      <main className={styles + "min-h-screen bg-french-gray"}>
         <MainContainer>
           <ChatContainer>
             <MessageList>
