@@ -73,6 +73,8 @@ export default function Home() {
         <meta name="description" content="Not a Keylogger" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/custard.svg" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/comic-mono@0.0.1/index.css" />
+
       </Head>
       <div className="navbar bg-lavender">
         <div className="flex-1 flex justify-center mr-auto navbar-center">
@@ -90,26 +92,26 @@ export default function Home() {
             </div>
             :
             <div className="flex flex-col justify-center items-center pt-16">
-              <h1 className="text-5xl text-ultra-violet">SCAN</h1>
-              <h2 className="text-2xl text-ultra-violet">someone joins you</h2>
+              <h1 className="text-5xl text-ultra-violet font-link">SCAN</h1>
+              <h2 className="text-2xl text-ultra-violet font-link">someone joins you</h2>
               <QRCode className="qr-code justify-centre py-6" value={state.peerId} />
-              <code className="text-dim-gray bg-french-gray-lite rounded-lg">{state.peerId}</code>
+              <code className="text-dim-gray bg-french-gray-lite rounded-lg font-link p-1">{state.peerId}</code>
               <div className="flex flex-row pt-6">
                 <input
                   type="text"
                   placeholder="enter code..."
-                  className="input w-full max-w-xs"
+                  className="input w-full max-w-xs bg-white text-dim-gray font-link"
                   onChange={(e) => { setCode(e.target.value) }}
                 />
                 <button
-                  className="btn"
+                  className="btn font-link" 
                   onClick={onPressJoin}>Join
                 </button>
               </div>
               
               <div className="p-6">
                 <button
-                  className="btn"
+                  className="btn font-link"
                   onClick={() => console.log('SHOW CAMERA')}>
                   <img className="object-contain h-full w-full " src="/camera.svg" />
                 </button>

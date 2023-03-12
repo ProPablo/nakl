@@ -20,6 +20,8 @@ module.exports = {
       'french-gray-lite': '#CCCAD7',
       'ultra-violet': '#5F588B',
       'dim-gray': '#6A6264',
+      'white': '#fff',
+      'wisteria': '#A49CCD',
     },
   },
   plugins: [
