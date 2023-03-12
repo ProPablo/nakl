@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import React, { createContext, MutableRefObject, useEffect, useRef, useState } from 'react';
 import '@/styles/globals.css'
 import type { Peer, DataConnection } from "peerjs"
+import { Head } from 'next/document';
 
 export const GlobalContext = createContext(null);
 export const SocketContext = createContext(null);
@@ -10,18 +11,18 @@ export const CurrentConnectionContext = createContext(null);
 
 // Defining global state interfaces and default values
 export interface GlobalState {
-  peerId: string, 
+  peerId: string,
   isLoadingPeer: boolean,
 }
 
 const initialState: GlobalState = {
-  peerId: '', 
+  peerId: '',
   isLoadingPeer: true,
 }
 
 // Defining constants to be used for state
 const FALLBACK_PAGE = "fallback";
-const MONIKER_PAGE = "pc"; 
+const MONIKER_PAGE = "pc";
 const HomePages = [FALLBACK_PAGE, MONIKER_PAGE]
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -29,7 +30,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const connRef = useRef<DataConnection | null>(null);
   const stateAndDispatch = useState(initialState);
   const router = useRouter(); // for navigation
-  
+
   useEffect(() => {
     if (peerRef.current == null && !HomePages.some(h => h == router.pathname)) {
       console.log("Going home.");
@@ -38,12 +39,13 @@ export default function App({ Component, pageProps }: AppProps) {
   }, []);
 
   return (
+
     <GlobalContext.Provider value={stateAndDispatch}>
       <SocketContext.Provider value={peerRef}>
         <CurrentConnectionContext.Provider value={connRef}>
-          <Component {...pageProps} />    
+          <Component {...pageProps} />
         </CurrentConnectionContext.Provider>
       </SocketContext.Provider>
     </GlobalContext.Provider>
-  ) 
+  )
 }
