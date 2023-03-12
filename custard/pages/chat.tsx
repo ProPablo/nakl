@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 
 export default function Home() {
   const inputRef = useRef<HTMLDivElement>(null);
-  const [msgInputValue, setMsgInputValue] = useState("null");
+  const [msgInputValue, setMsgInputValue] = useState("enter text...");
   const [messages, setMessages] = useState<MessageModel[]>([]);
   const connRef = useContext(CurrentConnectionContext);
   const router = useRouter();
@@ -107,11 +107,14 @@ export default function Home() {
 
   return (
     <>
-      <main className={styles.main + "min-h-screen bg-french-gray"}>
-        <div className="container holder" >
-          {/* <h1>Ask your friend to get on this website: </h1> */}
-          <h1>Chat</h1>
+      <div className="navbar bg-lavender">
+        <div className="flex-1 flex mr-auto navbar-left">
+          <button className="btn btn-ghost flex justify-center align-items h-10">
+            <img className="object-contain h-full w-full" src="/wlogo.svg" />
+          </button>
         </div>
+      </div>
+      <main className={styles.main + "min-h-screen bg-french-gray"}>
         <MainContainer>
           <ChatContainer>
             <MessageList>
