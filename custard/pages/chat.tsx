@@ -1,5 +1,4 @@
-//@ts-ignore
-import styles from '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
+import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { ChatContainer, MainContainer, Message, MessageInput, MessageList, MessageModel } from "@chatscope/chat-ui-kit-react";
 import { CurrentConnectionContext } from './_app';
@@ -112,8 +111,8 @@ export default function Home() {
           </button>
         </div>
       </div>
-      <main className={styles + "min-h-screen bg-french-gray"}>
-        <MainContainer>
+      <main className="min-h-screen bg-french-gray">
+        <MainContainer className="min-h-screen bg-french-gray">
           <ChatContainer>
             <MessageList>
               {messages.map((m, i) =>
