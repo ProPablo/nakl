@@ -1,14 +1,14 @@
 import styles from '@/styles/Home.module.css'
 import QRCode from "react-qr-code";
-import { OnResultFunction } from 'react-qr-reader';
+import type { OnResultFunction } from 'react-qr-reader';
 
 import { Component, useContext, useEffect, useState } from 'react';
 import { CurrentConnectionContext, GlobalContext, SocketContext } from './_app';
 import { useRouter } from 'next/router';
 import type { Peer } from "peerjs"
 
-// import dynamic from 'next/dynamic';
-// export default dynamic(() => import("react-qr-reader"), { ssr: false });
+import dynamic from 'next/dynamic';
+const QrReader = dynamic(() => import("react-qr-reader").then((qr) => qr.QrReader), { ssr: false });
 // import QrReader from "../components/QrReader";
 
 export default function Home() {
@@ -55,6 +55,7 @@ export default function Home() {
     connRef.current?.close();
     const HOST = process.env.NEXT_PUBLIC_HOST;
     const PORT = parseInt(process.env.NEXT_PUBLIC_PORT);
+
     const importPeer = async () => {
       const PeerClass = (await import('peerjs')).default // loading library first
       peer.current = new PeerClass({
@@ -90,11 +91,12 @@ export default function Home() {
   }, [])
 
   const videoStyle: React.CSSProperties = {
-    height: "85%",
-    paddingTop: "2rem"
+    height: "100vh",
+    width: "100wh",
   }
   const videoContainerStyle: React.CSSProperties = {
-    paddingTop: "100%"
+    height: "100vh",
+    width: "100wh",
   }
 
   return (
@@ -140,20 +142,31 @@ export default function Home() {
                   <h1 className="text-5xl text-ultra-violet font-link">JOIN</h1>
                   <h2 className="text-2xl text-ultra-violet font-link">you join someone</h2>
                   {
-                    isLoadingChat ?             
-                    <div>
-                      <h1 className="text-3xl font-bold underline text-center">LOADING</h1>
-                    </div>
-                    :
-                    <div>
-                    </div>
-                    // <QrReader
-                    //   className='justify-centre py-6'
-                    //   videoStyle={videoStyle}
-                    //   videoContainerStyle={videoContainerStyle}
-                    //   onResult={handleResult}
-                    //   constraints={{ facingMode: 'environment' }}
-                    // />
+                    isLoadingChat ?
+                      <div>
+                        <h1 className="text-3xl font-bold underline text-center">LOADING</h1>
+                      </div>
+                      :
+                      <div className='py-6'>
+                        <QrReader
+                          // className='justify-centre'
+                          videoStyle={{
+                            height: "10%",
+                            width: "10%",
+                          }}
+                          videoContainerStyle={{
+                            height: "10%",
+                            width: "10%",
+                            paddingTop: "0%",
+                            position: "static"
+                          }}
+                          onResult={handleResult}
+                          constraints={{ facingMode: 'environment' }}
+
+                        />
+
+                      </div>
+
                   }
                   <div className="flex flex-row pt-6">
                     <input
