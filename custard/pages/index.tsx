@@ -17,6 +17,7 @@ export default function Home() {
   const [code, setCode] = useState("");
   const [isLoadingChat, setisLoadingChat] = useState(false);
   const [cameraScreen, setCameraScreen] = useState(false);
+  const [idCopy, setIdCopy] = useState(false);
   const router = useRouter();
 
 
@@ -90,12 +91,12 @@ export default function Home() {
   }, [])
 
   const videoStyle: React.CSSProperties = {
-    height: "100vh",
-    width: "100wh",
+    position: "relative",
   }
   const videoContainerStyle: React.CSSProperties = {
-    height: "100vh",
-    width: "100wh",
+    paddingTop: "0%",
+    height: "224px",
+    borderRadius: "25px",
   }
 
   return (
@@ -112,7 +113,7 @@ export default function Home() {
         <div className="flex flex-col items-center h-screen">
           {state.isLoadingPeer
             ?
-            <div>
+            <div className='animate-pulse'>
               <h1 className="text-3xl font-bold underline text-center">LOADING</h1>
             </div>
             :
@@ -122,7 +123,23 @@ export default function Home() {
                   <h1 className="text-5xl text-ultra-violet font-link">SCAN</h1>
                   <h2 className="text-2xl text-ultra-violet font-link">someone joins you</h2>
                   <QRCode className="qr-code justify-centre py-6" value={state.peerId} />
-                  <code className="text-dim-gray bg-french-gray-lite rounded-lg font-link p-1">{state.peerId}</code>
+                  <div className={`toast transition-opacity ease-in-out duration-300 text-white ${idCopy ? 'opacity-100' : 'opacity-0'}`}>
+                    <div className="alert text-white">
+                      <div>
+                        <span>Connection ID copied.</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="cursor-pointer">
+                    <code
+                      onClick={() => {
+                        setIdCopy(true);
+                        setTimeout(() => setIdCopy(false), 2000);
+                        navigator.clipboard.writeText(state.peerId)
+                      }}
+                      className="text-dim-gray bg-french-gray-lite rounded-lg font-link p-1">{state.peerId}
+                    </code>
+                  </div>
                   <div className="flex flex-row pt-6">
                     <input
                       type="text"
@@ -148,22 +165,12 @@ export default function Home() {
                       :
                       <div className='flex justify-center items-center py-8'>
                         <QrReader
-                          videoStyle={{
-                            position: "relative",
-                          }}
-                          videoContainerStyle={{
-                            paddingTop: "0%",
-                            height: "224px",
-                            borderRadius: "25px",
-                            position: "relative",
-                          }}
+                          videoStyle={videoStyle}
+                          videoContainerStyle={videoContainerStyle}
                           onResult={handleResult}
                           constraints={{ facingMode: 'environment' }}
-
                         />
-
                       </div>
-
                   }
                   <div className="flex flex-row pt-6">
                     <input
