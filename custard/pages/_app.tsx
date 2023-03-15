@@ -1,12 +1,12 @@
 import type { AppProps } from 'next/app'
 import { useRouter } from 'next/router'
-import React, { createContext, MutableRefObject, useEffect, useRef, useState } from 'react';
+import React, { createContext, MutableRefObject, Ref, useEffect, useRef, useState } from 'react';
 import '@/styles/globals.css'
 import type { Peer, DataConnection } from "peerjs"
 import { Head } from 'next/document';
 
 export const GlobalContext = createContext(null);
-export const SocketContext = createContext(null);
+export const SocketContext = createContext<React.MutableRefObject<Peer>>(null);
 export const CurrentConnectionContext = createContext(null);
 
 // Defining global state interfaces and default values

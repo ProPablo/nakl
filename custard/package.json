@@ -15,7 +15,7 @@
     "@types/react-dom": "18.0.11",
     "daisyui": "^2.51.3",
     "next": "13.2.3",
-    "peerjs": "github:ProPablo/peerjs",
+    "peerjs": "https://github.com/ProPablo/peerjs#ef54fa4bb4feeb4070ec24e27c5d80b56ab8da0c",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-qr-code": "^2.0.11",

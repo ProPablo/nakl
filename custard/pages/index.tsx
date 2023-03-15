@@ -4,11 +4,18 @@ import QRCode from "react-qr-code";
 import { useContext, useEffect, useState } from 'react';
 import { CurrentConnectionContext, GlobalContext, SocketContext } from './_app';
 import { useRouter } from 'next/router';
-import type { Peer } from "peerjs"
+import { Peer } from "peerjs"
+
+enum LogLevel {
+    Disabled = 0,
+    Errors = 1,
+    Warnings = 2,
+    All = 3
+}
 
 
 export default function Home() {
-  const peer = useContext(SocketContext);
+  const peerRef = useContext(SocketContext);
   const [state, setGlobalState] = useContext(GlobalContext);
   const [code, setCode] = useState("");
   const connRef = useContext(CurrentConnectionContext);
@@ -18,7 +25,7 @@ export default function Home() {
 
   function onPressJoin() {
     console.log("Connecting to chat...", code);
-    connRef.current = peer.current.connect(code);
+    connRef.current = peerRef.current.connect(code);
     console.log(connRef.current);
     setisLoadingChat(true);
 
@@ -31,14 +38,24 @@ export default function Home() {
 
   useEffect(() => {
     connRef.current?.close();
+    // No reason for doing this, websocket error from next js is a wsl thing (restart pc)
+    // https://github.com/vercel/next.js/issues/30491#issuecomment-972811344
+    // connRef.current = null;
+    // peerRef.current?.destroy();
+    // peerRef.current = null;
+
+    
     const HOST = process.env.NEXT_PUBLIC_HOST;
     const PORT = parseInt(process.env.NEXT_PUBLIC_PORT);
     const importPeer = async () => {
-      const PeerClass = (await import('peerjs')).default // loading library first
-      peer.current = new PeerClass({
+      // loading library first 
+      // Tested that the network import only happens once on page load
+      const PeerClass = (await import('peerjs')).default
+      peerRef.current = new PeerClass({
         host: HOST,
         port: PORT,
-        path: '/peer'
+        path: '/peer',
+        debug: LogLevel.All
       }) as Peer;
 
       // peer.current will be re-generated everytime page is loaded
@@ -49,7 +66,7 @@ export default function Home() {
       })
 
       console.log("Making new peer.");
-      peer.current.on("open", (id) => {
+      peerRef.current.on("open", (id) => {
         setGlobalState({
           ...state,
           isLoadingPeer: false,
@@ -58,7 +75,7 @@ export default function Home() {
       })
 
       // when peer connects to us
-      peer.current.on("connection", (conn) => {
+      peerRef.current.on("connection", (conn) => {
         connRef.current = conn;
         console.log("Someone decided to join.");
         router.push("/chat");
@@ -97,11 +114,11 @@ export default function Home() {
                   onChange={(e) => { setCode(e.target.value) }}
                 />
                 <button
-                  className="btn font-link" 
+                  className="btn font-link"
                   onClick={onPressJoin}>Join
                 </button>
               </div>
-              
+
               <div className="p-6">
                 <button
                   className="btn font-link"
