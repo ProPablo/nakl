@@ -2,14 +2,13 @@ import styles from '@/styles/Home.module.css'
 import QRCode from "react-qr-code";
 import type { OnResultFunction } from 'react-qr-reader';
 
-import { Component, useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { CurrentConnectionContext, GlobalContext, SocketContext } from './_app';
 import { useRouter } from 'next/router';
 import type { Peer } from "peerjs"
 
 import dynamic from 'next/dynamic';
 const QrReader = dynamic(() => import("react-qr-reader").then((qr) => qr.QrReader), { ssr: false });
-// import QrReader from "../components/QrReader";
 
 export default function Home() {
   const peer = useContext(SocketContext);
@@ -147,18 +146,16 @@ export default function Home() {
                         <h1 className="text-3xl font-bold underline text-center">LOADING</h1>
                       </div>
                       :
-                      <div className='py-6'>
+                      <div className='flex justify-center items-center py-8'>
                         <QrReader
-                          // className='justify-centre'
                           videoStyle={{
-                            height: "10%",
-                            width: "10%",
+                            position: "relative",
                           }}
                           videoContainerStyle={{
-                            height: "10%",
-                            width: "10%",
                             paddingTop: "0%",
-                            position: "static"
+                            height: "224px",
+                            borderRadius: "25px",
+                            position: "relative",
                           }}
                           onResult={handleResult}
                           constraints={{ facingMode: 'environment' }}
