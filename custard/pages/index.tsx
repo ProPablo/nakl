@@ -95,7 +95,7 @@ export default function Home() {
   }
   const videoContainerStyle: React.CSSProperties = {
     paddingTop: "0%",
-    height: "224px",
+    height: "218.5px",
     borderRadius: "25px",
   }
 
@@ -103,33 +103,32 @@ export default function Home() {
     <>
       <div className="navbar bg-lavender">
         <div className="flex-1 flex justify-center mr-auto navbar-center">
-          <button className="btn btn-ghost flex justify-center align-items h-28">
+          <button className="btn btn-ghost flex justify-center align-items h-28" onClick={() => router.push("/")}>
             <img className="object-contain h-full w-full" src="/wlogo.svg" />
           </button>
         </div>
       </div>
 
       <main className={styles.main + "min-h-screen bg-french-gray"}>
-        <div className="flex flex-col items-center h-screen">
+        <div className="flex flex-col justify-items-center items-center h-screen">
           {state.isLoadingPeer
             ?
-            <div className='animate-pulse'>
-              <h1 className="text-3xl font-bold underline text-center">LOADING</h1>
+            <div className='mt-10 animate-pulse rounded bg-french-gray font-link text-ultra-violet'>LOADING
             </div>
             :
             <>
+              <div className={`select-none toast transition-opacity duration-300 text-white ${idCopy ? 'opacity-100' : 'opacity-0'}`}>
+                <div className="alert text-white">
+                  <div>
+                    <span>Connection ID copied.</span>
+                  </div>
+                </div>
+              </div>
               {!cameraScreen ?
                 <div className="flex flex-col justify-center items-center pt-16">
                   <h1 className="text-5xl text-ultra-violet font-link">SCAN</h1>
                   <h2 className="text-2xl text-ultra-violet font-link">someone joins you</h2>
                   <QRCode className="qr-code justify-centre py-6" value={state.peerId} />
-                  <div className={`toast transition-opacity ease-in-out duration-300 text-white ${idCopy ? 'opacity-100' : 'opacity-0'}`}>
-                    <div className="alert text-white">
-                      <div>
-                        <span>Connection ID copied.</span>
-                      </div>
-                    </div>
-                  </div>
                   <div className="cursor-pointer">
                     <code
                       onClick={() => {
@@ -157,20 +156,18 @@ export default function Home() {
                 <div className="flex flex-col justify-center items-center pt-16">
                   <h1 className="text-5xl text-ultra-violet font-link">JOIN</h1>
                   <h2 className="text-2xl text-ultra-violet font-link">you join someone</h2>
-                  {
-                    isLoadingChat ?
-                      <div>
-                        <h1 className="text-3xl font-bold underline text-center">LOADING</h1>
-                      </div>
-                      :
-                      <div className='flex justify-center items-center py-8'>
-                        <QrReader
-                          videoStyle={videoStyle}
-                          videoContainerStyle={videoContainerStyle}
-                          onResult={handleResult}
-                          constraints={{ facingMode: 'environment' }}
-                        />
-                      </div>
+                  {isLoadingChat ?
+                    <div className='p-28 mt-10 animate-pulse rounded bg-french-gray-lite font-link text-ultra-violet'>LOADING
+                    </div>
+                    :
+                    <div className='flex justify-center items-center py-8'>
+                      <QrReader
+                        videoStyle={videoStyle}
+                        videoContainerStyle={videoContainerStyle}
+                        onResult={handleResult}
+                        constraints={{ facingMode: 'environment' }}
+                      />
+                    </div>
                   }
                   <div className="flex flex-row pt-6">
                     <input
@@ -186,15 +183,18 @@ export default function Home() {
                   </div>
                 </div>
               }
+              <div className="p-6">
+                <button
+                  className="btn font-link"
+                  onClick={() => {
+                    setIdCopy(false);
+                    setCameraScreen(!cameraScreen);
+                  }}>
+                  <img className="object-contain h-full w-full " src="/camera.svg" />
+                </button>
+              </div>
             </>
           }
-          <div className="p-6">
-            <button
-              className="btn font-link"
-              onClick={() => setCameraScreen(!cameraScreen)}>
-              <img className="object-contain h-full w-full " src="/camera.svg" />
-            </button>
-          </div>
         </div>
       </main>
     </>
