@@ -1,15 +1,12 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '@/styles/Home.module.css'
+import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { ChatContainer, MainContainer, Message, MessageInput, MessageList, MessageModel } from "@chatscope/chat-ui-kit-react";
 import { CurrentConnectionContext } from './_app';
 import { useRouter } from 'next/router';
 
-
 export default function Home() {
   const inputRef = useRef<HTMLDivElement>(null);
-  const [msgInputValue, setMsgInputValue] = useState("null");
+  const [msgInputValue, setMsgInputValue] = useState("enter text...");
   const [messages, setMessages] = useState<MessageModel[]>([]);
   const connRef = useContext(CurrentConnectionContext);
   const router = useRouter();
@@ -107,12 +104,15 @@ export default function Home() {
 
   return (
     <>
-      <main className={styles.main + "min-h-screen bg-french-gray"}>
-        <div className="container holder" >
-          {/* <h1>Ask your friend to get on this website: </h1> */}
-          <h1>Chat</h1>
+      <div className="navbar bg-lavender">
+        <div className="flex-1 flex mr-auto navbar-left">
+          <button className="btn btn-ghost flex justify-center align-items h-10" onClick={() => router.push("/")}>
+            <img className="object-contain h-full w-full" src="/wlogo.svg" />
+          </button>
         </div>
-        <MainContainer>
+      </div>
+      <main className="min-h-screen bg-french-gray">
+        <MainContainer className="min-h-screen bg-french-gray">
           <ChatContainer>
             <MessageList>
               {messages.map((m, i) =>
