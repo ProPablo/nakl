@@ -21,7 +21,8 @@ export default function Home() {
   const router = useRouter();
 
 
-  function onPressJoin() {
+  function onPressJoin(event) {
+    event.preventDefault();
     console.log("Connecting to chat...", code);
     connRef.current = peer.current.connect(code);
     console.log(connRef.current);
@@ -140,12 +141,14 @@ export default function Home() {
                     </code>
                   </div>
                   <div className="flex flex-row pt-6">
-                    <input
-                      type="text"
-                      placeholder="enter code..."
-                      className="input w-full max-w-xs bg-white text-dim-gray font-link"
-                      onChange={(e) => { setCode(e.target.value) }}
-                    />
+                    <form onSubmit={onPressJoin}>
+                      <input
+                        type="text"
+                        placeholder="enter code..."
+                        className="input w-full max-w-xs bg-white text-dim-gray font-link"
+                        onChange={(e) => { setCode(e.target.value) }}
+                      />
+                    </form>
                     <button
                       className="btn font-link"
                       onClick={onPressJoin}>Join
