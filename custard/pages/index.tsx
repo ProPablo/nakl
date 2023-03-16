@@ -97,40 +97,79 @@ export default function Home() {
   const videoContainerStyle: React.CSSProperties = {
     paddingTop: "0%",
     height: "218.5px",
-    borderRadius: "25px",
+    borderRadius: "0.5rem",
   }
 
   return (
     <>
-      <div className="navbar bg-lavender">
-        <div className="flex-1 flex justify-center mr-auto navbar-center">
-          <button className="btn btn-ghost flex justify-center align-items h-28" onClick={() => router.push("/")}>
+      {/* Fast Track MODAL */}
+      <input type="checkbox" id="my-modal-4" className="modal-toggle" />
+      <label htmlFor="my-modal-4" className="modal">
+        <label className="modal-box relative bg-french-gray p-0" htmlFor="">
+          <div className="flex flex-col justify-center items-center bg-french-gray p-0">
+            <div className="bg-french-gray-lite rounded w-full items-center">
+              <h1 className="text-5xl text-ultra-violet text-center font-link py-6 pt-9">QUICK JOIN</h1>
+            </div>
+            <div className="flex flex-col justify-center items-center">
+              <QRCode className="qr-code justify-centre py-6 pt-8" value={"Placeholder"} />
+              <div className="cursor-pointer transition duration-300 hover:scale-110">
+                <code
+                  onClick={() => {
+                    setIdCopy(true);
+                    setTimeout(() => setIdCopy(false), 2000);
+                    navigator.clipboard.writeText("Placeholder")
+                  }}
+                  className="text-dim-gray bg-french-gray-lite rounded-lg font-link p-1">{"Placeholder"}
+                </code>
+              </div>
+              <div className="modal-action pb-5 pl-96">
+                <label htmlFor="my-modal-4" className="btn font-link">Close</label>
+              </div>
+            </div>
+          </div>
+        </label>
+      </label>
+
+      {/* TOAST */}
+      <div className={`animate-bounce select-none toast transition-opacity duration-300 text-white ${idCopy ? 'opacity-100' : 'opacity-0'}`}>
+        <div className="alert text-white">
+          <div>
+            <span>Connection ID copied.</span>
+          </div>
+        </div>
+      </div>
+
+      {/* NAVBAR */}
+      <div className="navbar bg-lavender px-8">
+        <div className="navbar-left px-8 opacity-0">
+        </div>
+        <div className="flex-1 flex justify-center mr-auto ml-auto navbar-center">
+          <button className="btn btn-ghost flex justify-center align-items h-28 focus:outline-none" onClick={() => router.push("/")}>
             <img className="object-contain h-full w-full" src="/wlogo.svg" />
           </button>
         </div>
+        <div className="navbar-right">
+          <label htmlFor="my-modal-4" className="btn btn-ghost">
+            <img className="object-fit h-10 w-10" src="/link.svg" />
+          </label>
+        </div>
       </div>
+
 
       <main className={styles.main + "min-h-screen bg-french-gray"}>
         <div className="flex flex-col justify-items-center items-center h-screen">
           {state.isLoadingPeer
             ?
-            <div className='mt-10 animate-pulse rounded bg-french-gray font-link text-ultra-violet'>LOADING
+            <div className='mt-10 animate-pulse rounded bg-french-gray font-link text-ultra-violet'>Loading
             </div>
             :
             <>
-              <div className={`select-none toast transition-opacity duration-300 text-white ${idCopy ? 'opacity-100' : 'opacity-0'}`}>
-                <div className="alert text-white">
-                  <div>
-                    <span>Connection ID copied.</span>
-                  </div>
-                </div>
-              </div>
               {!cameraScreen ?
                 <div className="flex flex-col justify-center items-center pt-16">
                   <h1 className="text-5xl text-ultra-violet font-link">SCAN</h1>
                   <h2 className="text-2xl text-ultra-violet font-link">someone joins you</h2>
                   <QRCode className="qr-code justify-centre py-6" value={state.peerId} />
-                  <div className="cursor-pointer">
+                  <div className="cursor-pointer transition duration-300 hover:scale-110">
                     <code
                       onClick={() => {
                         setIdCopy(true);
@@ -150,7 +189,7 @@ export default function Home() {
                       />
                     </form>
                     <button
-                      className="btn font-link"
+                      className="btn font-link focus:outline-none"
                       onClick={onPressJoin}>Join
                     </button>
                   </div>
@@ -160,7 +199,7 @@ export default function Home() {
                   <h1 className="text-5xl text-ultra-violet font-link">JOIN</h1>
                   <h2 className="text-2xl text-ultra-violet font-link">you join someone</h2>
                   {isLoadingChat ?
-                    <div className='p-28 mt-10 animate-pulse rounded bg-french-gray-lite font-link text-ultra-violet'>LOADING
+                    <div className='p-28 mt-10 animate-pulse rounded bg-french-gray-lite font-link text-ultra-violet'>Loading
                     </div>
                     :
                     <div className='flex justify-center items-center py-8'>
@@ -188,12 +227,12 @@ export default function Home() {
               }
               <div className="p-6">
                 <button
-                  className="btn font-link"
+                  className="btn bg-ultra-violet text-french-gray-lite hover:bg-maize-crayola hover:text-black focus:outline-none border-none"
                   onClick={() => {
                     setIdCopy(false);
                     setCameraScreen(!cameraScreen);
                   }}>
-                  <img className="object-contain h-full w-full " src="/camera.svg" />
+                  open scanner
                 </button>
               </div>
             </>
