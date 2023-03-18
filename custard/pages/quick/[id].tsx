@@ -42,7 +42,24 @@ export default function QuickPage() {
 					peerId: id,
 				})
 
-		
+				//Connect to the other ID (userA) immediately 
+				// Use this logic to invoke the connection
+				// const handleResult: OnResultFunction = (res, err) => {
+				//  if (!!res && !isLoadingChat) {
+				//    const id = res.getText();
+				//    console.log("Connecting to chat.", id);
+				//    connRef.current = peer.current.connect(id);
+				//    console.log(connRef.current);
+				//    setisLoadingChat(false);
+				//    connRef.current.on("open", () => {
+				//      console.log("Connected.");
+				//      setisLoadingChat(false);
+				//      router.push("/chat");
+				//    })
+				//  }
+				// }
+				
+
 			})
 
 		}
