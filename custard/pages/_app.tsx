@@ -32,10 +32,12 @@ export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter(); // for navigation
 
   useEffect(() => {
-    if (peerRef.current == null && !HomePages.some(h => h == router.pathname)) {
-      console.log("Going home.");
-      router.push("/");
-    }
+    // ---- not necessary
+    // if (peerRef.current == null) {
+    //   console.log("Going home.");
+    //   // This doesn't create an infinite loop cos NextJS smart :)
+    //   router.push("/");
+    // }
   }, []);
 
   return (
