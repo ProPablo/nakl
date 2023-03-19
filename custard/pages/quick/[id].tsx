@@ -11,8 +11,9 @@ export default function QuickPage() {
 	const router = useRouter();
 	// User A's ID (one already on the website)
 	const { id } = router.query;
+	console.log("ROUTER QUERY:" + id);
+
 	useEffect(() => {
-		// console.log(id);
 		connRef.current?.close();
 		const HOST = process.env.NEXT_PUBLIC_HOST;
 		const PORT = parseInt(process.env.NEXT_PUBLIC_PORT);
@@ -34,39 +35,27 @@ export default function QuickPage() {
 
 			//   User B
 			console.log("Making new peer.");
-			peer.current.on("open", (id) => {
 
+			peer.current.on("open", (pid) => {
 				setGlobalState({
 					...state,
 					isLoadingPeer: false,
-					peerId: id,
+					peerId: pid,
 				})
-
-				//Connect to the other ID (userA) immediately 
-				// Use this logic to invoke the connection
-				// const handleResult: OnResultFunction = (res, err) => {
-				//  if (!!res && !isLoadingChat) {
-				//    const id = res.getText();
-				//    console.log("Connecting to chat.", id);
-				//    connRef.current = peer.current.connect(id);
-				//    console.log(connRef.current);
-				//    setisLoadingChat(false);
-				//    connRef.current.on("open", () => {
-				//      console.log("Connected.");
-				//      setisLoadingChat(false);
-				//      router.push("/chat");
-				//    })
-				//  }
-				// }
-				
+				// Connect to the other ID (userA) immediately
+				console.log("Connecting to chat.", id);
+				connRef.current = peer.current.connect(id);
+				console.log(connRef.current);
+				connRef.current.on("open", () => {
+					console.log("Connected.");
+					router.push("/chat");
+				})
 			})
-
 		}
 		importPeer();
-	}, [])
+	}, [id])
 	return (
-		<div className="min-h-screen min-w-screen">
-			{id}
+		<div className='min-h-screen min-w-screen p-96 bg-french-gray font-link text-ultra-violet text-center'>Loading
 		</div>
 	)
 }

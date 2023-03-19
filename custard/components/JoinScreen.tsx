@@ -16,10 +16,10 @@ const videoContainerStyle: React.CSSProperties = {
 }
 export default function JoinScreen() {
 	const peer = useContext(SocketContext);
-  const connRef = useContext(CurrentConnectionContext);
-  const [state, setGlobalState] = useContext(GlobalContext);
+	const connRef = useContext(CurrentConnectionContext);
+	const [state, setGlobalState] = useContext(GlobalContext);
 	const [isLoadingChat, setisLoadingChat] = useState(false);
-	
+
 	const handleResult: OnResultFunction = (res, err) => {
 		if (!!res && !isLoadingChat) {
 			const id = res.getText();
@@ -27,7 +27,7 @@ export default function JoinScreen() {
 			connRef.current = peer.current.connect(id);
 			console.log(connRef.current);
 			setisLoadingChat(false);
-	
+
 			connRef.current.on("open", () => {
 				console.log("Connected.");
 				setisLoadingChat(false);
