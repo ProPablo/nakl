@@ -37,7 +37,7 @@ export default function Home() {
     connRef.current?.close();
     let HOST = process.env.NEXT_PUBLIC_HOST;
     let PORT = parseInt(process.env.NEXT_PUBLIC_PORT);
-    
+
     if (window.location.hostname == 'localhost') {
       HOST = 'localhost';
       PORT = 9000;
@@ -87,7 +87,7 @@ export default function Home() {
       <QuickModal peerId={state.peerId}/>
 
       {/* TOAST */}
-      <div className={`animate-bounce select-none toast transition-opacity duration-300 text-white z-10000000000 ${idCopy ? 'opacity-100' : 'opacity-0'}`}>
+      <div className={`animate-bounce select-none toast transition-opacity duration-300 text-white ${idCopy ? 'opacity-100' : 'opacity-0'}`}>
         <div className="alert text-white">
           <div>
             <span>Connection ID copied.</span>
