@@ -4,7 +4,7 @@ import QRCode from "react-qr-code";
 import { useContext, useEffect, useState } from 'react';
 import { CurrentConnectionContext, GlobalContext, SocketContext } from './_app';
 import { useRouter } from 'next/router';
-import type { Peer } from "peerjs"
+import type { DataConnection, Peer } from "peerjs"
 
 import QuickModal from '@/components/QuickModal';
 import JoinScreen from '@/components/JoinScreen';
@@ -32,18 +32,29 @@ export default function Home() {
       router.push('/chat');
     })
   }
-
+  
   useEffect(() => {
     connRef.current?.close();
-    const HOST = process.env.NEXT_PUBLIC_HOST;
-    const PORT = parseInt(process.env.NEXT_PUBLIC_PORT);
+    let HOST = process.env.NEXT_PUBLIC_HOST;
+    let PORT = parseInt(process.env.NEXT_PUBLIC_PORT);
+    
+    if (window.location.hostname == 'localhost') {
+      HOST = 'localhost';
+      PORT = 9000;
+    }
+    
+    const onPeerConnection = (conn: DataConnection) => {
+      connRef.current = conn;
+      console.log("Someone decided to join.");
+      router.push("/chat");
+    }
 
     const importPeer = async () => {
       const PeerClass = (await import('peerjs')).default // loading library first
       peer.current = new PeerClass({
         host: HOST,
         port: PORT,
-        path: '/peer'
+        path: process.env.NEXT_PUBLIC_PEERPATH
       }) as Peer;
 
       // peer.current will be re-generated everytime page is loaded
@@ -61,15 +72,13 @@ export default function Home() {
           peerId: id,
         })
       })
-
       // when peer connects to us
-      peer.current.on("connection", (conn) => {
-        connRef.current = conn;
-        console.log("Someone decided to join.");
-        router.push("/chat");
-      })
+      peer.current.on("connection", onPeerConnection);
     }
     importPeer();
+    return () => {
+      peer.current?.off('connection', onPeerConnection);
+    }
   }, [])
 
   return (

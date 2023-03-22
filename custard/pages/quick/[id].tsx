@@ -15,8 +15,13 @@ export default function QuickPage() {
 
 	useEffect(() => {
 		connRef.current?.close();
-		const HOST = process.env.NEXT_PUBLIC_HOST;
-		const PORT = parseInt(process.env.NEXT_PUBLIC_PORT);
+		let HOST = process.env.NEXT_PUBLIC_HOST;
+		let PORT = parseInt(process.env.NEXT_PUBLIC_PORT);
+
+		if (window.location.hostname == 'localhost') {
+			HOST = 'localhost';
+			PORT = 9000;
+		}
 
 		const importPeer = async () => {
 			const PeerClass = (await import('peerjs')).default // loading library first
@@ -44,7 +49,7 @@ export default function QuickPage() {
 				})
 				// Connect to the other ID (userA) immediately
 				console.log("Connecting to chat.", id);
-				connRef.current = peer.current.connect(id);
+				connRef.current = peer.current.connect(id as string);
 				console.log(connRef.current);
 				connRef.current.on("open", () => {
 					console.log("Connected.");
