@@ -4,7 +4,7 @@ import { ChatContainer, MainContainer, Message, MessageInput, MessageList, Messa
 import { CurrentConnectionContext } from './_app';
 import { useRouter } from 'next/router';
 
-export default function Home() {
+export default function Chat() {
   const inputRef = useRef<HTMLDivElement>(null);
   const [msgInputValue, setMsgInputValue] = useState("enter text...");
   const [messages, setMessages] = useState<MessageModel[]>([]);
@@ -14,7 +14,10 @@ export default function Home() {
 
   useEffect(() => {
     if (connRef.current == null) {
-      if (process.env.NODE_ENV == "development") return;
+      if (process.env.NODE_ENV == "development") {
+        console.log("Should reroute to home");
+        return;
+      }
       router.push("/");
       return;
     }
