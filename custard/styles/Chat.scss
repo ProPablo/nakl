@@ -1,0 +1,13 @@
+// !!! Place all custom variables above import otherwise they will not override !!!
+// -- !default only assigns a value if the variable was previously undefined or null
+// -- All variables in _variables are !default (conditional assignment)
+// --- REF: https://css-tricks.com/creating-stylesheet-feature-flags-with-sass-default
+
+$main-container-border: 0;
+$color-text: red;
+$conversation-color: pink;
+$button-send-color: red; 
+$color-text: red; // #212121
+
+@import "../node_modules/@chatscope/chat-ui-kit-styles/themes/default/main.scss";
+@import "../node_modules/@chatscope/chat-ui-kit-styles/themes/default/_variables.scss";

@@ -1,4 +1,3 @@
-import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { ChatContainer, MainContainer, Message, MessageInput, MessageList, MessageModel } from "@chatscope/chat-ui-kit-react";
 import { CurrentConnectionContext } from './_app';

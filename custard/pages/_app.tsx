@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import React, { createContext, MutableRefObject, useEffect, useRef, useState } from 'react';
 import '@/styles/globals.css'
 import type { Peer, DataConnection } from "peerjs"
-import { Head } from 'next/document';
+import '../styles/Chat.scss'  
 
 export const GlobalContext = createContext(null);
 export const SocketContext = createContext(null);
