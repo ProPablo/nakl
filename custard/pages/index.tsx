@@ -47,7 +47,8 @@ export default function Home() {
     // peerRef.current?.destroy();
     // peerRef.current = null;
 
-    // window.gaming = "Hey man";
+    window.NAKL_GAMING = "Hey man";
+    
     connRef.current?.close();
     let HOST = process.env.NEXT_PUBLIC_HOST;
     let PORT = parseInt(process.env.NEXT_PUBLIC_PORT);
@@ -67,6 +68,9 @@ export default function Home() {
       // loading library first 
       // Tested that the network import only happens once on page load
       const PeerClass = (await import('peerjs')).default
+
+      console.log(`Making new peer, connecting to ${HOST}:${PORT}.`);
+
       peer.current = new PeerClass({
         host: HOST,
         port: PORT,
@@ -81,8 +85,8 @@ export default function Home() {
         peerId: "",
       })
 
-      console.log(`Making new peer, connecting to ${HOST}:${PORT}.`);
       peer.current.on("open", (id) => {
+        console.log(`Finished making Peer... ${id}`);
         setGlobalState({
           ...state,
           isLoadingPeer: false,
