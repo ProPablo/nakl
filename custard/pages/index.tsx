@@ -47,6 +47,7 @@ export default function Home() {
     // peerRef.current?.destroy();
     // peerRef.current = null;
 
+    // window.gaming = "Hey man";
     connRef.current?.close();
     let HOST = process.env.NEXT_PUBLIC_HOST;
     let PORT = parseInt(process.env.NEXT_PUBLIC_PORT);
@@ -80,7 +81,7 @@ export default function Home() {
         peerId: "",
       })
 
-      console.log("Making new peer.");
+      console.log(`Making new peer, connecting to ${HOST}:${PORT}.`);
       peer.current.on("open", (id) => {
         setGlobalState({
           ...state,
