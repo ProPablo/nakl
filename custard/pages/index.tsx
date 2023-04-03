@@ -136,52 +136,56 @@ export default function Home() {
             </div>
             :
             <>
-                {!cameraScreen ?
-                  <div className="flex flex-col justify-center items-center pt-16">
-                    <h1 className="text-5xl text-ultra-violet font-link">SCAN</h1>
-                    <h2 className="text-2xl text-ultra-violet font-link">someone joins you</h2>
-                    <QRCode className="qr-code justify-centre py-6" value={state.peerId} />
-                    <div className="cursor-pointer transition duration-300 hover:scale-110">
-                      <code
-                        onClick={() => {
-                          setIdCopy(true);
-                          setTimeout(() => setIdCopy(false), 2000);
-                          navigator.clipboard.writeText(state.peerId)
-                        }}
-                        className="text-dim-gray bg-french-gray-lite rounded-lg font-link p-1">{state.peerId}
-                      </code>
-                    </div>
-                    <div className="flex flex-row pt-6">
-                      <form onSubmit={onPressJoin}>
-                        <input
-                          type="text"
-                          placeholder="enter code..."
-                          className="input w-full max-w-xs bg-white text-dim-gray font-link"
-                          onChange={(e) => { setCode(e.target.value) }}
-                        />
-                      </form>
-                      <button
-                        className="btn font-link focus:outline-none"
-                        onClick={onPressJoin}>Join
-                      </button>
-                    </div>
+              {!cameraScreen ?
+                <div className="flex flex-col justify-center items-center pt-16">
+                  <h1 className="text-5xl text-ultra-violet font-link">SCAN</h1>
+                  <h2 className="text-2xl text-ultra-violet font-link">someone joins you</h2>
+                  <QRCode className="qr-code justify-centre py-6" value={state.peerId} />
+                  <div className="cursor-pointer transition duration-300 hover:scale-110">
+                    <code
+                      onClick={() => {
+                        setIdCopy(true);
+                        setTimeout(() => setIdCopy(false), 2000);
+                        navigator.clipboard.writeText(state.peerId)
+                      }}
+                      className="text-dim-gray bg-french-gray-lite rounded-lg font-link p-1">{state.peerId}
+                    </code>
                   </div>
-                  :
-                  <JoinScreen />
-                }
-                <div className="p-6">
-                  <button
-                    className="btn bg-ultra-violet text-french-gray-lite hover:bg-maize-crayola hover:text-black focus:outline-none border-none"
-                    onClick={() => {
-                      setIdCopy(false);
-                      setCameraScreen(!cameraScreen);
-                    }}>
-                    open scanner
-                  </button>
+                  <div className="flex flex-row pt-6">
+                    <form onSubmit={onPressJoin}>
+                      <input
+                        type="text"
+                        placeholder="enter code..."
+                        className="input w-full max-w-xs bg-white text-dim-gray font-link"
+                        onChange={(e) => { setCode(e.target.value) }}
+                      />
+                    </form>
+                    <button
+                      className="btn font-link focus:outline-none"
+                      onClick={onPressJoin}>Join
+                    </button>
+                  </div>
                 </div>
-              </>
+
+                :
+                <JoinScreen />
+              }
+              <div className="p-6">
+                <button
+                  className="btn bg-ultra-violet text-french-gray-lite hover:bg-maize-crayola hover:text-black focus:outline-none border-none"
+                  onClick={() => {
+                    setIdCopy(false);
+                    setCameraScreen(!cameraScreen);
+                  }}>
+                  {!cameraScreen ?
+                    "open scanner" :
+                    "close camera"
+                  }
+                </button>
+              </div>
+            </>
           }
-            </div>
+        </div>
       </main>
     </>
   )
