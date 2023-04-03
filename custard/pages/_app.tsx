@@ -5,9 +5,9 @@ import '@/styles/globals.css'
 import type { Peer, DataConnection } from "peerjs"
 import { Head } from 'next/document';
 
-export const GlobalContext = createContext(null);
-export const SocketContext = createContext(null);
-export const CurrentConnectionContext = createContext(null);
+export const GlobalContext = createContext<[GlobalState, React.Dispatch<React.SetStateAction<GlobalState>>]>(null);
+export const SocketContext = createContext<React.MutableRefObject<Peer>>(null);
+export const CurrentConnectionContext = createContext<React.MutableRefObject<DataConnection>>(null);
 
 // Defining global state interfaces and default values
 export interface GlobalState {
