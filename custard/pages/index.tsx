@@ -32,7 +32,7 @@ export default function Home() {
       router.push('/chat');
     })
   }
-  
+
   useEffect(() => {
     connRef.current?.close();
     let HOST = process.env.NEXT_PUBLIC_HOST;
@@ -42,7 +42,7 @@ export default function Home() {
       HOST = 'localhost';
       PORT = 9000;
     }
-    
+
     const onPeerConnection = (conn: DataConnection) => {
       connRef.current = conn;
       console.log("Someone decided to join.");
@@ -84,7 +84,7 @@ export default function Home() {
   return (
     <>
       {/* Fast Track MODAL */}
-      <QuickModal peerId={state.peerId}/>
+      <QuickModal peerId={state.peerId} />
 
       {/* TOAST */}
       <div className={`animate-bounce select-none toast transition-opacity duration-300 text-white ${idCopy ? 'opacity-100' : 'opacity-0'}`}>
@@ -151,7 +151,7 @@ export default function Home() {
                   </div>
                 </div>
                 :
-                <JoinScreen/>
+                <JoinScreen />
               }
               <div className="p-6">
                 <button
@@ -160,7 +160,10 @@ export default function Home() {
                     setIdCopy(false);
                     setCameraScreen(!cameraScreen);
                   }}>
-                  open scanner
+                  {!cameraScreen ?
+                    "open scanner" :
+                    "close camera"
+                  }
                 </button>
               </div>
             </>
