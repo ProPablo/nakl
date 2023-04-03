@@ -1,13 +1,13 @@
 import type { AppProps } from 'next/app'
 import { useRouter } from 'next/router'
-import React, { createContext, MutableRefObject, Ref, useEffect, useRef, useState } from 'react';
+import React, { createContext, MutableRefObject, useEffect, useRef, useState } from 'react';
 import '@/styles/globals.css'
 import type { Peer, DataConnection } from "peerjs"
 import { Head } from 'next/document';
 
-export const GlobalContext = createContext(null);
+export const GlobalContext = createContext<[GlobalState, React.Dispatch<React.SetStateAction<GlobalState>>]>(null);
 export const SocketContext = createContext<React.MutableRefObject<Peer>>(null);
-export const CurrentConnectionContext = createContext(null);
+export const CurrentConnectionContext = createContext<React.MutableRefObject<DataConnection>>(null);
 
 // Defining global state interfaces and default values
 export interface GlobalState {
@@ -32,10 +32,12 @@ export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter(); // for navigation
 
   useEffect(() => {
-    if (peerRef.current == null && !HomePages.some(h => h == router.pathname)) {
-      console.log("Going home.");
-      router.push("/");
-    }
+    // ---- not necessary
+    // if (peerRef.current == null) {
+    //   console.log("Going home.");
+    //   // This doesn't create an infinite loop cos NextJS smart :)
+    //   router.push("/");
+    // }
   }, []);
 
   return (
