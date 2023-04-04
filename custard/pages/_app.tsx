@@ -5,9 +5,8 @@ import '@/styles/globals.css'
 import type { Peer, DataConnection } from "peerjs"
 import { Head } from 'next/document';
 
-export const GlobalContext = createContext<[GlobalState, React.Dispatch<React.SetStateAction<GlobalState>>]>(null);
-export const SocketContext = createContext<React.MutableRefObject<Peer>>(null);
-export const CurrentConnectionContext = createContext<React.MutableRefObject<DataConnection>>(null);
+type GlobalContextValue =[GlobalState, React.Dispatch<React.SetStateAction<GlobalState>>];
+export const GlobalContext = createContext<GlobalContextValue>({} as GlobalContextValue);
 
 // Defining global state interfaces and default values
 export interface GlobalState {
@@ -26,8 +25,6 @@ const MONIKER_PAGE = "pc";
 const HomePages = [FALLBACK_PAGE, MONIKER_PAGE]
 
 export default function App({ Component, pageProps }: AppProps) {
-  const peerRef = useRef<Peer | null>(null);
-  const connRef = useRef<DataConnection | null>(null);
   const stateAndDispatch = useState(initialState);
   const router = useRouter(); // for navigation
 
@@ -43,11 +40,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
 
     <GlobalContext.Provider value={stateAndDispatch}>
-      <SocketContext.Provider value={peerRef}>
-        <CurrentConnectionContext.Provider value={connRef}>
           <Component {...pageProps} />
-        </CurrentConnectionContext.Provider>
-      </SocketContext.Provider>
     </GlobalContext.Provider>
   )
 }

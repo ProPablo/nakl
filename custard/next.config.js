@@ -13,9 +13,6 @@ const nextConfig = {
     // config.optimization.minify = false
     return config;
   }
-
-
-
 }
 
 module.exports = nextConfig

@@ -1,28 +1,26 @@
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ChatContainer, MainContainer, Message, MessageInput, MessageList, MessageModel } from "@chatscope/chat-ui-kit-react";
-import { CurrentConnectionContext } from './_app';
 import { useRouter } from 'next/router';
 
 export default function Chat() {
   const inputRef = useRef<HTMLDivElement>(null);
   const [msgInputValue, setMsgInputValue] = useState("enter text...");
   const [messages, setMessages] = useState<MessageModel[]>([]);
-  const connRef = useContext(CurrentConnectionContext);
   const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
 
   useEffect(() => {
-    if (connRef.current == null) {
-      if (process.env.NODE_ENV == "development") {
-        console.log("Should reroute to home");
-        return;
-      }
+    if (window.NAKL_CONNECTION == null) {
+      // if (process.env.NODE_ENV == "development") {
+      //   console.log("Should reroute to home");
+      //   return;
+      // }
       router.push("/");
       return;
     }
 
-    connRef.current.on("data", (data) => {
+    window.NAKL_CONNECTION.on("data", (data) => {
       console.log("Data received", data);
       if (typeof (data) == "string") {
         if (data.startsWith("data:image")) {
@@ -58,7 +56,7 @@ export default function Chat() {
       }
     })
     return () => {
-      connRef.current.removeAllListeners();
+      window.NAKL_CONNECTION.removeAllListeners();
     }
   }, [])
 
@@ -77,7 +75,7 @@ export default function Chat() {
   }
 
   const handleSend = (message) => {
-    connRef.current.send(message);
+    window.NAKL_CONNECTION.send(message);
     setMessages([...messages,
     {
       position: 'single',
@@ -91,7 +89,7 @@ export default function Chat() {
 
   const sendAttachHandler = (event) => {
     addImage(file);
-    connRef.current.send(file);
+    window.NAKL_CONNECTION.send(file);
     setFile(null);
   }
 
