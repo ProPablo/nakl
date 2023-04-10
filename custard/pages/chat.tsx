@@ -103,7 +103,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="navbar bg-lavender">
+      <div className="navbar bg-french-gray">
         <div className="flex-1 flex mr-auto navbar-left">
           <button className="btn btn-ghost flex justify-center align-items h-10" onClick={() => router.push("/")}>
             <img className="object-contain h-full w-full" src="/wlogo.svg" />
