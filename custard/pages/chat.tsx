@@ -110,29 +110,33 @@ export default function Home() {
           </button>
         </div>
       </div>
-      <main className="min-h-screen bg-french-gray">
-        <MainContainer className="min-h-screen bg-french-gray">
-          <ChatContainer>
-            <MessageList>
-              {messages.map((m, i) =>
-                <Message
-                  key={i}
-                  model={m}
-                />
-              )}
-            </MessageList>
-            <MessageInput
-              placeholder="enter text..."
-              onSend={handleSend}
-              onChange={setMsgInputValue}
-              value={msgInputValue}
-              ref={inputRef}
-              onAttachClick={sendAttachHandler}
-              attachDisabled={!!!file}
-            />
-          </ChatContainer>
-        </MainContainer>
-        <input id='file_input' type="file" name="file" onChange={changeAttachHandler} title="Choose File or drag file here" />
+      <main className="min-h-screen bg-lavender">
+        <div className="flex mb-4 flex-direction-col bg-lavender">
+          <MainContainer className="bg-french-gray w-1/2">
+            <ChatContainer>
+              <MessageList>
+                {messages.map((m, i) =>
+                  <Message
+                    key={i}
+                    model={m}
+                  />
+                )}
+              </MessageList>
+              <MessageInput
+                placeholder="enter text..."
+                onSend={handleSend}
+                onChange={setMsgInputValue}
+                value={msgInputValue}
+                ref={inputRef}
+                onAttachClick={sendAttachHandler}
+                attachDisabled={!!!file}
+              />
+            </ChatContainer>
+          </MainContainer>
+          <div className="flex w-1/2 h-[100vh] justify-center items-center shadow-inner bg-lavender ">
+            <input id='file' type="file" className="file-input file-input-ghost" name="file" onChange={changeAttachHandler} title="Choose File or drag file here" />
+          </div>
+        </div>
       </main>
     </>
   )
