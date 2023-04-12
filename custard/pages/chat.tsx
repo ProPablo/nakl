@@ -122,8 +122,8 @@ export default function Chat() {
         </div>
       </div>
 
-      <div className="flex flex-1 overflow-auto mb-4 flex-row bg-lavender">
-        <div className="w-1/2 bg-french-gray">
+      <div className="flex flex-1 overflow-auto flex-row bg-lavender">
+        <div className="w-1/2 p-3">
           <MainContainer>
             <ChatContainer>
               <MessageList>
