@@ -2,16 +2,49 @@ import styles from '@/styles/Home.module.css'
 import QRCode from "react-qr-code";
 
 import { useContext, useEffect, useState } from 'react';
-import { CurrentConnectionContext, GlobalContext, SocketContext } from './_app';
+import { GlobalContext } from './_app';
 import { useRouter } from 'next/router';
-import type { DataConnection, Peer } from "peerjs"
+
+enum LogLevel {
+  Disabled = 0,
+  Errors = 1,
+  Warnings = 2,
+  All = 3
+}
+import type { DataConnection, Peer, PeerJSOption } from "peerjs"
 
 import QuickModal from '@/components/QuickModal';
 import JoinScreen from '@/components/JoinScreen';
 
+export const setupPeerPage = async () => {
+  window.NAKL_GAMING = "Hey man";
+  window.NAKL_CONNECTION?.close();
+  let HOST = process.env.NEXT_PUBLIC_HOST;
+  let PORT = parseInt(process.env.NEXT_PUBLIC_PORT);
+  let PEER_PATH = process.env.NEXT_PUBLIC_PEERPATH;
+
+  if (window.location.hostname == 'localhost') {
+    HOST = 'localhost';
+    PORT = 9000;
+  }
+
+  // loading library first 
+  // Tested that the network import only happens once on page load
+  const PeerClass = (await import('peerjs')).default;
+  const peerOptions: PeerJSOption = {
+    host: HOST,
+    port: PORT,
+    debug: LogLevel.All,
+    path: PEER_PATH
+  };
+  console.log(`Making new peer, connecting with options: `, peerOptions);
+
+  // peer will be re-generated everytime page is loaded
+  window.NAKL_PEER = new PeerClass(peerOptions);
+}
+
+
 export default function Home() {
-  const peer = useContext(SocketContext);
-  const connRef = useContext(CurrentConnectionContext);
   const [state, setGlobalState] = useContext(GlobalContext);
   const [code, setCode] = useState("");
   const [isLoadingChat, setisLoadingChat] = useState(false);
@@ -20,13 +53,14 @@ export default function Home() {
   const router = useRouter();
 
   function onPressJoin(event) {
+    if (!window.NAKL_PEER) return;
     event.preventDefault();
     console.log("Connecting to chat...", code);
-    connRef.current = peer.current.connect(code);
-    console.log(connRef.current);
+    window.NAKL_CONNECTION = window.NAKL_PEER.connect(code);
+    console.log(window.NAKL_CONNECTION);
     setisLoadingChat(true);
 
-    connRef.current.on("open", () => {
+    window.NAKL_CONNECTION.on("open", () => {
       console.log("Connected!");
       setisLoadingChat(false);
       router.push('/chat');
@@ -34,50 +68,41 @@ export default function Home() {
   }
 
   useEffect(() => {
-    connRef.current?.close();
-    let HOST = process.env.NEXT_PUBLIC_HOST;
-    let PORT = parseInt(process.env.NEXT_PUBLIC_PORT);
-
-    if (window.location.hostname == 'localhost') {
-      HOST = 'localhost';
-      PORT = 9000;
-    }
-
     const onPeerConnection = (conn: DataConnection) => {
-      connRef.current = conn;
+      window.NAKL_CONNECTION = conn;
       console.log("Someone decided to join.");
       router.push("/chat");
     }
 
-    const importPeer = async () => {
-      const PeerClass = (await import('peerjs')).default // loading library first
-      peer.current = new PeerClass({
-        host: HOST,
-        port: PORT,
-        path: process.env.NEXT_PUBLIC_PEERPATH
-      }) as Peer;
+    const onPeerOpened = (id: string) => {
+      console.log(`Finished making Peer... ${id}`);
+      setGlobalState({
+        ...state,
+        isLoadingPeer: false,
+        peerId: id,
+      });
+    }
 
-      // peer.current will be re-generated everytime page is loaded
+
+    const setupPage = async () => {
+      await setupPeerPage();
+
+      // For some reason its fine without placing the Dispatch in useffect dependancy
       setGlobalState({
         ...state,
         isLoadingPeer: true,
         peerId: "",
       })
 
-      console.log("Making new peer.");
-      peer.current.on("open", (id) => {
-        setGlobalState({
-          ...state,
-          isLoadingPeer: false,
-          peerId: id,
-        })
-      })
-      // when peer connects to us
-      peer.current.on("connection", onPeerConnection);
+      window.NAKL_PEER!.on("open", onPeerOpened);
+      window.NAKL_PEER!.on("connection", onPeerConnection);
     }
-    importPeer();
+
+    setupPage();
     return () => {
-      peer.current?.off('connection', onPeerConnection);
+      console.log("Unsubscribing from events registered");
+      window.NAKL_PEER?.off("open", onPeerOpened);
+      window.NAKL_PEER?.off('connection', onPeerConnection);
     }
   }, [])
 
@@ -150,6 +175,7 @@ export default function Home() {
                     </button>
                   </div>
                 </div>
+
                 :
                 <JoinScreen />
               }

@@ -1,4 +1,4 @@
-import { useHostName } from "@/hooks/useHostName";
+import { useHostName } from "@/hooks/useOrigin";
 import { useEffect } from "react";
 
 export interface ModalProps {
@@ -12,7 +12,7 @@ export default function QuickModal(props: ModalProps) {
 
 	// for debugging quick join URL
 	useEffect(() => {
-		console.log(`${URL}/quick/${props.peerId}`)
+		console.log(`PRINTING QUICK URL: ${URL}/quick/${props.peerId}`)
 	},[props, URL])
 
 	return (

@@ -1,64 +1,53 @@
 import { useRouter } from 'next/router'
-import Peer from 'peerjs';
+import type { DataConnection } from 'peerjs';
 import { useContext, useEffect } from 'react';
-import { CurrentConnectionContext, GlobalContext, SocketContext } from '../_app';
+import { GlobalContext } from '../_app';
+import { setupPeerPage } from '..';
 
 export default function QuickPage() {
-	const peer = useContext(SocketContext);
-	const connRef = useContext(CurrentConnectionContext);
 	const [state, setGlobalState] = useContext(GlobalContext);
 
 	const router = useRouter();
 	// User A's ID (one already on the website)
-	const { id } = router.query;
+	const id = router.query.id as string;
 	console.log("ROUTER QUERY:" + id);
 
 	useEffect(() => {
-		connRef.current?.close();
-		let HOST = process.env.NEXT_PUBLIC_HOST;
-		let PORT = parseInt(process.env.NEXT_PUBLIC_PORT);
 
-		if (window.location.hostname == 'localhost') {
-			HOST = 'localhost';
-			PORT = 9000;
+		const onPeerConnection = () => {
+			console.log("Connected.");
+			router.push("/chat");
+		}
+		const onPeerOpened = (pid: string) => {
+			setGlobalState({
+				...state,
+				isLoadingPeer: false,
+				peerId: pid,
+			})
+			// Connect to the other ID (userA) immediately
+			console.log("Connecting to User A's chat: ", id);
+			window.NAKL_CONNECTION = window.NAKL_PEER.connect(id);
+			window.NAKL_CONNECTION.on("open", onPeerConnection);
 		}
 
-		const importPeer = async () => {
-			const PeerClass = (await import('peerjs')).default // loading library first
-			peer.current = new PeerClass({
-				host: HOST,
-				port: PORT,
-				path: '/peer'
-			}) as Peer;
+		const setupPage = async () => {
+			await setupPeerPage();
 
-			// peer.current will be re-generated everytime page is loaded
 			setGlobalState({
 				...state,
 				isLoadingPeer: true,
 				peerId: "",
 			})
-
-			//   User B
-			console.log("Making new peer.");
-
-			peer.current.on("open", (pid) => {
-				setGlobalState({
-					...state,
-					isLoadingPeer: false,
-					peerId: pid,
-				})
-				// Connect to the other ID (userA) immediately
-				console.log("Connecting to chat.", id);
-				connRef.current = peer.current.connect(id as string);
-				console.log(connRef.current);
-				connRef.current.on("open", () => {
-					console.log("Connected.");
-					router.push("/chat");
-				})
-			})
+			window.NAKL_PEER.on("open", onPeerOpened);
 		}
-		importPeer();
+
+		setupPage();
+		return () => {
+			window.NAKL_PEER?.off("open", onPeerOpened);
+			window.NAKL_CONNECTION?.off("open", onPeerConnection);
+		}
 	}, [id])
+
 	return (
 		<div className='min-h-screen min-w-screen p-96 bg-french-gray font-link text-ultra-violet text-center'>Loading
 		</div>
