@@ -46,11 +46,11 @@ export default function Home() {
       }
       else if (data instanceof ArrayBuffer) {
         const newBlob = new Blob([data]);
-        addImage(newBlob);
+        addImage(newBlob, true);
       }
       else if (data instanceof Blob) {
         console.log("We have an image.");
-        addImage(data);
+        addImage(data, true);
       }
     })
     return () => {
@@ -58,11 +58,11 @@ export default function Home() {
     }
   }, [])
 
-  const addImage = (data: Blob) => {
+  const addImage = (data: Blob, incoming: boolean) => {
     setMessages(existing => {
       const newMessageModel: MessageModel = {
         type: 'image',
-        direction: 'incoming',
+        direction: incoming ? 'incoming' : 'outgoing',
         position: 'single',
         payload: {
           src: URL.createObjectURL(data),
@@ -86,7 +86,7 @@ export default function Home() {
   }
 
   const sendAttachHandler = (event) => {
-    addImage(file);
+    addImage(file, false);
     connRef.current.send(file);
     setFile(null);
   }
@@ -111,7 +111,7 @@ export default function Home() {
         </div>
       </div>
       <main className="min-h-screen bg-lavender">
-        <div className="flex mb-4 flex-direction-col bg-lavender">
+        <div className="flex mb-4 flex-direction-col max-h-[] bg-lavender">
           <MainContainer className="bg-french-gray w-1/2">
             <ChatContainer>
               <MessageList>

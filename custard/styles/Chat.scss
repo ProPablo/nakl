@@ -4,23 +4,38 @@
 // --- REF: https://css-tricks.com/creating-stylesheet-feature-flags-with-sass-default
 
 $main-container-border: 0;
-$color-text: white;
-$conversation-color: #F7C546;
-$color-text: white; // #212121
-$message-content-incoming-bg-color: #60588F;
-$message-content-outgoing-bg-color: #A69CD1;
-$main-container-bg-color: #D5D3E0;
-$message-list-bg-color: #D5D3DF;
+
 $message-content-font-family: "Comic Mono", normal;
 
-$button-send-color: #F7C546; 
-$button-send-bg-color: #BBB7CD;
+$message-content-incoming-bg-color: #60588F;
+$message-content-outgoing-bg-color: #A69CD1;
 
-$button-attachment-color: #F7C546;
-$button-attachment-bg-color: #BBB7CD;
+$main-container-bg-color: #D5D3E0;
+$message-list-bg-color: #D5D3DF;
+
+// $button-send-color: #F7C546;  
+// $button-send-bg-color: #BBB7CD;
+
+// $button-attachment-color: #DB9A00;
+// $button-attachment-bg-color: #BBB7CD;
+// $button-attachment-color: transparent;
 
 $chat-container-message-input-bg-color: #D5D3E0;
-$message-content-bg-color: red;
+// $chat-container-message-input-bg-color: #BBB7CD;
+
+$message-list-typing-indicator-bg-color: #6E6466;
+$message-input-placeholder-color:#6C6264;
+$message-input-content-editor-font-family: "Comic Mono", normal;
+$message-input-content-editor-color: #6C6264;
+
+$color-primary: white;
+$default-border-color: #D5D3E0;
+
+$color-text: white;
+
+$button-color: #f8c03b;
+$button-border-radius: 1rem;
+$button-disabled-opacity: 75%;
 
 
 
