@@ -1,18 +1,50 @@
 import styles from '@/styles/Home.module.css'
 import QRCode from "react-qr-code";
-import type { OnResultFunction } from 'react-qr-reader';
 
 import { useContext, useEffect, useState } from 'react';
-import { CurrentConnectionContext, GlobalContext, SocketContext } from './_app';
+import { GlobalContext } from './_app';
 import { useRouter } from 'next/router';
-import type { Peer } from "peerjs"
 
-import dynamic from 'next/dynamic';
-const QrReader = dynamic(() => import("react-qr-reader").then((qr) => qr.QrReader), { ssr: false });
+enum LogLevel {
+  Disabled = 0,
+  Errors = 1,
+  Warnings = 2,
+  All = 3
+}
+import type { DataConnection, Peer, PeerJSOption } from "peerjs"
+
+import QuickModal from '@/components/QuickModal';
+import JoinScreen from '@/components/JoinScreen';
+
+export const setupPeerPage = async () => {
+  window.NAKL_GAMING = "Hey man";
+  window.NAKL_CONNECTION?.close();
+  let HOST = process.env.NEXT_PUBLIC_HOST;
+  let PORT = parseInt(process.env.NEXT_PUBLIC_PORT);
+  let PEER_PATH = process.env.NEXT_PUBLIC_PEERPATH;
+
+  if (window.location.hostname == 'localhost') {
+    HOST = 'localhost';
+    PORT = 9000;
+  }
+
+  // loading library first 
+  // Tested that the network import only happens once on page load
+  const PeerClass = (await import('peerjs')).default;
+  const peerOptions: PeerJSOption = {
+    host: HOST,
+    port: PORT,
+    debug: LogLevel.All,
+    path: PEER_PATH
+  };
+  console.log(`Making new peer, connecting with options: `, peerOptions);
+
+  // peer will be re-generated everytime page is loaded
+  window.NAKL_PEER = new PeerClass(peerOptions);
+}
+
 
 export default function Home() {
-  const peer = useContext(SocketContext);
-  const connRef = useContext(CurrentConnectionContext);
   const [state, setGlobalState] = useContext(GlobalContext);
   const [code, setCode] = useState("");
   const [isLoadingChat, setisLoadingChat] = useState(false);
@@ -20,116 +52,105 @@ export default function Home() {
   const [idCopy, setIdCopy] = useState(false);
   const router = useRouter();
 
-
-  function onPressJoin() {
+  function onPressJoin(event) {
+    if (!window.NAKL_PEER) return;
+    event.preventDefault();
     console.log("Connecting to chat...", code);
-    connRef.current = peer.current.connect(code);
-    console.log(connRef.current);
+    window.NAKL_CONNECTION = window.NAKL_PEER.connect(code);
+    console.log(window.NAKL_CONNECTION);
     setisLoadingChat(true);
 
-    connRef.current.on("open", () => {
+    window.NAKL_CONNECTION.on("open", () => {
       console.log("Connected!");
       setisLoadingChat(false);
       router.push('/chat');
     })
   }
 
-  const handleResult: OnResultFunction = (res, err) => {
-    console.log("SUP", res)
-    if (!!res && !isLoadingChat) {
-      const id = res.getText();
-      console.log("Connecting to chat.", id);
-      connRef.current = peer.current.connect(id);
-      console.log(connRef.current);
-      setisLoadingChat(false);
-
-      connRef.current.on("open", () => {
-        console.log("Connected.");
-        setisLoadingChat(false);
-        router.push("/chat");
-      })
-    }
-  }
-
   useEffect(() => {
-    connRef.current?.close();
-    const HOST = process.env.NEXT_PUBLIC_HOST;
-    const PORT = parseInt(process.env.NEXT_PUBLIC_PORT);
+    const onPeerConnection = (conn: DataConnection) => {
+      window.NAKL_CONNECTION = conn;
+      console.log("Someone decided to join.");
+      router.push("/chat");
+    }
 
-    const importPeer = async () => {
-      const PeerClass = (await import('peerjs')).default // loading library first
-      peer.current = new PeerClass({
-        host: HOST,
-        port: PORT,
-        path: '/peer'
-      }) as Peer;
+    const onPeerOpened = (id: string) => {
+      console.log(`Finished making Peer... ${id}`);
+      setGlobalState({
+        ...state,
+        isLoadingPeer: false,
+        peerId: id,
+      });
+    }
 
-      // peer.current will be re-generated everytime page is loaded
+
+    const setupPage = async () => {
+      await setupPeerPage();
+
+      // For some reason its fine without placing the Dispatch in useffect dependancy
       setGlobalState({
         ...state,
         isLoadingPeer: true,
         peerId: "",
       })
 
-      console.log("Making new peer.");
-      peer.current.on("open", (id) => {
-        setGlobalState({
-          ...state,
-          isLoadingPeer: false,
-          peerId: id,
-        })
-      })
-
-      // when peer connects to us
-      peer.current.on("connection", (conn) => {
-        connRef.current = conn;
-        console.log("Someone decided to join.");
-        router.push("/chat");
-      })
+      window.NAKL_PEER!.on("open", onPeerOpened);
+      window.NAKL_PEER!.on("connection", onPeerConnection);
     }
-    importPeer();
-  }, [])
 
-  const videoStyle: React.CSSProperties = {
-    position: "relative",
-  }
-  const videoContainerStyle: React.CSSProperties = {
-    paddingTop: "0%",
-    height: "218.5px",
-    borderRadius: "25px",
-  }
+    setupPage();
+    return () => {
+      console.log("Unsubscribing from events registered");
+      window.NAKL_PEER?.off("open", onPeerOpened);
+      window.NAKL_PEER?.off('connection', onPeerConnection);
+    }
+  }, [])
 
   return (
     <>
-      <div className="navbar bg-lavender">
-        <div className="flex-1 flex justify-center mr-auto navbar-center">
-          <button className="btn btn-ghost flex justify-center align-items h-28" onClick={() => router.push("/")}>
+      {/* Fast Track MODAL */}
+      <QuickModal peerId={state.peerId} />
+
+      {/* TOAST */}
+      <div className={`animate-bounce select-none toast transition-opacity duration-300 text-white ${idCopy ? 'opacity-100' : 'opacity-0'}`}>
+        <div className="alert text-white">
+          <div>
+            <span>Connection ID copied.</span>
+          </div>
+        </div>
+      </div>
+
+      {/* NAVBAR */}
+      <div className="navbar bg-lavender px-8">
+        <div className="navbar-left px-8 opacity-0">
+        </div>
+        <div className="flex-1 flex justify-center mr-auto ml-auto navbar-center">
+          <button className="btn btn-ghost flex justify-center align-items h-28 focus:outline-none" onClick={() => router.push("/")}>
             <img className="object-contain h-full w-full" src="/wlogo.svg" />
           </button>
         </div>
+        <div className="navbar-right">
+          <label htmlFor="my-modal-4" className="btn btn-ghost">
+            <img className="object-fit h-10 w-10" src="/link.svg" />
+          </label>
+        </div>
       </div>
+
 
       <main className={styles.main + "min-h-screen bg-french-gray"}>
         <div className="flex flex-col justify-items-center items-center h-screen">
           {state.isLoadingPeer
             ?
-            <div className='mt-10 animate-pulse rounded bg-french-gray font-link text-ultra-violet'>LOADING
+            <div className='mt-10 animate-pulse rounded bg-french-gray font-link text-ultra-violet'>Loading
             </div>
             :
             <>
-              <div className={`select-none toast transition-opacity duration-300 text-white ${idCopy ? 'opacity-100' : 'opacity-0'}`}>
-                <div className="alert text-white">
-                  <div>
-                    <span>Connection ID copied.</span>
-                  </div>
-                </div>
-              </div>
               {!cameraScreen ?
                 <div className="flex flex-col justify-center items-center pt-16">
                   <h1 className="text-5xl text-ultra-violet font-link">SCAN</h1>
                   <h2 className="text-2xl text-ultra-violet font-link">someone joins you</h2>
                   <QRCode className="qr-code justify-centre py-6" value={state.peerId} />
-                  <div className="cursor-pointer">
+                  <div className="cursor-pointer transition duration-300 hover:scale-110">
                     <code
                       onClick={() => {
                         setIdCopy(true);
@@ -140,57 +161,35 @@ export default function Home() {
                     </code>
                   </div>
                   <div className="flex flex-row pt-6">
-                    <input
-                      type="text"
-                      placeholder="enter code..."
-                      className="input w-full max-w-xs bg-white text-dim-gray font-link"
-                      onChange={(e) => { setCode(e.target.value) }}
-                    />
-                    <button
-                      className="btn font-link"
-                      onClick={onPressJoin}>Join
-                    </button>
-                  </div>
-                </div>
-                :
-                <div className="flex flex-col justify-center items-center pt-16">
-                  <h1 className="text-5xl text-ultra-violet font-link">JOIN</h1>
-                  <h2 className="text-2xl text-ultra-violet font-link">you join someone</h2>
-                  {isLoadingChat ?
-                    <div className='p-28 mt-10 animate-pulse rounded bg-french-gray-lite font-link text-ultra-violet'>LOADING
-                    </div>
-                    :
-                    <div className='flex justify-center items-center py-8'>
-                      <QrReader
-                        videoStyle={videoStyle}
-                        videoContainerStyle={videoContainerStyle}
-                        onResult={handleResult}
-                        constraints={{ facingMode: 'environment' }}
+                    <form onSubmit={onPressJoin}>
+                      <input
+                        type="text"
+                        placeholder="enter code..."
+                        className="input w-full max-w-xs bg-white text-dim-gray font-link"
+                        onChange={(e) => { setCode(e.target.value) }}
                       />
-                    </div>
-                  }
-                  <div className="flex flex-row pt-6">
-                    <input
-                      type="text"
-                      placeholder="enter code..."
-                      className="input w-full max-w-xs bg-white text-dim-gray font-link"
-                      onChange={(e) => { setCode(e.target.value) }}
-                    />
+                    </form>
                     <button
-                      className="btn font-link"
+                      className="btn font-link focus:outline-none"
                       onClick={onPressJoin}>Join
                     </button>
                   </div>
                 </div>
+
+                :
+                <JoinScreen />
               }
               <div className="p-6">
                 <button
-                  className="btn font-link"
+                  className="btn bg-ultra-violet text-french-gray-lite hover:bg-maize-crayola hover:text-black focus:outline-none border-none"
                   onClick={() => {
                     setIdCopy(false);
                     setCameraScreen(!cameraScreen);
                   }}>
-                  <img className="object-contain h-full w-full " src="/camera.svg" />
+                  {!cameraScreen ?
+                    "open scanner" :
+                    "close camera"
+                  }
                 </button>
               </div>
             </>

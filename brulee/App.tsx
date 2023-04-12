@@ -39,7 +39,8 @@ import { QRScanScreen } from './components/QRScan';
 import { QRGenerateScreen } from './components/QRGenerate';
 import ChatWrapper from './components/ChatWrapper';
 
-// @ts-ignore
+// TODO: instead of using context for js objects, just use the `global` object 
+// https://stackoverflow.com/questions/35577551/how-to-use-global-variables-in-react-native
 export const GlobalContext = React.createContext<[GlobalState, React.Dispatch<React.SetStateAction<GlobalState>>]>(null);
 export const PeerContext = React.createContext<Peer | null>(null);
 export const ConnectionContext = React.createContext<any>(null);

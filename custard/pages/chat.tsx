@@ -1,26 +1,27 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import { ChatContainer, MainContainer, Message, MessageInput, MessageList, MessageModel } from "@chatscope/chat-ui-kit-react";
-import { CurrentConnectionContext } from './_app';
 import { useRouter } from 'next/router';
 
-export default function Home() {
+export default function Chat() {
   const inputRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef(null);
   const [msgInputValue, setMsgInputValue] = useState("enter text...");
   const [messages, setMessages] = useState<MessageModel[]>([]);
-  const connRef = useContext(CurrentConnectionContext);
   const router = useRouter();
 
   const [file, setFile] = useState<File | null>(null);
 
   useEffect(() => {
-    if (connRef.current == null) {
-      if (process.env.NODE_ENV == "development") return;
+    if (window.NAKL_CONNECTION == null) {
+      // if (process.env.NODE_ENV == "development") {
+      //   console.log("Should reroute to home");
+      //   return;
+      // }
       router.push("/");
       return;
     }
 
-    connRef.current.on("data", (data) => {
+    window.NAKL_CONNECTION.on("data", (data) => {
       console.log("Data received", data);
       if (typeof (data) == "string") {
         if (data.startsWith("data:image")) {
@@ -56,13 +57,13 @@ export default function Home() {
       }
     })
     return () => {
-      connRef.current.removeAllListeners();
+      window.NAKL_CONNECTION.removeAllListeners();
     }
   }, [])
 
   useEffect(() => {
     scrollToBottom();
-  },[messages])
+  }, [messages])
 
   const addImage = (data: Blob, incoming: boolean) => {
     setMessages(existing => {
@@ -79,7 +80,7 @@ export default function Home() {
   }
 
   const handleSend = (message) => {
-    connRef.current.send(message);
+    window.NAKL_CONNECTION.send(message);
     setMessages([...messages,
     {
       position: 'single',
@@ -93,7 +94,7 @@ export default function Home() {
 
   const sendAttachHandler = (event) => {
     addImage(file, false);
-    connRef.current.send(file);
+    window.NAKL_CONNECTION.send(file);
     setFile(null);
   }
 

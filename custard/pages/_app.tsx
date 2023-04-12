@@ -5,9 +5,8 @@ import '@/styles/globals.css'
 import type { Peer, DataConnection } from "peerjs"
 import '../styles/Chat.scss'  
 
-export const GlobalContext = createContext(null);
-export const SocketContext = createContext(null);
-export const CurrentConnectionContext = createContext(null);
+type GlobalContextValue =[GlobalState, React.Dispatch<React.SetStateAction<GlobalState>>];
+export const GlobalContext = createContext<GlobalContextValue>({} as GlobalContextValue);
 
 // Defining global state interfaces and default values
 export interface GlobalState {
@@ -26,26 +25,22 @@ const MONIKER_PAGE = "pc";
 const HomePages = [FALLBACK_PAGE, MONIKER_PAGE]
 
 export default function App({ Component, pageProps }: AppProps) {
-  const peerRef = useRef<Peer | null>(null);
-  const connRef = useRef<DataConnection | null>(null);
   const stateAndDispatch = useState(initialState);
   const router = useRouter(); // for navigation
 
   useEffect(() => {
-    if (peerRef.current == null && !HomePages.some(h => h == router.pathname)) {
-      console.log("Going home.");
-      router.push("/");
-    }
+    // ---- not necessary
+    // if (peerRef.current == null) {
+    //   console.log("Going home.");
+    //   // This doesn't create an infinite loop cos NextJS smart :)
+    //   router.push("/");
+    // }
   }, []);
 
   return (
 
     <GlobalContext.Provider value={stateAndDispatch}>
-      <SocketContext.Provider value={peerRef}>
-        <CurrentConnectionContext.Provider value={connRef}>
           <Component {...pageProps} />
-        </CurrentConnectionContext.Provider>
-      </SocketContext.Provider>
     </GlobalContext.Provider>
   )
 }
