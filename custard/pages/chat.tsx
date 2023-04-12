@@ -5,10 +5,12 @@ import { useRouter } from 'next/router';
 
 export default function Home() {
   const inputRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef(null);
   const [msgInputValue, setMsgInputValue] = useState("enter text...");
   const [messages, setMessages] = useState<MessageModel[]>([]);
   const connRef = useContext(CurrentConnectionContext);
   const router = useRouter();
+
   const [file, setFile] = useState<File | null>(null);
 
   useEffect(() => {
@@ -58,6 +60,10 @@ export default function Home() {
     }
   }, [])
 
+  useEffect(() => {
+    scrollToBottom();
+  },[messages])
+
   const addImage = (data: Blob, incoming: boolean) => {
     setMessages(existing => {
       const newMessageModel: MessageModel = {
@@ -101,18 +107,23 @@ export default function Home() {
     }
   }
 
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "auto" })
+  }
+
   return (
-    <>
+    <div className="flex flex-col h-screen overflow-hidden bg-lavender">
       <div className="navbar bg-french-gray">
-        <div className="flex-1 flex mr-auto navbar-left">
+        <div className="flex flex-1 mr-auto navbar-left">
           <button className="btn btn-ghost flex justify-center align-items h-10" onClick={() => router.push("/")}>
             <img className="object-contain h-full w-full" src="/wlogo.svg" />
           </button>
         </div>
       </div>
-      <main className="min-h-screen bg-lavender">
-        <div className="flex mb-4 flex-direction-col max-h-[] bg-lavender">
-          <MainContainer className="bg-french-gray w-1/2">
+
+      <div className="flex flex-1 overflow-auto mb-4 flex-row bg-lavender">
+        <div className="w-1/2 bg-french-gray">
+          <MainContainer>
             <ChatContainer>
               <MessageList>
                 {messages.map((m, i) =>
@@ -121,6 +132,7 @@ export default function Home() {
                     model={m}
                   />
                 )}
+                <div ref={messagesEndRef} />
               </MessageList>
               <MessageInput
                 placeholder="enter text..."
@@ -133,11 +145,11 @@ export default function Home() {
               />
             </ChatContainer>
           </MainContainer>
-          <div className="flex w-1/2 h-[100vh] justify-center items-center shadow-inner bg-lavender ">
-            <input id='file' type="file" className="file-input file-input-ghost" name="file" onChange={changeAttachHandler} title="Choose File or drag file here" />
-          </div>
         </div>
-      </main>
-    </>
+        <div className="flex w-1/2 justify-center items-center shadow-inner bg-lavender ">
+          <input id='file' type="file" className="file-input indent-[-900em] file-input-ghost w-[95%] h-[95%]" name="file" onChange={changeAttachHandler} title="Choose File or drag file here" />
+        </div>
+      </div>
+    </div>
   )
 }
