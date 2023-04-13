@@ -15,6 +15,7 @@ import type { DataConnection, Peer, PeerJSOption } from "peerjs"
 
 import QuickModal from '@/components/QuickModal';
 import JoinScreen from '@/components/JoinScreen';
+import { useError } from '@/hooks/useError';
 
 export const setupPeerPage = async () => {
   window.NAKL_GAMING = "Hey man";
@@ -51,6 +52,8 @@ export default function Home() {
   const [cameraScreen, setCameraScreen] = useState(false);
   const [idCopy, setIdCopy] = useState(false);
   const router = useRouter();
+  const setError = useError();
+
 
   function onPressJoin(event) {
     if (!window.NAKL_PEER) return;
@@ -130,7 +133,7 @@ export default function Home() {
           </button>
         </div>
         <div className="navbar-right">
-          <label htmlFor="my-modal-4" className="btn btn-ghost">
+          <label htmlFor="quick-connect-modal" className="btn btn-ghost">
             <img className="object-fit h-10 w-10" src="/link.svg" />
           </label>
         </div>
@@ -191,6 +194,16 @@ export default function Home() {
                     "close camera"
                   }
                 </button>
+
+
+                <button
+                  className="btn bg-ultra-violet text-french-gray-lite hover:bg-maize-crayola hover:text-black focus:outline-none border-none"
+                  onClick={() => {
+                    setError("Hey man");
+                  }}>
+                    Test Error
+                </button>
+
               </div>
             </>
           }
