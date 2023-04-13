@@ -123,15 +123,30 @@ export default function Chat() {
       </div>
 
       <div className="flex flex-1 overflow-auto flex-row bg-lavender">
-        <div className="w-1/2 p-3">
+        <div className="w-2/3 p-3">
           <MainContainer>
             <ChatContainer>
               <MessageList>
-                {messages.map((m, i) =>
-                  <Message
-                    key={i}
-                    model={m}
-                  />
+                {messages.map((m, i) => {
+                  if (m.type == 'image') {
+                    return (
+                      <Message
+                        key={i}
+                        model={{direction: m.direction, position: m.position}}
+                      >
+                        {/* @ts-ignore */}
+                        <Message.ImageContent src={m.payload.src} className="h-fit rounded-[10px] overflow-hidden my-1"/>
+                      </Message>
+                    )
+                  }
+
+                  return (
+                    <Message
+                      key={i}
+                      model={m}
+                    />
+                  )
+                }
                 )}
                 <div ref={messagesEndRef} />
               </MessageList>
@@ -147,8 +162,21 @@ export default function Chat() {
             </ChatContainer>
           </MainContainer>
         </div>
-        <div className="flex w-1/2 justify-center items-center shadow-inner bg-lavender ">
-          <input id='file' type="file" className="file-input indent-[-900em] file-input-ghost w-[95%] h-[95%]" name="file" onChange={changeAttachHandler} title="Choose File or drag file here" />
+
+        <div className="flex w-1/3 justify-center items-center shadow-inner bg-lavender">
+          <div className={`flex border-dashed border-2 justify-center w-[100%] mx-5 rounded-lg border-wisteria ${file == null ? 'h-[75%]' : 'h-fit'}`}>
+            {file == null ?
+
+              <input id='file' type="file" className="file-input indent-[-900em] file-input-ghost w-[100%] h-[100%]" name="file" onChange={changeAttachHandler} title="Choose or drag file here" />
+
+              :
+
+              <div className='flex flex-col rounded-lg p-5 m-5'>
+                <img className="object-contain w-screen rounded-lg" src={window.URL.createObjectURL(file)} />
+                <button className="btn text-white hover:bg-french-gray bg-wisteria btn-ghost justify-center align-items h-10 mt-5" onClick={() => setFile(null)}>Remove file</button>
+              </div>
+            }
+          </div>
         </div>
       </div>
     </div>
