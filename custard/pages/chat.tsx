@@ -1,6 +1,8 @@
 import { useContext, useEffect, useRef, useState } from 'react';
-import { ChatContainer, MainContainer, Message, MessageInput, MessageList, MessageModel } from "@chatscope/chat-ui-kit-react";
+import { ChatContainer, MainContainer, Message, MessageInput, MessageList, MessageListProps, MessageModel } from "@chatscope/chat-ui-kit-react";
 import { useRouter } from 'next/router';
+import { useError } from '@/hooks/useError';
+
 import dynamic from 'next/dynamic';
 
 const DocViewer = dynamic(() => import("@cyntler/react-doc-viewer"), { ssr: false });
@@ -20,10 +22,11 @@ export default function Chat() {
     setRenderers((await import('@cyntler/react-doc-viewer/')).DocViewerRenderers);
   }
   const inputRef = useRef<HTMLDivElement>(null);
-  const messagesEndRef = useRef(null);
-  const [msgInputValue, setMsgInputValue] = useState("enter text...");
+  const messagesListRef = useRef(null);
+  const [msgInputValue, setMsgInputValue] = useState("");
   const [messages, setMessages] = useState<MessageModel[]>([]);
   const router = useRouter();
+  const setError = useError();
 
   const [file, setFile] = useState<File | null>(null);
 
@@ -33,10 +36,10 @@ export default function Chat() {
 
   useEffect(() => {
     if (window.NAKL_CONNECTION == null) {
-      // if (process.env.NODE_ENV == "development") {
-      //   console.log("Should reroute to home");
-      //   return;
-      // }
+      if (process.env.NODE_ENV == "development") {
+        console.log("Should reroute to home");
+        return;
+      }
       router.push("/");
       return;
     }
@@ -80,10 +83,6 @@ export default function Chat() {
       window.NAKL_CONNECTION.removeAllListeners();
     }
   }, [])
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages])
 
   const addImage = (data: Blob, incoming: boolean) => {
     data.type
@@ -133,8 +132,8 @@ export default function Chat() {
     }
   }
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "auto" })
+  const forceScrollToBottom = () => {
+    messagesListRef.current.scrollToBottom("auto");
   }
 
   return (
@@ -144,14 +143,24 @@ export default function Chat() {
           <button className="btn btn-ghost flex justify-center align-items h-10" onClick={() => router.push("/")}>
             <img className="object-contain h-full w-full" src="/wlogo.svg" />
           </button>
+
+
         </div>
+
+          <button
+            className="btn bg-ultra-violet text-french-gray-lite hover:bg-maize-crayola hover:text-black focus:outline-none border-none"
+            onClick={() => {
+              setError("Hey man from chat");
+            }}>
+            Test Error
+          </button>
       </div>
 
       <div className="flex flex-1 overflow-auto flex-row bg-lavender">
         <div className="w-2/3 p-3">
           <MainContainer>
             <ChatContainer>
-              <MessageList>
+              <MessageList autoScrollToBottom ref={messagesListRef}>
                 {messages.map((m, i) => {
                   if (m.type == 'image') {
                     return (
@@ -173,7 +182,6 @@ export default function Chat() {
                   )
                 }
                 )}
-                <div ref={messagesEndRef} />
               </MessageList>
               <MessageInput
                 placeholder="enter text..."

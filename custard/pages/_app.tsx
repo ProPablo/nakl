@@ -2,11 +2,13 @@ import type { AppProps } from 'next/app'
 import { useRouter } from 'next/router'
 import React, { createContext, MutableRefObject, useEffect, useRef, useState } from 'react';
 import '@/styles/globals.css'
-import type { Peer, DataConnection } from "peerjs"
-import '../styles/Chat.scss'  
+import '../styles/Chat.scss'
+import Head from 'next/head';
+import GlobalErrorProvider from '@/components/GlobalErrorProvider';
 
-type GlobalContextValue =[GlobalState, React.Dispatch<React.SetStateAction<GlobalState>>];
+type GlobalContextValue = [GlobalState, React.Dispatch<React.SetStateAction<GlobalState>>];
 export const GlobalContext = createContext<GlobalContextValue>({} as GlobalContextValue);
+
 
 // Defining global state interfaces and default values
 export interface GlobalState {
@@ -19,10 +21,6 @@ const initialState: GlobalState = {
   isLoadingPeer: true,
 }
 
-// Defining constants to be used for state
-const FALLBACK_PAGE = "fallback";
-const MONIKER_PAGE = "pc";
-const HomePages = [FALLBACK_PAGE, MONIKER_PAGE]
 
 export default function App({ Component, pageProps }: AppProps) {
   const stateAndDispatch = useState(initialState);
@@ -40,7 +38,14 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
 
     <GlobalContext.Provider value={stateAndDispatch}>
-          <Component {...pageProps} />
+      <GlobalErrorProvider>
+        <Head>
+          <title>NAKL</title>
+          <meta name="description" content="Not a Keylogger" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+        </Head>
+        <Component {...pageProps} />
+      </GlobalErrorProvider>
     </GlobalContext.Provider>
   )
 }
