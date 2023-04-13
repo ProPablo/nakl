@@ -21,10 +21,10 @@ dependencies:
     version: 2.51.3(autoprefixer@10.4.13)(postcss@8.4.21)
   next:
     specifier: 13.2.3
-    version: 13.2.3(react-dom@18.2.0)(react@18.2.0)(sass@1.61.0)
+    version: 13.2.3(react-dom@18.2.0)(react@18.2.0)(sass@1.62.0)
   peerjs:
     specifier: github:ProPablo/peerjs
-    version: github.com/ProPablo/peerjs/ee921b6768e92e97c64e16fcd905789550b4bba4
+    version: github.com/ProPablo/peerjs/4cd138625a5595fcca77ac4bf8b36c8f874782e8
   react:
     specifier: 18.2.0
     version: 18.2.0
@@ -37,6 +37,9 @@ dependencies:
   react-qr-reader:
     specifier: ^3.0.0-beta-1
     version: 3.0.0-beta-1(react-dom@18.2.0)(react@18.2.0)
+  sass:
+    specifier: ^1.62.0
+    version: 1.62.0
   typescript:
     specifier: 4.9.5
     version: 4.9.5
@@ -48,9 +51,6 @@ devDependencies:
   postcss:
     specifier: ^8.4.21
     version: 8.4.21
-  sass:
-    specifier: ^1.61.0
-    version: 1.61.0
   tailwindcss:
     specifier: ^3.2.7
     version: 3.2.7(postcss@8.4.21)
@@ -548,6 +548,7 @@ packages:
 
   /immutable@4.3.0:
     resolution: {integrity: sha512-0AOCmOip+xgJwEVTQj1EfiDDOkPmuyllDuTuEX+DDXUgapLAsBIfkg3sxCYyCEA8mQqZrrxPUGjcOQ2JS3WLkg==}
+    dev: false
 
   /is-arrayish@0.3.2:
     resolution: {integrity: sha512-eVRqCvVlZbuw3GrM63ovNSNAeA1K16kaR/LRY/92w0zxQ5/1YzwblUX652i4Xs9RwAGjW9d9y6X88t8OaAJfWQ==}
@@ -612,7 +613,7 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  /next@13.2.3(react-dom@18.2.0)(react@18.2.0)(sass@1.61.0):
+  /next@13.2.3(react-dom@18.2.0)(react@18.2.0)(sass@1.62.0):
     resolution: {integrity: sha512-nKFJC6upCPN7DWRx4+0S/1PIOT7vNlCT157w9AzbXEgKy6zkiPKEt5YyRUsRZkmpEqBVrGgOqNfwecTociyg+w==}
     engines: {node: '>=14.6.0'}
     hasBin: true
@@ -639,7 +640,7 @@ packages:
       postcss: 8.4.14
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      sass: 1.61.0
+      sass: 1.62.0
       styled-jsx: 5.1.1(react@18.2.0)
     optionalDependencies:
       '@next/swc-android-arm-eabi': 13.2.3
@@ -873,14 +874,15 @@ packages:
     dependencies:
       queue-microtask: 1.2.3
 
-  /sass@1.61.0:
-    resolution: {integrity: sha512-PDsN7BrVkNZK2+dj/dpKQAWZavbAQ87IXqVvw2+oEYI+GwlTWkvbQtL7F2cCNbMqJEYKPh1EcjSxsnqIb/kyaQ==}
+  /sass@1.62.0:
+    resolution: {integrity: sha512-Q4USplo4pLYgCi+XlipZCWUQz5pkg/ruSSgJ0WRDSb/+3z9tXUOkQ7QPYn4XrhZKYAK4HlpaQecRwKLJX6+DBg==}
     engines: {node: '>=14.0.0'}
     hasBin: true
     dependencies:
       chokidar: 3.5.3
       immutable: 4.3.0
       source-map-js: 1.0.2
+    dev: false
 
   /scheduler@0.23.0:
     resolution: {integrity: sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==}
@@ -1005,8 +1007,8 @@ packages:
     resolution: {integrity: sha512-r3vXyErRCYJ7wg28yvBY5VSoAF8ZvlcW9/BwUzEtUsjvX/DKs24dIkuwjtuprwJJHsbyUbLApepYTR1BN4uHrg==}
     engines: {node: '>= 6'}
 
-  github.com/ProPablo/peerjs/ee921b6768e92e97c64e16fcd905789550b4bba4:
-    resolution: {tarball: https://codeload.github.com/ProPablo/peerjs/tar.gz/ee921b6768e92e97c64e16fcd905789550b4bba4}
+  github.com/ProPablo/peerjs/4cd138625a5595fcca77ac4bf8b36c8f874782e8:
+    resolution: {tarball: https://codeload.github.com/ProPablo/peerjs/tar.gz/4cd138625a5595fcca77ac4bf8b36c8f874782e8}
     name: peerjs
     version: 1.4.11
     engines: {node: '>= 10'}

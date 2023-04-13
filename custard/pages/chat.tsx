@@ -64,10 +64,6 @@ export default function Chat() {
     }
   }, [])
 
-  useEffect(() => {
-    forceScrollToBottom();
-  }, [messages])
-
   const addImage = (data: Blob, incoming: boolean) => {
     setMessages(existing => {
       const newMessageModel: MessageModel = {
