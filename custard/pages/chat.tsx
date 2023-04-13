@@ -1,8 +1,24 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import { ChatContainer, MainContainer, Message, MessageInput, MessageList, MessageModel } from "@chatscope/chat-ui-kit-react";
 import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic';
+
+const DocViewer = dynamic(() => import("@cyntler/react-doc-viewer"), { ssr: false });
+import {DocViewerRenderers} from "@cyntler/react-doc-viewer"
 
 export default function Chat() {
+  const [renderers, setRenderers] = useState([]);
+  const getRenderers = async () => {
+    // setRenderers((prev) => {
+    //   const newRenderers = [...prev];
+    //   const newRenderer = (await import('@cyntler/react-doc-viewer/')).;
+    //   newRenderers
+      
+    //   return
+    // }
+
+    setRenderers((await import('@cyntler/react-doc-viewer/')).DocViewerRenderers);
+  }
   const inputRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef(null);
   const [msgInputValue, setMsgInputValue] = useState("enter text...");
@@ -10,6 +26,10 @@ export default function Chat() {
   const router = useRouter();
 
   const [file, setFile] = useState<File | null>(null);
+
+  useEffect(() => {
+    getRenderers();
+  },[])
 
   useEffect(() => {
     if (window.NAKL_CONNECTION == null) {
@@ -66,6 +86,7 @@ export default function Chat() {
   }, [messages])
 
   const addImage = (data: Blob, incoming: boolean) => {
+    data.type
     setMessages(existing => {
       const newMessageModel: MessageModel = {
         type: 'image',
@@ -79,7 +100,8 @@ export default function Chat() {
     })
   }
 
-  const handleSend = (message) => {
+
+  const handleSendText = (message) => {
     window.NAKL_CONNECTION.send(message);
     setMessages([...messages,
     {
@@ -93,7 +115,10 @@ export default function Chat() {
   }
 
   const sendAttachHandler = (event) => {
-    addImage(file, false);
+    console.log({file});
+    if (file.type.startsWith("image/")) addImage(file, false);
+    // else if (file.type.startsWith("video/")) addVideo(file, false);
+
     window.NAKL_CONNECTION.send(file);
     setFile(null);
   }
@@ -152,7 +177,7 @@ export default function Chat() {
               </MessageList>
               <MessageInput
                 placeholder="enter text..."
-                onSend={handleSend}
+                onSend={handleSendText}
                 onChange={setMsgInputValue}
                 value={msgInputValue}
                 ref={inputRef}
@@ -167,13 +192,23 @@ export default function Chat() {
           <div className={`flex border-dashed border-2 justify-center w-[100%] mx-5 rounded-lg border-wisteria ${file == null ? 'h-[75%]' : 'h-fit'}`}>
             {file == null ?
 
-              <input id='file' type="file" className="file-input indent-[-900em] file-input-ghost w-[100%] h-[100%]" name="file" onChange={changeAttachHandler} title="Choose or drag file here" />
+              <input 
+                className="file-input indent-[-900em] file-input-ghost w-[100%] h-[100%]" 
+                id='file' type="file" name="file" title="Choose or drag file here"
+                onChange={changeAttachHandler} 
+              />
 
               :
 
               <div className='flex flex-col rounded-lg p-5 m-5'>
-                <img className="object-contain w-screen rounded-lg" src={window.URL.createObjectURL(file)} />
-                <button className="btn text-white hover:bg-french-gray bg-wisteria btn-ghost justify-center align-items h-10 mt-5" onClick={() => setFile(null)}>Remove file</button>
+                <DocViewer 
+                  documents={[{uri:window.URL.createObjectURL(file),fileName:file.name}]}
+                  pluginRenderers={renderers}
+                />
+                {/* <img className="object-contain w-screen rounded-lg" src={window.URL.createObjectURL(file)} /> */}
+                <button 
+                  className="btn text-white hover:bg-french-gray bg-wisteria btn-ghost justify-center align-items h-10 mt-5" 
+                  onClick={() => setFile(null)}>Remove file</button>
               </div>
             }
           </div>
