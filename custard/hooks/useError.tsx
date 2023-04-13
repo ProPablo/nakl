@@ -1,4 +1,4 @@
-import { ErrorContext } from "@/pages/_app";
+import { ErrorContext } from "@/components/GlobalErrorProvider";
 import { useContext } from "react";
 
 export function useError() {
