@@ -1,4 +1,4 @@
-import { SocketContext, CurrentConnectionContext, GlobalContext } from "@/pages/_app";
+import { GlobalContext } from "@/pages/_app";
 import router from "next/router";
 import { useContext, useState } from "react";
 import type { OnResultFunction } from 'react-qr-reader';
@@ -15,8 +15,6 @@ const videoContainerStyle: React.CSSProperties = {
 	borderRadius: "0.5rem",
 }
 export default function JoinScreen() {
-	const peer = useContext(SocketContext);
-	const connRef = useContext(CurrentConnectionContext);
 	const [state, setGlobalState] = useContext(GlobalContext);
 	const [isLoadingChat, setisLoadingChat] = useState(false);
 
@@ -24,11 +22,11 @@ export default function JoinScreen() {
 		if (!!res && !isLoadingChat) {
 			const id = res.getText();
 			console.log("Connecting to chat.", id);
-			connRef.current = peer.current.connect(id);
-			console.log(connRef.current);
+			window.NAKL_CONNECTION = window.NAKL_PEER!.connect(id);
+			console.log(window.NAKL_CONNECTION);
 			setisLoadingChat(false);
 
-			connRef.current.on("open", () => {
+			window.NAKL_CONNECTION.on("open", () => {
 				console.log("Connected.");
 				setisLoadingChat(false);
 				router.push("/chat");
