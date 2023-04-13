@@ -125,18 +125,33 @@ export default function Home() {
 
       {/* NAVBAR */}
       <div className="navbar bg-lavender px-8">
-        <div className="navbar-left px-8 opacity-0">
+
+        {/* Workaround for centering the title div */}
+        {/* <div className="navbar-left px-8 opacity-0" /> */}
+
+        <div className="navbar-left">
+          <button
+            className="btn bg-ultra-violet text-french-gray-lite hover:bg-maize-crayola hover:text-black focus:outline-none border-none"
+            onClick={() => {
+              setError("Hey man");
+            }}>
+            Test
+          </button>
         </div>
+
         <div className="flex-1 flex justify-center mr-auto ml-auto navbar-center">
           <button className="btn btn-ghost flex justify-center align-items h-28 focus:outline-none" onClick={() => router.push("/")}>
             <img className="object-contain h-full w-full" src="/wlogo.svg" />
           </button>
         </div>
+
+
         <div className="navbar-right">
           <label htmlFor="quick-connect-modal" className="btn btn-ghost">
             <img className="object-fit h-10 w-10" src="/link.svg" />
           </label>
         </div>
+
       </div>
 
 
@@ -196,13 +211,6 @@ export default function Home() {
                 </button>
 
 
-                <button
-                  className="btn bg-ultra-violet text-french-gray-lite hover:bg-maize-crayola hover:text-black focus:outline-none border-none"
-                  onClick={() => {
-                    setError("Hey man");
-                  }}>
-                    Test Error
-                </button>
 
               </div>
             </>
