@@ -15,6 +15,7 @@ import type { DataConnection, Peer, PeerJSOption } from "peerjs"
 
 import QuickModal from '@/components/QuickModal';
 import JoinScreen from '@/components/JoinScreen';
+import { useError } from '@/hooks/useError';
 
 export const setupPeerPage = async () => {
   window.NAKL_GAMING = "Hey man";
@@ -51,6 +52,8 @@ export default function Home() {
   const [cameraScreen, setCameraScreen] = useState(false);
   const [idCopy, setIdCopy] = useState(false);
   const router = useRouter();
+  const setError = useError();
+
 
   function onPressJoin(event) {
     if (!window.NAKL_PEER) return;
@@ -122,18 +125,33 @@ export default function Home() {
 
       {/* NAVBAR */}
       <div className="navbar bg-lavender px-8">
-        <div className="navbar-left px-8 opacity-0">
+
+        {/* Workaround for centering the title div */}
+        {/* <div className="navbar-left px-8 opacity-0" /> */}
+
+        <div className="navbar-left">
+          <button
+            className="btn bg-ultra-violet text-french-gray-lite hover:bg-maize-crayola hover:text-black focus:outline-none border-none"
+            onClick={() => {
+              setError("Hey man");
+            }}>
+            Test
+          </button>
         </div>
+
         <div className="flex-1 flex justify-center mr-auto ml-auto navbar-center">
           <button className="btn btn-ghost flex justify-center align-items h-28 focus:outline-none" onClick={() => router.push("/")}>
             <img className="object-contain h-full w-full" src="/wlogo.svg" />
           </button>
         </div>
+
+
         <div className="navbar-right">
-          <label htmlFor="my-modal-4" className="btn btn-ghost">
+          <label htmlFor="quick-connect-modal" className="btn btn-ghost">
             <img className="object-fit h-10 w-10" src="/link.svg" />
           </label>
         </div>
+
       </div>
 
 
@@ -191,6 +209,9 @@ export default function Home() {
                     "close camera"
                   }
                 </button>
+
+
+
               </div>
             </>
           }
