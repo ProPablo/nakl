@@ -6,7 +6,7 @@ import { useError } from '@/hooks/useError';
 import dynamic from 'next/dynamic';
 
 const DocViewer = dynamic(() => import("@cyntler/react-doc-viewer"), { ssr: false });
-import {DocViewerRenderers} from "@cyntler/react-doc-viewer"
+import { DocViewerRenderers } from "@cyntler/react-doc-viewer"
 
 export default function Chat() {
   const [renderers, setRenderers] = useState([]);
@@ -15,7 +15,7 @@ export default function Chat() {
     //   const newRenderers = [...prev];
     //   const newRenderer = (await import('@cyntler/react-doc-viewer/')).;
     //   newRenderers
-      
+
     //   return
     // }
 
@@ -32,7 +32,7 @@ export default function Chat() {
 
   useEffect(() => {
     getRenderers();
-  },[])
+  }, [])
 
   useEffect(() => {
     if (window.NAKL_CONNECTION == null) {
@@ -70,19 +70,35 @@ export default function Chat() {
           return [...existing, newMessageModel]
         });
       }
+      // TODO: metadata necessary to render
       else if (data instanceof ArrayBuffer) {
         const newBlob = new Blob([data]);
         addImage(newBlob, true);
+        // addOther(newBlob, true);
       }
       else if (data instanceof Blob) {
         console.log("We have an image.");
         addImage(data, true);
+        // addOther(data, true);
       }
     })
     return () => {
       window.NAKL_CONNECTION.removeAllListeners();
     }
   }, [])
+
+  const handleSendText = (message) => {
+    window.NAKL_CONNECTION.send(message);
+    setMessages([...messages,
+    {
+      position: 'single',
+      message,
+      direction: 'outgoing'
+    }
+    ]);
+    setMsgInputValue("");
+    inputRef.current.focus();
+  }
 
   const addImage = (data: Blob, incoming: boolean) => {
     data.type
@@ -99,24 +115,28 @@ export default function Chat() {
     })
   }
 
-
-  const handleSendText = (message) => {
-    window.NAKL_CONNECTION.send(message);
-    setMessages([...messages,
-    {
-      position: 'single',
-      message,
-      direction: 'outgoing'
-    }
-    ]);
-    setMsgInputValue("");
-    inputRef.current.focus();
+  // TODO: this only supports adding to self for now because metadata
+  const addOther = (data: File, incoming: boolean) => {
+    data.type
+    setMessages(existing => {
+      const newMessageModel: MessageModel = {
+        type: 'custom',
+        direction: incoming ? 'incoming' : 'outgoing',
+        position: 'single',
+        payload: {
+          src: data,
+          fileName: data.name,
+        }
+      }
+      return [...existing, newMessageModel]
+    })
   }
 
+
   const sendAttachHandler = (event) => {
-    console.log({file});
+    console.log({ file });
     if (file.type.startsWith("image/")) addImage(file, false);
-    // else if (file.type.startsWith("video/")) addVideo(file, false);
+    else addOther(file, false);
 
     window.NAKL_CONNECTION.send(file);
     setFile(null);
@@ -143,17 +163,15 @@ export default function Chat() {
           <button className="btn btn-ghost flex justify-center align-items h-10" onClick={() => router.push("/")}>
             <img className="object-contain h-full w-full" src="/wlogo.svg" />
           </button>
-
-
         </div>
 
-          <button
-            className="btn bg-ultra-violet text-french-gray-lite hover:bg-maize-crayola hover:text-black focus:outline-none border-none"
-            onClick={() => {
-              setError("Hey man from chat");
-            }}>
-            Test Error
-          </button>
+        <button
+          className="btn bg-ultra-violet text-french-gray-lite hover:bg-maize-crayola hover:text-black focus:outline-none border-none"
+          onClick={() => {
+            setError("Hey man from chat");
+          }}>
+          Test Error
+        </button>
       </div>
 
       <div className="flex flex-1 overflow-auto flex-row bg-lavender">
@@ -166,19 +184,58 @@ export default function Chat() {
                     return (
                       <Message
                         key={i}
-                        model={{direction: m.direction, position: m.position}}
+                        model={{ direction: m.direction, position: m.position }}
                       >
                         {/* @ts-ignore */}
-                        <Message.ImageContent src={m.payload.src} className="h-fit rounded-[10px] overflow-hidden my-1"/>
+                        <Message.ImageContent src={m.payload.src} className="h-fit rounded-[10px] overflow-hidden my-1" />
                       </Message>
                     )
                   }
-
+                  // else if (m.type == 'custom' ) {
+                  //   return (
+                  //     <Message
+                  //       key={i}
+                  //       model={{ direction: m.direction, position: m.position }}
+                  //     >
+                  //       <Message.CustomContent className="h-fit rounded-[10px] overflow-hidden my-1">
+                  //         {/* @ts-ignore */}
+                  //         <video controls src={m.payload.src}></video>
+                  //       </Message.CustomContent>
+                  //     </Message>
+                  //   )
+                  // }
+                  if (m.type == 'custom') {
+                    return (
+                      <Message
+                        key={i}
+                        model={{ direction: m.direction, position: m.position }}
+                      >
+                        <Message.CustomContent className="h-fit rounded-[10px] overflow-hidden my-1">
+                          <DocViewer
+                            // @ts-ignore TODO: remove once blob metadata is ther
+                            documents={[{ uri: window.URL.createObjectURL(m.payload.src), fileName: m.payload.fileName }]}
+                            pluginRenderers={renderers}
+                          />
+                        </Message.CustomContent>
+                      </Message>
+                    )
+                  }
                   return (
                     <Message
                       key={i}
                       model={m}
-                    />
+                    >
+                      <Message.CustomContent>
+                        <div className="flex flex-col">
+                          <p>{m.message}</p>
+                          <button 
+                            onClick={() => navigator.clipboard.writeText(m.message)} 
+                            className='btn btn-xs btn-ghost bg-french-gray-lite hover:bg-french-gray'>Copy
+                          </button>
+                        </div>
+                      </Message.CustomContent>
+
+                    </Message>
                   )
                 }
                 )}
@@ -200,22 +257,22 @@ export default function Chat() {
           <div className={`flex border-dashed border-2 justify-center w-[100%] mx-5 rounded-lg border-wisteria ${file == null ? 'h-[75%]' : 'h-fit'}`}>
             {file == null ?
 
-              <input 
-                className="file-input indent-[-900em] file-input-ghost w-[100%] h-[100%]" 
+              <input
+                className="file-input indent-[-900em] file-input-ghost w-[100%] h-[100%]"
                 id='file' type="file" name="file" title="Choose or drag file here"
-                onChange={changeAttachHandler} 
+                onChange={changeAttachHandler}
               />
 
               :
 
               <div className='flex flex-col rounded-lg p-5 m-5'>
-                <DocViewer 
-                  documents={[{uri:window.URL.createObjectURL(file),fileName:file.name}]}
+                <DocViewer
+                  documents={[{ uri: window.URL.createObjectURL(file), fileName: file.name }]}
                   pluginRenderers={renderers}
                 />
                 {/* <img className="object-contain w-screen rounded-lg" src={window.URL.createObjectURL(file)} /> */}
-                <button 
-                  className="btn text-white hover:bg-french-gray bg-wisteria btn-ghost justify-center align-items h-10 mt-5" 
+                <button
+                  className="btn text-white hover:bg-french-gray bg-wisteria btn-ghost justify-center align-items h-10 mt-5"
                   onClick={() => setFile(null)}>Remove file</button>
               </div>
             }
