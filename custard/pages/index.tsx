@@ -209,9 +209,6 @@ export default function Home() {
                     "close camera"
                   }
                 </button>
-
-
-
               </div>
             </>
           }

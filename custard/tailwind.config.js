@@ -21,7 +21,7 @@ module.exports = {
       'ultra-violet': '#5F588B',
       'dim-gray': '#6A6264',
       'white': '#fff',
-      'black': '#71686B',
+      'black': '#3A3A3A',
       'wisteria': '#A49CCD',
       'maize-crayola': '#F7C546',
     },

@@ -6,7 +6,17 @@ import { useError } from '@/hooks/useError';
 import dynamic from 'next/dynamic';
 
 const DocViewer = dynamic(() => import("@cyntler/react-doc-viewer"), { ssr: false });
-import { DocViewerRenderers } from "@cyntler/react-doc-viewer"
+import { AudioRenderer, VideoRenderer, ZipRenderer } from '@/lib/customDocViewerRenderers';
+
+const docViewerTheme = {
+  primary: "#F7C546",
+  secondary: "#CCCAD7",
+  tertiary: "#5F588B",
+  textPrimary: "#ffffff",
+  textSecondary: "#5296d8",
+  textTertiary: "#00000099",
+  disableThemeScrollbar: true,
+}
 
 export default function Chat() {
   const [renderers, setRenderers] = useState([]);
@@ -18,8 +28,9 @@ export default function Chat() {
 
     //   return
     // }
-
-    setRenderers((await import('@cyntler/react-doc-viewer/')).DocViewerRenderers);
+    const renderersImport = (await import('@cyntler/react-doc-viewer/')).DocViewerRenderers;
+    renderersImport.push(VideoRenderer, AudioRenderer, ZipRenderer);
+    setRenderers(renderersImport);
   }
   const inputRef = useRef<HTMLDivElement>(null);
   const messagesListRef = useRef(null);
@@ -225,6 +236,8 @@ export default function Chat() {
                             <DocViewer
                               // @ts-ignore TODO: remove once blob metadata is ther
                               documents={[{ uri: window.URL.createObjectURL(m.payload.src), fileName: m.payload.fileName }]}
+                              theme={docViewerTheme}
+                              className="bg-black"
                               pluginRenderers={renderers}
                             />
                           </Message.CustomContent>
@@ -284,6 +297,8 @@ export default function Chat() {
                   <DocViewer
                     documents={[{ uri: window.URL.createObjectURL(file), fileName: file.name }]}
                     pluginRenderers={renderers}
+                    theme={docViewerTheme}
+                    className="rounded-lg h-fit overflow-hidden bg-wisteria"
                   />
                   {/* <img className="object-contain w-screen rounded-lg" src={window.URL.createObjectURL(file)} /> */}
                   <button
