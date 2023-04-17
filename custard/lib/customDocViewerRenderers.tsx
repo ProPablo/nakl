@@ -1,25 +1,4 @@
-import React from "react";
-
-import dynamic from "next/dynamic";
-
-const DocViewer = dynamic(() => import("@cyntler/react-doc-viewer"), { ssr: false });
 import type { DocRenderer } from "@cyntler/react-doc-viewer"
-
-
-// const MyCustomPNGRenderer: DocRenderer = ({
-//   mainState: { currentDocument },
-// }) => {
-//   if (!currentDocument) return null;
-
-//   return (
-//     <div id="my-png-renderer">
-//       <img id="png-img" src={currentDocument.fileData as string} />
-//     </div>
-//   );
-// };
-
-// MyCustomPNGRenderer.fileTypes = ["png", "image/png"];
-// MyCustomPNGRenderer.weight = 1;
 
 export const VideoRenderer: DocRenderer = ({
 	mainState: { currentDocument },
@@ -31,7 +10,6 @@ export const VideoRenderer: DocRenderer = ({
 		</div>
 	)
 }
-
 VideoRenderer.fileTypes = ["mp4", "video/mp4", "webm", "video/webm", "ogg", "video/ogg", "video/quicktime"];
 VideoRenderer.weight = 1;
 
@@ -45,9 +23,24 @@ export const AudioRenderer: DocRenderer = ({
 		</div>
 	)
 }
-
-AudioRenderer.fileTypes = ["mp3", "audio/mp3", "wav", "audio/wav", "ogg", "audio/ogg", "audio/mpeg", "mpeg"];
+AudioRenderer.fileTypes = ["mp3", "audio/mp3", "wav", "audio/wav", "ogg", "audio/ogg", "audio/mpeg", "mpeg", "webm", "audio/webm"];
 AudioRenderer.weight = 1;
+
+export const SvgRenderer: DocRenderer = ({
+	mainState: { currentDocument },
+}) => {
+	if (!currentDocument) return null;
+	return (
+		<div className="flex flex-col justify-center bg-french-gray-lite items-center overflow-hidden h-full w-full p-3">
+			<img className="object-contain" src={currentDocument.uri}/>
+			<a href={currentDocument.uri} download={currentDocument.fileName} className="p-3 rounded-lg text-white bg-ultra-violet">
+				Download
+			</a>
+		</div>
+	)
+}
+SvgRenderer.fileTypes = ["svg", "image/svg+xml", "ico", "image/vnd.microsoft.icon"];
+SvgRenderer.weight = 1;
 
 export const ZipRenderer: DocRenderer = ({
 	mainState: { currentDocument },
@@ -62,6 +55,22 @@ export const ZipRenderer: DocRenderer = ({
 		</div>
 	)
 }
-
-ZipRenderer.fileTypes = ["zip", "application/zip"];
+ZipRenderer.fileTypes = ["zip", "application/zip", "7z", "application/x-7z-compressed"];
 ZipRenderer.weight = 1;
+
+export const FileRenderer: DocRenderer = ({
+	mainState: { currentDocument },
+}) => {
+	if (!currentDocument) return null;
+	return (
+		<div className="flex flex-col justify-center bg-french-gray-lite items-center overflow-hidden p-6">
+			<img className="object-contain" src="/file.svg"/>
+			<a href={currentDocument.uri} download={currentDocument.fileName} className="p-3 rounded-lg text-white bg-ultra-violet">
+				Download
+			</a>
+		</div>
+	)
+}
+FileRenderer.fileTypes = ["tff", "font/tff", "rar", "application/vnd.rar", ];
+FileRenderer.weight = 1;
+

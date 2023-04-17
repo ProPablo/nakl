@@ -6,7 +6,7 @@ import { useError } from '@/hooks/useError';
 import dynamic from 'next/dynamic';
 
 const DocViewer = dynamic(() => import("@cyntler/react-doc-viewer"), { ssr: false });
-import { AudioRenderer, VideoRenderer, ZipRenderer } from '@/lib/customDocViewerRenderers';
+import { AudioRenderer, SvgRenderer, VideoRenderer, ZipRenderer } from '@/lib/customDocViewerRenderers';
 
 const docViewerTheme = {
   primary: "#F7C546",
@@ -29,7 +29,7 @@ export default function Chat() {
     //   return
     // }
     const renderersImport = (await import('@cyntler/react-doc-viewer/')).DocViewerRenderers;
-    renderersImport.push(VideoRenderer, AudioRenderer, ZipRenderer);
+    renderersImport.push(VideoRenderer, AudioRenderer, ZipRenderer, SvgRenderer);
     setRenderers(renderersImport);
   }
   const inputRef = useRef<HTMLDivElement>(null);
@@ -208,8 +208,21 @@ export default function Chat() {
                           key={i}
                           model={{ direction: m.direction, position: m.position }}
                         >
-                          {/* @ts-ignore */}
-                          <Message.ImageContent src={m.payload.src} className="h-fit rounded-[10px] overflow-hidden my-1" />
+                          <Message.CustomContent className="h-fit rounded-[10px] overflow-hidden my-1">
+                            <div className="flex flex-col">
+                              <DocViewer
+                                // @ts-ignore TODO: remove once blob metadata is ther
+                                documents={[{ uri: m.payload.src, fileName: m.payload.fileName }]}
+                                theme={docViewerTheme}
+                                className="bg-black rounded-lg"
+                                pluginRenderers={renderers}
+                              />
+                              {/* @ts-ignore TODO: remove once blob metadata is ther */}
+                              <a href={m.payload.src} download={m.payload.src} className="text-center mt-3 p-1 rounded-lg  text-white bg-french-gray-lite hover:bg-french-gray">
+                                Download
+                              </a>
+                            </div>
+                          </Message.CustomContent>
                         </Message>
                       )
                     }
