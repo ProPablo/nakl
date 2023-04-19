@@ -18,7 +18,6 @@ import JoinScreen from '@/components/JoinScreen';
 import { useError } from '@/hooks/useError';
 
 export const setupPeerPage = async () => {
-  window.NAKL_GAMING = "Hey man";
   window.NAKL_CONNECTION?.close();
   let HOST = process.env.NEXT_PUBLIC_HOST;
   let PORT = parseInt(process.env.NEXT_PUBLIC_PORT);
@@ -124,14 +123,14 @@ export default function Home() {
       </div>
 
       {/* NAVBAR */}
-      <div className="navbar bg-lavender px-8">
+      <div className="navbar bg-lavender px-8 z-10">
 
         {/* Workaround for centering the title div */}
         {/* <div className="navbar-left px-8 opacity-0" /> */}
 
         <div className="navbar-left">
           <button
-            className="btn bg-ultra-violet text-french-gray-lite hover:bg-maize-crayola hover:text-black focus:outline-none border-none"
+            className="btn bg-ultra-violet text-french-gray-lite hover:bg-saffron hover:text-black focus:outline-none border-none"
             onClick={() => {
               setError("Hey man");
             }}>
@@ -151,69 +150,71 @@ export default function Home() {
             <img className="object-fit h-10 w-10" src="/link.svg" />
           </label>
         </div>
-
       </div>
 
-
-      <main className={styles.main + "min-h-screen bg-french-gray"}>
-        <div className="flex flex-col justify-items-center items-center h-screen">
-          {state.isLoadingPeer
-            ?
-            <div className='mt-10 animate-pulse rounded bg-french-gray font-link text-ultra-violet'>Loading
-            </div>
-            :
-            <>
-              {!cameraScreen ?
-                <div className="flex flex-col justify-center items-center pt-16">
-                  <h1 className="text-5xl text-ultra-violet font-link">SCAN</h1>
-                  <h2 className="text-2xl text-ultra-violet font-link">someone joins you</h2>
-                  <QRCode className="qr-code justify-centre py-6" value={state.peerId} />
-                  <div className="cursor-pointer transition duration-300 hover:scale-110">
-                    <code
-                      onClick={() => {
-                        setIdCopy(true);
-                        setTimeout(() => setIdCopy(false), 2000);
-                        navigator.clipboard.writeText(state.peerId)
-                      }}
-                      className="text-dim-gray bg-french-gray-lite rounded-lg font-link p-1">{state.peerId}
-                    </code>
-                  </div>
-                  <div className="flex flex-row pt-6">
-                    <form onSubmit={onPressJoin}>
-                      <input
-                        type="text"
-                        placeholder="enter code..."
-                        className="input w-full max-w-xs bg-white text-dim-gray font-link"
-                        onChange={(e) => { setCode(e.target.value) }}
-                      />
-                    </form>
-                    <button
-                      className="btn font-link focus:outline-none"
-                      onClick={onPressJoin}>Join
-                    </button>
-                  </div>
+      <main className="flex flex-col overflow-auto items-center justify-around bg-french-gray">
+        {state.peerId === ''
+          ?
+          <div className='h-[37.2rem] flex flex-col items-center justify-center animate-pulse rounded bg-french-gray font-link text-ultra-violet'>
+            <p>Loading</p>
+          </div>
+          :
+          <div className='flex-col items-center justify-center'>
+            {!cameraScreen ?
+              <div className="flex flex-col justify-center items-center pt-16">
+                <h1 className="text-5xl text-ultra-violet font-link">SCAN</h1>
+                <h2 className="text-2xl text-ultra-violet font-link">someone joins you</h2>
+                <QRCode className="qr-code justify-centre py-6" value={state.peerId} />
+                <div className="cursor-pointer transition duration-300 hover:scale-110">
+                  <code
+                    onClick={() => {
+                      setIdCopy(true);
+                      setTimeout(() => setIdCopy(false), 2000);
+                      navigator.clipboard.writeText(state.peerId)
+                    }}
+                    className="text-dim-gray bg-french-gray-lite rounded-lg font-link p-1">{state.peerId}
+                  </code>
                 </div>
-
-                :
-                <JoinScreen />
-              }
-              <div className="p-6">
-                <button
-                  className="btn bg-ultra-violet text-french-gray-lite hover:bg-maize-crayola hover:text-black focus:outline-none border-none"
-                  onClick={() => {
-                    setIdCopy(false);
-                    setCameraScreen(!cameraScreen);
-                  }}>
-                  {!cameraScreen ?
-                    "open scanner" :
-                    "close camera"
-                  }
-                </button>
+                <div className="flex flex-row pt-6">
+                  <form onSubmit={onPressJoin}>
+                    <input
+                      type="text"
+                      placeholder="enter code..."
+                      className="input w-full max-w-xs bg-white text-dim-gray font-link"
+                      onChange={(e) => { setCode(e.target.value) }}
+                    />
+                  </form>
+                  <button
+                    className="btn font-link focus:outline-none"
+                    onClick={onPressJoin}>Join
+                  </button>
+                </div>
               </div>
-            </>
-          }
-        </div>
+
+              :
+              <JoinScreen />
+            }
+            <div className="flex flex-col p-6 items-center">
+              <button
+                className="btn bg-ultra-violet text-french-gray-lite hover:bg-saffron hover:text-black focus:outline-none border-none"
+                onClick={() => {
+                  setIdCopy(false);
+                  setCameraScreen(!cameraScreen);
+                }}>
+                {!cameraScreen ?
+                  "open scanner" :
+                  "close camera"
+                }
+              </button>
+            </div>
+          </div>
+        }
       </main>
+      <footer className="footer footer-center p-9 bg-dim-gray text-base-content">
+        <div>
+          <p>Copyright © 2023 - All right reserved by kongi</p>
+        </div>
+      </footer>
     </>
   )
 }

@@ -6,7 +6,8 @@ import { useError } from '@/hooks/useError';
 import dynamic from 'next/dynamic';
 
 const DocViewer = dynamic(() => import("@cyntler/react-doc-viewer"), { ssr: false });
-import { AudioRenderer, SvgRenderer, VideoRenderer, ZipRenderer } from '@/lib/customDocViewerRenderers';
+import { AudioRenderer, FileRenderer, SvgRenderer, VideoRenderer, ZipRenderer } from '@/lib/customDocViewerRenderers';
+import { DocViewerRenderers } from '@cyntler/react-doc-viewer';
 
 const docViewerTheme = {
   primary: "#F7C546",
@@ -20,18 +21,7 @@ const docViewerTheme = {
 
 export default function Chat() {
   const [renderers, setRenderers] = useState([]);
-  const getRenderers = async () => {
-    // setRenderers((prev) => {
-    //   const newRenderers = [...prev];
-    //   const newRenderer = (await import('@cyntler/react-doc-viewer/')).;
-    //   newRenderers
 
-    //   return
-    // }
-    const renderersImport = (await import('@cyntler/react-doc-viewer/')).DocViewerRenderers;
-    renderersImport.push(VideoRenderer, AudioRenderer, ZipRenderer, SvgRenderer);
-    setRenderers(renderersImport);
-  }
   const inputRef = useRef<HTMLDivElement>(null);
   const messagesListRef = useRef(null);
   const [msgInputValue, setMsgInputValue] = useState("");
@@ -44,6 +34,19 @@ export default function Chat() {
   const [file, setFile] = useState<File | null>(null);
 
   useEffect(() => {
+    // TODO: The custom components reside in the state array and don't get mutated
+    const getRenderers = async () => {
+      // setRenderers((prev) => {
+      //   const newRenderers = [...prev];
+      //   const newRenderer = (await import('@cyntler/react-doc-viewer/')).;
+      //   newRenderers
+
+      //   return
+      // }
+      const renderersImport = (await import('@cyntler/react-doc-viewer/')).DocViewerRenderers;
+      renderersImport.push(VideoRenderer, AudioRenderer, ZipRenderer, SvgRenderer, FileRenderer);
+      setRenderers(renderersImport);
+    }
     getRenderers();
   }, [])
 
@@ -188,7 +191,7 @@ export default function Chat() {
           </div>
 
           <button
-            className="btn bg-ultra-violet text-french-gray-lite hover:bg-maize-crayola hover:text-black focus:outline-none border-none"
+            className="btn bg-ultra-violet text-french-gray-lite hover:bg-saffron hover:text-black focus:outline-none border-none"
             onClick={() => {
               setError("Hey man from chat");
             }}>
@@ -217,10 +220,12 @@ export default function Chat() {
                                 className="bg-black rounded-lg"
                                 pluginRenderers={renderers}
                               />
-                              {/* @ts-ignore TODO: remove once blob metadata is ther */}
-                              <a href={m.payload.src} download={m.payload.src} className="text-center mt-3 p-1 rounded-lg  text-white bg-french-gray-lite hover:bg-french-gray">
-                                Download
-                              </a>
+                              {m.direction == 'outgoing' ? <></> :
+                                // @ts-ignore TODO: remove once blob metadata is ther 
+                                <a href={m.payload.src} download={m.payload.src} className="text-center mt-3 p-1 rounded-lg  text-white bg-french-gray-lite hover:bg-french-gray">
+                                  Download
+                                </a>
+                              }
                             </div>
                           </Message.CustomContent>
                         </Message>
@@ -250,10 +255,16 @@ export default function Chat() {
                               // @ts-ignore TODO: remove once blob metadata is ther
                               documents={[{ uri: window.URL.createObjectURL(m.payload.src), fileName: m.payload.fileName }]}
                               theme={docViewerTheme}
-                              className="bg-black"
+                              className="bg-black w-full"
                               pluginRenderers={renderers}
                             />
                           </Message.CustomContent>
+                          {m.direction == 'outgoing' ? <></> :
+                            // @ts-ignore TODO: remove once blob metadata is ther 
+                            <a href={window.URL.createObjectURL(m.payload.src)} download={window.URL.createObjectURL(m.payload.src)} className="text-center mt-3 p-1 rounded-lg  text-white bg-french-gray-lite hover:bg-french-gray">
+                              Download
+                            </a>
+                          }
                         </Message>
                       )
                     }
@@ -265,14 +276,16 @@ export default function Chat() {
                         <Message.CustomContent>
                           <div className="flex flex-col">
                             <p>{m.message}</p>
-                            <button
-                              onClick={() => {
-                                setIdCopy(true);
-                                setTimeout(() => setIdCopy(false), 1000);
-                                navigator.clipboard.writeText(m.message)
-                              }}
-                              className='btn btn-xs btn-ghost bg-french-gray-lite hover:bg-french-gray'>Copy
-                            </button>
+                            {m.direction == 'outgoing' ? <></> :
+                              <button
+                                onClick={() => {
+                                  setIdCopy(true);
+                                  setTimeout(() => setIdCopy(false), 1000);
+                                  navigator.clipboard.writeText(m.message)
+                                }}
+                                className='btn btn-xs btn-ghost bg-french-gray-lite hover:bg-french-gray normal-case'>Copy
+                              </button>
+                            }
                           </div>
                         </Message.CustomContent>
 
@@ -315,8 +328,8 @@ export default function Chat() {
                   />
                   {/* <img className="object-contain w-screen rounded-lg" src={window.URL.createObjectURL(file)} /> */}
                   <button
-                    className="btn text-white hover:bg-french-gray bg-wisteria btn-ghost justify-center align-items h-10 mt-5"
-                    onClick={() => setFile(null)}>Remove file</button>
+                    className="btn font-link normal-case text-white hover:bg-french-gray bg-wisteria btn-ghost justify-center align-items h-10 mt-5"
+                    onClick={() => setFile(null)}>REMOVE FILE</button>
                 </div>
               }
             </div>

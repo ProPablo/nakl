@@ -23,7 +23,7 @@ module.exports = {
       'white': '#fff',
       'black': '#3A3A3A',
       'wisteria': '#A49CCD',
-      'maize-crayola': '#F7C546',
+      'saffron': '#F7C546',
     },
   },
   plugins: [
