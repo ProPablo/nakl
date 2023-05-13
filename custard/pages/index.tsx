@@ -109,7 +109,7 @@ export default function Home() {
   }, [])
 
   return (
-    <>
+    <div className='overflow-x-hidden'>
       {/* Fast Track MODAL */}
       <QuickModal peerId={state.peerId} />
 
@@ -123,7 +123,7 @@ export default function Home() {
       </div>
 
       {/* NAVBAR */}
-      <div className="navbar bg-lavender px-8 z-10">
+      <div className="navbar bg-lavender px-10 z-10">
 
         {/* Workaround for centering the title div */}
         {/* <div className="navbar-left px-8 opacity-0" /> */}
@@ -161,7 +161,7 @@ export default function Home() {
           :
           <div className='flex-col items-center justify-center'>
             {!cameraScreen ?
-              <div className="flex flex-col justify-center items-center pt-16">
+              <div className="flex flex-col justify-center items-center pt-10">
                 <h1 className="text-5xl text-ultra-violet font-link">SCAN</h1>
                 <h2 className="text-2xl text-ultra-violet font-link">someone joins you</h2>
                 <QRCode className="qr-code justify-centre py-6" value={state.peerId} />
@@ -194,9 +194,9 @@ export default function Home() {
               :
               <JoinScreen />
             }
-            <div className="flex flex-col p-6 items-center">
+            <div className="flex flex-col p-6 pb-12 items-center">
               <button
-                className="btn bg-ultra-violet text-french-gray-lite hover:bg-saffron hover:text-black focus:outline-none border-none"
+                className="btn bg-ultra-violet text-french-gray-lite hover:bg-saffron hover:text-ultra-violet font-link focus:outline-none border-none"
                 onClick={() => {
                   setIdCopy(false);
                   setCameraScreen(!cameraScreen);
@@ -210,11 +210,11 @@ export default function Home() {
           </div>
         }
       </main>
-      <footer className="footer footer-center p-9 bg-dim-gray text-base-content">
+      <footer className="footer footer-center p-9 bottom-0 bg-dim-gray text-base-content">
         <div>
           <p>Copyright © 2023 - All right reserved by kongi</p>
         </div>
       </footer>
-    </>
+    </div>
   )
 }

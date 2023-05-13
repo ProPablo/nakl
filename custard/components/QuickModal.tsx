@@ -24,9 +24,9 @@ function QuickModalImpure(props: ModalProps) {
 							<h1 className="text-5xl text-ultra-violet text-center font-link py-6 pt-9">QUICK JOIN</h1>
 						</div>
 						<div className="flex flex-col justify-center items-center">
-							<QRCode className="qr-code justify-centre py-6 pt-8" value={`${URL}/quick/${props.peerId}`} />
-							<div className="modal-action pb-5 pl-96">
-								<label htmlFor="quick-connect-modal" className="btn font-link">Close</label>
+							<QRCode className="qr-code justify-centre pt-8" value={`${URL}/quick/${props.peerId}`} />
+							<div className="modal-action pb-5">
+								<label htmlFor="quick-connect-modal" className="btn font-link hover:bg-saffron bg-ultra-violet hover:text-ultra-violet focus:outline-none border-none">Close</label>
 							</div>
 						</div>
 					</div>
