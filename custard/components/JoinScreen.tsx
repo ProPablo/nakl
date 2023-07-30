@@ -1,10 +1,13 @@
+'use client'
 import { GlobalContext } from "@/pages/_app";
 import router from "next/router";
 import { useContext, useState } from "react";
 import type { OnResultFunction } from 'react-qr-reader';
-import dynamic from 'next/dynamic';
+// import dynamic from 'next/dynamic';
+import { QrReader } from "react-qr-reader";
 
-const QrReader = dynamic(() => import("react-qr-reader").then((qr) => qr.QrReader), { ssr: false });
+// const QrReader = dynamic(() => import("react-qr-reader").then((qr) => qr.QrReader), { ssr: false });
+
 
 const videoStyle: React.CSSProperties = {
 	position: "relative",

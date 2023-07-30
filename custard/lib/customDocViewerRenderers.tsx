@@ -48,7 +48,7 @@ export const ZipRenderer: DocRenderer = ({
 }) => {
 	if (!currentDocument) return null;
 	return (
-		<div className="flex flex-col justify-center items-center bg-french-gray-lite overflow-hidden py-16">
+		<div className="flex flex-col justify-center items-center bg-french-gray-lite overflow-hidden p-6">
 			<img className="flex-1 object-contain h-10 w-10 items-center" src="/zip.svg"/>
 			{/* <a href={currentDocument.uri} download={currentDocument.fileName} className="p-3 rounded-lg font-link text-white bg-ultra-violet">
 				Download

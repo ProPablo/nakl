@@ -199,8 +199,8 @@ export default function Chat() {
           </button>
         </div>
 
-        <div className="flex flex-1 overflow-auto flex-row bg-lavender">
-          <div className="w-2/3 p-3">
+        <div className="flex lg:flex-row flex-col flex-1 overflow-auto bg-lavender">
+          <div className="lg:w-2/3 p-3 lg:h-auto h-full">
             <MainContainer>
               <ChatContainer>
                 <MessageList autoScrollToBottom ref={messagesListRef}>
@@ -307,15 +307,14 @@ export default function Chat() {
             </MainContainer>
           </div>
 
-          <div className="flex w-1/3 justify-center items-center shadow-inner bg-lavender">
+          <div className="flex lg:w-1/3 justify-center items-center shadow-inner bg-lavender">
             <div className={`flex border-dashed border-2 justify-center w-[100%] mx-5 rounded-lg border-wisteria ${file == null ? 'h-[75%]' : 'h-fit'}`}>
               {file == null ?
 
                 <input
                   className="file-input indent-[-900em] file-input-ghost w-[100%] h-[100%]"
                   id='file' type="file" name="file" title="Choose or drag file here"
-                  onChange={changeAttachHandler}
-                />
+                  onChange={changeAttachHandler} />
 
                 :
 
