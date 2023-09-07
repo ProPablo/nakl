@@ -11,9 +11,6 @@ const config = {
 	
 	vitePlugin: {
 		inspector: true,
-		experimental: {
-			inspector: true,
-		},
 	},
 	kit: {
 		// adapter-auto only supports some environments, see https://kit.svelte.dev/docs/adapter-auto for a list.
