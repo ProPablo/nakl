@@ -71,12 +71,19 @@ export default function Chat() {
         });
       }
       else if (data instanceof ArrayBuffer) {
+      console.log("We have an array buffer.");
+      
         const newBlob = new Blob([data]);
         addImage(newBlob, true);
       }
       else if (data instanceof Blob) {
         console.log("We have an image.");
         addImage(data, true);
+      } 
+      else if (data instanceof Uint8Array) {
+        console.log("We have a Uint8arr.");
+        const newBlob = new Blob([data]);
+        addImage(newBlob, true);
       }
     })
     return () => {
@@ -113,12 +120,12 @@ export default function Chat() {
     inputRef.current.focus();
   }
 
-  const sendAttachHandler = (event) => {
+  const sendAttachHandler = async (event) => {
     console.log({file});
     if (file.type.startsWith("image/")) addImage(file, false);
     // else if (file.type.startsWith("video/")) addVideo(file, false);
 
-    window.NAKL_CONNECTION.send(file);
+    window.NAKL_CONNECTION.send(await file.arrayBuffer());
     setFile(null);
   }
 
