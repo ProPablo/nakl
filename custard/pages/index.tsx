@@ -24,10 +24,12 @@ export const setupPeerPage = async () => {
   let PORT = parseInt(process.env.NEXT_PUBLIC_PORT);
   let PEER_PATH = process.env.NEXT_PUBLIC_PEERPATH;
 
-  if (window.location.hostname == 'localhost') {
-    HOST = 'localhost';
-    PORT = 9000;
-  }
+  // All configurations hsould simply be entered manually from the .env file, no logic should impare in that decision
+
+  // if (window.location.hostname == 'localhost') {
+  //   HOST = 'localhost';
+ //   PORT = 9000;
+  // }
 
   // loading library first 
   // Tested that the network import only happens once on page load
