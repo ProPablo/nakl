@@ -1,4 +1,5 @@
-import adapter from '@sveltejs/adapter-auto';
+// import adapter from '@sveltejs/adapter-auto';
+import adapter from '@sveltejs/adapter-static';
 import { vitePreprocess } from '@sveltejs/kit/vite';
 
 
@@ -16,7 +17,13 @@ const config = {
 		// adapter-auto only supports some environments, see https://kit.svelte.dev/docs/adapter-auto for a list.
 		// If your environment is not supported or you settled on a specific environment, switch out the adapter.
 		// See https://kit.svelte.dev/docs/adapters for more information about adapters.
-		adapter: adapter()
+		
+
+		// Look at link below for what the fallback should be on vercel, prolly some kind of 404
+		// https://kit.svelte.dev/docs/single-page-apps#usage
+		adapter: adapter( {
+			fallback: 'index.html'
+		})
 	}
 };
 export default config;
