@@ -5,13 +5,7 @@ import { useContext, useEffect, useState } from 'react';
 import { GlobalContext } from './_app';
 import { useRouter } from 'next/router';
 
-enum LogLevel {
-  Disabled = 0,
-  Errors = 1,
-  Warnings = 2,
-  All = 3
-}
-import type { DataConnection, Peer, PeerJSOption } from "peerjs"
+import { DataConnection, Peer, PeerConnectOption, PeerJSOption } from "peerjs"
 
 import QuickModal from '@/components/QuickModal';
 import JoinScreen from '@/components/JoinScreen';
@@ -37,8 +31,8 @@ export const setupPeerPage = async () => {
   const peerOptions: PeerJSOption = {
     host: HOST,
     port: PORT,
-    debug: LogLevel.All,
-    path: PEER_PATH
+    debug: 3,
+    path: PEER_PATH,
   };
   console.log(`Making new peer, connecting with options: `, peerOptions);
 
