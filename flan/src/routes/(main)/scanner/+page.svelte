@@ -1,18 +1,25 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { Html5QrcodeScanner, type QrcodeErrorCallback, type QrcodeSuccessCallback } from 'html5-qrcode';
+	import { onMount, getContext } from 'svelte';
+	import {
+		Html5QrcodeScanner,
+		type QrcodeErrorCallback,
+		type QrcodeSuccessCallback
+	} from 'html5-qrcode';
+
 	let scanned = '';
+	
+	// const peer = getContext('peer');
 	onMount(() => {
 		const onScanSuccess: QrcodeSuccessCallback = (decodedText, decodedResult) => {
-			if (decodedText == "") return
+			if (decodedText == '') return;
 			console.log(`Code matched = ${decodedText}`, decodedResult);
 			scanned = decodedText;
-			console.log("GO CHAT");
+			console.log('GO CHAT');
 		};
 
 		const onScanFailure: QrcodeErrorCallback = (error) => {
 			// console.warn(`Code scan error = ${error}`);
-		}
+		};
 
 		let html5QrcodeScanner = new Html5QrcodeScanner(
 			'scanner',
@@ -21,8 +28,11 @@
 		);
 		html5QrcodeScanner.render(onScanSuccess, onScanFailure);
 	});
-
 </script>
+
 <div>
+	<h1 class="h1">JOIN</h1>
+	<p class="h1">you join someone</p>
+
 	<div id="scanner" class="w-[600px]" />
 </div>
