@@ -6,15 +6,17 @@
 		type QrcodeErrorCallback,
 		type QrcodeSuccessCallback
 	} from 'html5-qrcode';
+	import { goto } from '$app/navigation';
 
-	let scanned = '';
 
 	// const peer = getContext('peer');
 	onMount(() => {
 		const onScanSuccess: QrcodeSuccessCallback = (decodedText, decodedResult) => {
 			if (decodedText == '') return;
 			console.log(`Code matched = ${decodedText}`, decodedResult);
-			scanned = decodedText;
+			const slug = decodedText.split('/').pop();
+			goto(`/connect/${slug}`);
+			// Navigate to slug page
 			console.log('GO CHAT');
 		};
 
