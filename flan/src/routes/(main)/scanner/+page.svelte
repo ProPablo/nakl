@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount, getContext } from 'svelte';
+	import { peerId } from '$lib/stores';
 	import {
 		Html5QrcodeScanner,
 		type QrcodeErrorCallback,
@@ -7,7 +8,7 @@
 	} from 'html5-qrcode';
 
 	let scanned = '';
-	
+
 	// const peer = getContext('peer');
 	onMount(() => {
 		const onScanSuccess: QrcodeSuccessCallback = (decodedText, decodedResult) => {
@@ -33,6 +34,7 @@
 <div>
 	<h1 class="h1">JOIN</h1>
 	<p class="h1">you join someone</p>
+	<code>{$peerId}</code>
 
 	<div id="scanner" class="w-[600px]" />
 </div>
