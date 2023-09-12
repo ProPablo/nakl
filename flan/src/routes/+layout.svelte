@@ -5,7 +5,7 @@
 	// Highlight JS
 	import hljs from 'highlight.js';
 	import 'highlight.js/styles/github-dark.css';
-	import { AppBar, storeHighlightJs } from '@skeletonlabs/skeleton';
+	import { AppBar, AppShell, storeHighlightJs } from '@skeletonlabs/skeleton';
 	storeHighlightJs.set(hljs);
 
 	// Floating UI for Popups
@@ -13,6 +13,7 @@
 	import { storePopup } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
+	import Header from '$lib/Header.svelte';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
 	onMount(() => {
@@ -20,20 +21,4 @@
 	});
 </script>
 
-<div class="h-full flex flex-col justify-center items-center">
-	<AppBar
-		gridColumns="grid-cols-3"
-		slotDefault="place-self-center"
-		slotTrail="place-content-end"
-		class="w-screen"
-	>
-		<svelte:fragment slot="lead">{''}</svelte:fragment>
-		<a class="hover:bg-slate-400 rounded-lg duration-500 transition-colors" href="/">
-			<a href="/">
-				<Logo width="100" height="100" />
-			</a>
-		</a>
-		<svelte:fragment slot="trail" />
-	</AppBar>
-	<slot />
-</div>
+<slot />

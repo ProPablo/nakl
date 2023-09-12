@@ -6,6 +6,8 @@
 
 	$: qrLink = `${$page.url.origin}/connect/${$peerId}`;
 
+	let connectInput: string;
+
 </script>
 
 <div class="container h-full mx-auto flex justify-center items-center">
@@ -18,7 +20,15 @@
 			<QRCode bind:link={qrLink} />
 		{/if}
 		<code>{$peerId}</code>
-		<input class="input" type="text" placeholder="Input" />
+		<input class="input" type="text" placeholder="Input" bind:value={connectInput} />
+		<button
+			type="button"
+			class="btn variant-filled"
+			on:click={() => {
+				goto(`/connect/${connectInput}`);
+			}}
+			>Connect
+		</button>
 
 		<button
 			type="button"
