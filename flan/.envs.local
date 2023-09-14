@@ -1,4 +1,0 @@
-# This file will take precedence over .env
-PUBLIC_HOST=localhost
-PUBLIC_PORT=9000
-PUBLIC_PEERPATH=/peer
