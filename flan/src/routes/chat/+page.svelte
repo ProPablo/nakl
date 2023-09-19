@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { AppShell, FileDropzone } from '@skeletonlabs/skeleton';
-	import type { DataConnection } from 'peerjs';
+	import type { BufferedNotifyConnection, DataConnection } from 'peerjs';
 	import { onMount } from 'svelte';
 	import Header from '$lib/Header.svelte';
 	import { goto } from '$app/navigation';
@@ -21,7 +21,7 @@
 		}
 	];
 
-	let conn: DataConnection;
+	let conn: BufferedNotifyConnection;
 	let messages: IMessage[] = sampleMessages;
 	let currentMessage: string = '';
 	let inputFile: File | null = null;
@@ -39,8 +39,9 @@
 		setTimeout(() => {
 			scrollChatBottom('smooth');
 		}, 0);
+		debugger;
 
-		conn.send(currentMessage);
+		const res = conn.send(currentMessage);
 
 		currentMessage = '';
 	}
@@ -84,7 +85,8 @@
 		//     goto('/');
 		//     return;
 		// }
-		conn = window.NAKL_PEER_CONNECTION;
+		// debugger;
+		conn = window.NAKL_PEER_CONNECTION as BufferedNotifyConnection;
 		console.log(conn);
 
 		conn.on('data', (data) => {
@@ -103,6 +105,10 @@
 				const newBlob = new Blob([data]);
 				addImage(newBlob, true);
 			}
+		});
+
+		conn.on('sentChunk', (chunk) => {
+			console.log('Sent chunk', chunk);
 		});
 	});
 

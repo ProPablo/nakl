@@ -16,10 +16,14 @@
 	onMount(() => {
 		//Peer exists for sure, we can do logic here to connect to Peer B
 		console.log('connect mounted', $page);
-		const conn = window.NAKL_PEER?.connect(connectID, { serialization: 'cbor'});
+		debugger;
+		const conn = window.NAKL_PEER?.connect(connectID, { serialization: 'notify'});
 		// const conn = window.NAKL_PEER?.connect(connectID);
 		// TODO handle connection error
-		if (!conn) return;
+		if (!conn) {
+			console.error('Connection failed');
+			return;
+		};
 		window.NAKL_PEER_CONNECTION = conn;
 		conn.on('open', onConnOpen);
 	});
