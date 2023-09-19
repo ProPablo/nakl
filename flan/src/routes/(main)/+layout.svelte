@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount, setContext } from 'svelte';
-	import Peer, { LogLevel } from 'peerjs';
+	import Peer, { CborPeer, LogLevel,  } from 'peerjs';
 	// For some reason, imports of these types as types isnt working
 	import type { PeerJSOption, DataConnection } from 'peerjs';
 	import { PUBLIC_HOST, PUBLIC_PEERPATH, PUBLIC_PORT } from '$env/static/public';

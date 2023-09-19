@@ -139,14 +139,14 @@
 			on:submit|preventDefault={sendMessage}
 			class="input-group input-group-divider grid-cols-[auto_1fr_auto] rounded-container-token"
 		>
-			<!-- Using prevent default here on this button for some reason bugs out the rest of the form -->
+			<!-- Using prevent default here on this button for some reason bugs out the rest of the form, TO COUNTER:
+				Specify which button is just regular button and which is the relevant submit button
+			-->
 			<button
 				class="input-group-shim"
-				on:click={(e) => {
-					e.preventDefault();
-					sendFile();
-				}}>+</button
-			>
+				type="button"
+				on:click|preventDefault={sendFile}
+				>Send File</button >
 			<!-- TODO: handle differently for textinput -->
 			<input
 				bind:value={currentMessage}
@@ -156,7 +156,7 @@
 				id="prompt"
 				placeholder="Write a message..."
 			/>
-			<button class="variant-filled-primary">Send</button>
+			<button type="submit" class="variant-filled-primary">Send</button>
 		</form>
 	</svelte:fragment>
 </AppShell>
