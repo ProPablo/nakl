@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { AppShell, FileDropzone } from '@skeletonlabs/skeleton';
-	import type { BufferedNotifyConnection, DataConnection } from 'peerjs';
+	import type { BufferedNotifyConnection, DataConnection, SendData } from 'peerjs';
 	import { onMount } from 'svelte';
 	import Header from '$lib/Header.svelte';
 	import { goto } from '$app/navigation';
@@ -39,21 +39,29 @@
 		setTimeout(() => {
 			scrollChatBottom('smooth');
 		}, 0);
-		debugger;
 
-		const res = conn.send(currentMessage);
+		const nextId = conn.nextID;
+		conn.on('sentChunk', (chunk) => {
+			if (chunk.id === nextId) {
+				console.log('Sent chunk', chunk);
+				if (chunk.n == chunk.total - 1) {
+					console.log('Sent last chunk');
+				}
+			}
+		});
+
+		conn.send(currentMessage);
 
 		currentMessage = '';
 	}
 
 	let elemChat: HTMLElement;
+	let elemChatEnd: HTMLElement;
 
 	// TODO: this doesnt work lole
 	// https://www.skeleton.dev/elements/chat
 	function scrollChatBottom(behavior?: ScrollBehavior): void {
-		// debugger;
-		elemChat.scrollTo(0, elemChat.scrollHeight);
-		elemChat.scrollTo({ top: elemChat.scrollHeight, behavior });
+		elemChatEnd.scrollIntoView({ behavior: 'smooth' });
 	}
 
 	async function sendFile() {
@@ -63,6 +71,16 @@
 		var arr = await inputFile.arrayBuffer();
 		const blob = new Blob([inputFile]);
 		addImage(blob, true);
+		const nextId = conn.nextID;
+
+		conn.on('sentChunk', (chunk) => {
+			if (chunk.id === nextId) {
+				console.log('Sent chunk', chunk);
+				if (chunk.n == chunk.total - 1) {
+					console.log('Sent last chunk');
+				}
+			}
+		});
 		conn.send(arr);
 	}
 
@@ -75,8 +93,8 @@
 				src: URL.createObjectURL(data)
 			}
 		};
-        messages.push(newMessageModel);
-        messages = messages;
+		messages.push(newMessageModel);
+		messages = messages;
 	};
 
 	onMount(() => {
@@ -106,10 +124,15 @@
 				addImage(newBlob, true);
 			}
 		});
+		return () => {
+			conn.close();
+			conn.off('data');
+			conn.off('sentChunk');
+		};
 
-		conn.on('sentChunk', (chunk) => {
-			console.log('Sent chunk', chunk);
-		});
+		// conn.on('sentChunk', (chunk) => {
+		// 	console.log('Sent chunk', chunk);
+		// });
 	});
 
 	function handleFileChange(e: Event): void {
@@ -130,7 +153,7 @@
 		{#each messages as message}
 			<Message {message} />
 		{/each}
-		<div>End Chat</div>
+		<div bind:this={elemChatEnd}></div>
 	</div>
 
 	<svelte:fragment slot="sidebarRight">
@@ -148,11 +171,9 @@
 			<!-- Using prevent default here on this button for some reason bugs out the rest of the form, TO COUNTER:
 				Specify which button is just regular button and which is the relevant submit button
 			-->
-			<button
-				class="input-group-shim"
-				type="button"
-				on:click|preventDefault={sendFile}
-				>Send File</button >
+			<button class="input-group-shim" type="button" on:click|preventDefault={sendFile}
+				>Send File</button
+			>
 			<!-- TODO: handle differently for textinput -->
 			<input
 				bind:value={currentMessage}
