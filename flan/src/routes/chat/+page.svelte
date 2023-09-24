@@ -91,7 +91,7 @@
 			toastStore.trigger(toastMessage);
 			// --- UNCOMMENT FOR PROD
 			// goto('/');
-			// return;
+			return;
 		}
 		conn = window.NAKL_PEER_CONNECTION;
 		console.log(conn);
