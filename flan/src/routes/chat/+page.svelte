@@ -3,11 +3,10 @@
 	import type { DataConnection } from 'peerjs';
 	import { onMount } from 'svelte';
 	import Header from '$lib/Header.svelte';
-	import { goto } from '$app/navigation';
 	import Message from '$lib/Message.svelte';
 	import { type IMessage, MessageType } from '$lib/types';
 	import { getToastStore } from '@skeletonlabs/skeleton';
-	import type { ToastSettings, ToastStore } from '@skeletonlabs/skeleton';
+	import type { ToastSettings } from '@skeletonlabs/skeleton';
 	
 	let sampleMessages: IMessage[] = [
 		{

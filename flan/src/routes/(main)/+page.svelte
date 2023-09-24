@@ -4,7 +4,7 @@
 	import QRCode from '$lib/QRCode.svelte';
 	import { page } from '$app/stores';
 	import { getToastStore } from '@skeletonlabs/skeleton';
-	import type { ToastSettings, ToastStore } from '@skeletonlabs/skeleton';
+	import type { ToastSettings } from '@skeletonlabs/skeleton';
 
 	const toastStore = getToastStore();
 
