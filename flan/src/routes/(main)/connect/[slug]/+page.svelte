@@ -16,7 +16,7 @@
 	onMount(() => {
 		//Peer exists for sure, we can do logic here to connect to Peer B
 		console.log('connect mounted', $page);
-		debugger;
+		// debugger;
 		const conn = window.NAKL_PEER?.connect(connectID, { serialization: 'notify'});
 		// const conn = window.NAKL_PEER?.connect(connectID);
 		// TODO handle connection error
