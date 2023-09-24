@@ -4,6 +4,7 @@ trailingComma = "none"
 printWidth = 100
 # https://stackoverflow.com/questions/53927236/how-to-disable-prettier-settings-creating-new-line-of-of-html-tag
 svelteBracketNewLine = false
+htmlWhitespaceSensitivity = 'ignore'
 plugins = ["prettier-plugin-svelte"]
 pluginSearchDirs = ["."]
 

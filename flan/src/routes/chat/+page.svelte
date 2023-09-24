@@ -7,7 +7,7 @@
 	import { type IMessage, MessageType } from '$lib/types';
 	import { getToastStore } from '@skeletonlabs/skeleton';
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
-	
+
 	let sampleMessages: IMessage[] = [
 		{
 			sent: true,
@@ -84,7 +84,10 @@
 	onMount(() => {
 		if (!window.NAKL_PEER_CONNECTION) {
 			console.log('No peer connection');
-			const toastMessage: ToastSettings = { message: 'No peer ID, go home 😋', 	background: 'variant-filled-error', };
+			const toastMessage: ToastSettings = {
+				message: 'No peer ID, go home 😋',
+				background: 'variant-filled-error'
+			};
 			toastStore.trigger(toastMessage);
 			// --- UNCOMMENT FOR PROD
 			// goto('/');
@@ -135,8 +138,9 @@
 
 	<svelte:fragment slot="sidebarRight">
 		<FileDropzone name="files" on:change={handleFileChange}>
-			<svelte:fragment slot="lead"
-				><i class="fa-solid fa-file-arrow-up text-4xl" /></svelte:fragment>
+			<svelte:fragment slot="lead">
+				<i class="fa-solid fa-file-arrow-up text-4xl" />
+			</svelte:fragment>
 			<svelte:fragment slot="meta">PNG, JPG, and GIF allowed.</svelte:fragment>
 		</FileDropzone>
 	</svelte:fragment>
@@ -147,8 +151,9 @@
 			<!-- Using prevent default here on this button for some reason bugs out the rest of the form, TO COUNTER:
 				Specify which button is just regular button and which is the relevant submit button
 			-->
-			<button class="input-group-shim" type="button" on:click|preventDefault={sendFile}
-				>Send File</button>
+			<button class="input-group-shim" type="button" on:click|preventDefault={sendFile}>
+				Send File
+			</button>
 			<!-- TODO: handle differently for textinput -->
 			<input
 				bind:value={currentMessage}
