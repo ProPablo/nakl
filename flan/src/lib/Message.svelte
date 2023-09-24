@@ -3,7 +3,7 @@
 	import { getToastStore } from '@skeletonlabs/skeleton';
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
 	import CopyIcon from './Copy.svelte';
-	import { fade, fly, scale } from 'svelte/transition';
+	import { fly } from 'svelte/transition';
 
 	const toastStore = getToastStore();
 	export let message: IMessage;
@@ -27,7 +27,7 @@
 			<div class="card p-4 rounded-tr-none space-y-2 variant-soft-primary">
 				<header class="flex justify-between items-center">
 					<p class="font-bold">You</p>
-					<small class="opacity-50">{message.timestamp}</small>
+					<small class="opacity-50">{new Date(message.timestamp).toLocaleTimeString()}</small>
 				</header>
 				{#if message.type === MessageType.Text}
 					<p>{message.text}</p>
@@ -52,7 +52,7 @@
 			<div class="card p-4 variant-soft rounded-tl-none space-y-2">
 				<header class="flex justify-between items-center">
 					<p class="font-bold">Friend :)</p>
-					<small class="opacity-50">{message.timestamp}</small>
+					<small class="opacity-50">{new Date(message.timestamp).toLocaleTimeString()}</small>
 				</header>
 
 				{#if message.type === MessageType.Text}
