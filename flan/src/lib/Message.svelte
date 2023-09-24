@@ -37,7 +37,6 @@
 			</div>
 		</div>
 	{:else}
-		<!-- svelte-ignore a11y-no-static-element-interactions -->
 		<div
 			on:mouseenter={() => {
 				showCopy = true;
@@ -45,7 +44,11 @@
 			on:mouseleave={() => {
 				showCopy = false;
 			}}
-			class="grid grid-cols-[8fr_1fr] gap-2 mr-12 ml-3">
+			class="grid grid-cols-[6fr_1fr] gap-2 mr-12 ml-3"
+			aria-haspopup="true"
+			role="button"
+			tabindex={message.timestamp}
+			>
 			<div class="card p-4 variant-soft rounded-tl-none space-y-2">
 				<header class="flex justify-between items-center">
 					<p class="font-bold">Friend :)</p>
@@ -59,14 +62,13 @@
 				{/if}
 			</div>
 			{#if showCopy}
-				<div
+				<button
+					on:click={copyMsg}
 					in:fly={{ x: 20, duration: 500 }}
 					out:fly={{ x: 20, duration: 500 }}
 					class="grid items-center justify-center rounded-lg variant-soft">
-					<button on:click={copyMsg} class="btn-icon rounded-lg">
-						<CopyIcon height="30" width="30" />
-					</button>
-				</div>
+					<CopyIcon classes="btn-icon rounded-lg" height="30" width="30" />
+				</button>
 			{/if}
 		</div>
 	{/if}
