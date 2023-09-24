@@ -31,6 +31,7 @@
 			host: PUBLIC_HOST,
 			port: parseInt(PUBLIC_PORT),
 			path: PUBLIC_PEERPATH,
+			// BLOCKED: Transtion when peer js branch merged
 			debug: 3
 		};
 		let peer = new Peer(peerOptions);
