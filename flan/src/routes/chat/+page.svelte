@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { AppShell, FileDropzone } from '@skeletonlabs/skeleton';
-	import type { DataConnection } from 'peerjs';
+	import type { BufferedNotifyConnection } from 'peerjs';
 	import { onMount } from 'svelte';
 	import Header from '$lib/Header.svelte';
 	import Message from '$lib/Message.svelte';
@@ -23,8 +23,8 @@
 		}
 	];
 
+	let conn: BufferedNotifyConnection;
 	const toastStore = getToastStore();
-	let conn: DataConnection;
 	let messages: IMessage[] = sampleMessages;
 	let currentMessage: string = '';
 	let inputFile: File | null = null;
@@ -43,19 +43,28 @@
 			scrollChatBottom('smooth');
 		}, 0);
 
+		const nextId = conn.nextID;
+		conn.on('sentChunk', (chunk) => {
+			if (chunk.id === nextId) {
+				console.log('Sent chunk', chunk);
+				if (chunk.n == chunk.total - 1) {
+					console.log('Sent last chunk');
+				}
+			}
+		});
+
 		conn.send(currentMessage);
 
 		currentMessage = '';
 	}
 
 	let elemChat: HTMLElement;
+	let elemChatEnd: HTMLElement;
 
-	// TODO: this doesnt work lole
 	// https://www.skeleton.dev/elements/chat
 	function scrollChatBottom(behavior?: ScrollBehavior): void {
-		// debugger;
-		elemChat.scrollTo(0, elemChat.scrollHeight);
-		elemChat.scrollTo({ top: elemChat.scrollHeight, behavior });
+		//This part was solved by chat gippity
+		elemChatEnd.scrollIntoView({ behavior: 'smooth' });
 	}
 
 	async function sendFile() {
@@ -65,6 +74,16 @@
 		var arr = await inputFile.arrayBuffer();
 		const blob = new Blob([inputFile]);
 		addImage(blob, true);
+		const nextId = conn.nextID;
+
+		conn.on('sentChunk', (chunk) => {
+			if (chunk.id === nextId) {
+				console.log('Sent chunk', chunk);
+				if (chunk.n == chunk.total - 1) {
+					console.log('Sent last chunk');
+				}
+			}
+		});
 		conn.send(arr);
 	}
 
@@ -93,7 +112,7 @@
 			// goto('/');
 			return;
 		}
-		conn = window.NAKL_PEER_CONNECTION;
+		conn = window.NAKL_PEER_CONNECTION as BufferedNotifyConnection;
 		console.log(conn);
 
 		conn.on('data', (data) => {
@@ -113,6 +132,15 @@
 				addImage(newBlob, true);
 			}
 		});
+		return () => {
+			conn.close();
+			conn.off('data');
+			conn.off('sentChunk');
+		};
+
+		// conn.on('sentChunk', (chunk) => {
+		// 	console.log('Sent chunk', chunk);
+		// });
 	});
 
 	function handleFileChange(e: Event): void {
@@ -133,7 +161,7 @@
 		{#each messages as message}
 			<Message {message} />
 		{/each}
-		<div>End Chat</div>
+		<div bind:this={elemChatEnd} />
 	</div>
 
 	<svelte:fragment slot="sidebarRight">
