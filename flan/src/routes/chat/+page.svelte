@@ -158,7 +158,8 @@
 			<input
 				bind:value={currentMessage}
 				type="text"
-				class="bg-transparent border-0 ring-0"
+				autocomplete="off"
+				class="bg-transparent border-0 ring-0 p-3"
 				name="prompt"
 				id="prompt"
 				placeholder="Write a message..." />
