@@ -6,6 +6,9 @@
 	import { goto } from '$app/navigation';
 	import Message from '$lib/Message.svelte';
 	import { type IMessage, MessageType } from '$lib/types';
+	import { getToastStore } from '@skeletonlabs/skeleton';
+	import type { ToastSettings, ToastStore } from '@skeletonlabs/skeleton';
+	
 	let sampleMessages: IMessage[] = [
 		{
 			sent: true,
@@ -21,6 +24,7 @@
 		}
 	];
 
+	const toastStore = getToastStore();
 	let conn: DataConnection;
 	let messages: IMessage[] = sampleMessages;
 	let currentMessage: string = '';
@@ -74,16 +78,19 @@
 				src: URL.createObjectURL(data)
 			}
 		};
-        messages.push(newMessageModel);
-        messages = messages;
+		messages.push(newMessageModel);
+		messages = messages;
 	};
 
 	onMount(() => {
-		// if (!window.NAKL_PEER_CONNECTION) {
-		//     console.log('No peer connection');
-		//     goto('/');
-		//     return;
-		// }
+		if (!window.NAKL_PEER_CONNECTION) {
+			console.log('No peer connection');
+			const toastMessage: ToastSettings = { message: 'No peer ID, go home 😋', 	background: 'variant-filled-error', };
+			toastStore.trigger(toastMessage);
+			// --- UNCOMMENT FOR PROD
+			// goto('/');
+			// return;
+		}
 		conn = window.NAKL_PEER_CONNECTION;
 		console.log(conn);
 
@@ -129,24 +136,20 @@
 
 	<svelte:fragment slot="sidebarRight">
 		<FileDropzone name="files" on:change={handleFileChange}>
-			<svelte:fragment slot="lead"><i class="fa-solid fa-file-arrow-up text-4xl" /></svelte:fragment
-			>
+			<svelte:fragment slot="lead"
+				><i class="fa-solid fa-file-arrow-up text-4xl" /></svelte:fragment>
 			<svelte:fragment slot="meta">PNG, JPG, and GIF allowed.</svelte:fragment>
 		</FileDropzone>
 	</svelte:fragment>
 	<svelte:fragment slot="footer">
 		<form
 			on:submit|preventDefault={sendMessage}
-			class="input-group input-group-divider grid-cols-[auto_1fr_auto] rounded-container-token"
-		>
+			class="input-group input-group-divider grid-cols-[auto_1fr_auto] rounded-container-token">
 			<!-- Using prevent default here on this button for some reason bugs out the rest of the form, TO COUNTER:
 				Specify which button is just regular button and which is the relevant submit button
 			-->
-			<button
-				class="input-group-shim"
-				type="button"
-				on:click|preventDefault={sendFile}
-				>Send File</button >
+			<button class="input-group-shim" type="button" on:click|preventDefault={sendFile}
+				>Send File</button>
 			<!-- TODO: handle differently for textinput -->
 			<input
 				bind:value={currentMessage}
@@ -154,8 +157,7 @@
 				class="bg-transparent border-0 ring-0"
 				name="prompt"
 				id="prompt"
-				placeholder="Write a message..."
-			/>
+				placeholder="Write a message..." />
 			<button type="submit" class="variant-filled-primary">Send</button>
 		</form>
 	</svelte:fragment>

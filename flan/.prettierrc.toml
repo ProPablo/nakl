@@ -1,0 +1,13 @@
+useTabs = true
+singleQuote = true
+trailingComma = "none"
+printWidth = 100
+# https://stackoverflow.com/questions/53927236/how-to-disable-prettier-settings-creating-new-line-of-of-html-tag
+svelteBracketNewLine = false
+plugins = ["prettier-plugin-svelte"]
+pluginSearchDirs = ["."]
+
+[[overrides]]
+files = "*.svelte"
+  [overrides.options]
+  parser = "svelte"

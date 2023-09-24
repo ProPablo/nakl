@@ -16,9 +16,15 @@
 	import Header from '$lib/Header.svelte';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
+	// Initialise stores
+	import { initializeStores } from '@skeletonlabs/skeleton';
+	import { Toast } from '@skeletonlabs/skeleton';
+	initializeStores();
+
 	onMount(() => {
 		console.log('layout mounted', $page);
 	});
 </script>
 
+<Toast />
 <slot />
