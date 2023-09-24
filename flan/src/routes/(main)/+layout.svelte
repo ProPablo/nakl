@@ -51,11 +51,12 @@
 			<p>Loading & connecting to peer...</p>
 		{:else}
 			<slot />
-			<div>
-				<code>{$peerId}</code>
-			</div>
 		{/if}
 	</div>
 
-	<svelte:fragment slot="pageFooter">Page Footer</svelte:fragment>
+	<svelte:fragment slot="pageFooter">
+	<div class="flex items-center justify-center bg-slate-800 p-1">
+		kongi
+	</div>
+	</svelte:fragment>
 </AppShell>

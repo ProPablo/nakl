@@ -16,4 +16,4 @@
 	}
 </script>
 
-<canvas bind:this={QRCanvas} />
+<canvas bind:this={QRCanvas} class="rounded-lg"/>
