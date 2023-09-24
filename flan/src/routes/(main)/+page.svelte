@@ -3,11 +3,21 @@
 	import { peerId } from '$lib/stores';
 	import QRCode from '$lib/QRCode.svelte';
 	import { page } from '$app/stores';
+	import { getToastStore } from '@skeletonlabs/skeleton';
+	import type { ToastSettings } from '@skeletonlabs/skeleton';
+
+	const toastStore = getToastStore();
 
 	$: qrLink = `${$page.url.origin}/connect/${$peerId}`;
 
 	let connectInput: string;
 
+	function copyID() {
+		if (!$peerId) return;
+		const toastMessage: ToastSettings = { message: 'Peer ID copied 🤝' };
+		toastStore.trigger(toastMessage);
+		navigator.clipboard.writeText($peerId);
+	}
 </script>
 
 <div class="flex container h-full mx-auto justify-center items-center">
@@ -16,19 +26,22 @@
 		<p class="h1">someone joins you</p>
 		{#if $peerId}
 			<code>Go to <a href={qrLink} class="text-sky-400 text-center">{qrLink}</a></code>
-			<QRCode bind:link={qrLink}/>
+			<QRCode bind:link={qrLink} />
 		{/if}
-		<button on:click={() => {
-			if (!$peerId) return;
-			navigator.clipboard.writeText($peerId);
-		}}>
-			<code class="bg-slate-300 rounded-md text-slate-800 p-1 ">{$peerId}</code>
+		<button on:click={copyID} class="hover:scale-105 transition-transform">
+			<code class="bg-slate-300 rounded-md text-slate-800 p-1">{$peerId}</code>
 		</button>
-		
-		<form on:submit|preventDefault={() => {
-			goto(`/connect/${connectInput}`);
-		}} class="flex flex-row">
-			<input class="input p-2 rounded-lg" type="text" placeholder="Input" bind:value={connectInput} />
+
+		<form
+			on:submit|preventDefault={() => {
+				goto(`/connect/${connectInput}`);
+			}}
+			class="flex flex-row">
+			<input
+				class="input p-2 rounded-lg"
+				type="text"
+				placeholder="Input"
+				bind:value={connectInput} />
 			<button
 				type="button"
 				class="btn variant-filled rounded-lg"
@@ -50,6 +63,5 @@
 			</button>
 			<a type="button" class="btn variant-filled" href="/" data-sveltekit-reload>Refresh Peer </a>
 		</div>
-
 	</div>
 </div>
