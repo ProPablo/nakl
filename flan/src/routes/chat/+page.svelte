@@ -58,9 +58,9 @@
 	let elemChat: HTMLElement;
 	let elemChatEnd: HTMLElement;
 
-	// TODO: this doesnt work lole
 	// https://www.skeleton.dev/elements/chat
 	function scrollChatBottom(behavior?: ScrollBehavior): void {
+		//This part was solved by chat gippity
 		elemChatEnd.scrollIntoView({ behavior: 'smooth' });
 	}
 
