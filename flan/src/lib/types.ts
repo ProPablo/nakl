@@ -1,9 +1,11 @@
 export interface IMessage {
+    id?: number,
     text?: string;
     timestamp: number;
     sent: boolean;
     type: MessageType;
-    payload?: MessageImageContentProps;
+    payload?: MessageFileContentProps;
+    progess?: number;
 }
 
 export enum MessageType {
@@ -14,9 +16,26 @@ export enum MessageType {
     File,
 }
 
-export interface MessageImageContentProps {
-    src?:string;
-    width?:string|number;
-    height?:string|number;
-    alt?:string;
+export interface MessageFileContentProps {
+    src: string;
+    type?: string;
+    name: string;
+}
+
+export function isDataDto(data: unknown): data is MessageDTO {
+    return (!!data && typeof data === 'object' && 'type' in data);
+}
+
+
+export interface MessageDTO {
+    text?: string;
+    timestamp: number;
+    type: MessageType;
+    payload?: FileDTO;
+}
+
+export interface FileDTO {
+    data: ArrayBuffer;
+    name: string;
+    type: string;
 }
