@@ -6,7 +6,7 @@
 	import Message from '$lib/Message.svelte';
 	import { type IMessage, MessageType, type MessageDTO, isDataDto } from '$lib/types';
 	import { getToastStore } from '@skeletonlabs/skeleton';
-	import type { ToastSettings } from '@skeletonlabs/skeleton';
+	import { Drawer, type ToastSettings } from '@skeletonlabs/skeleton';
 	import FileInput from '$lib/FileInput.svelte';
 	import { peerId } from '$lib/stores';
 	import MobileFileInput from '$lib/MobileFileInput.svelte';
@@ -281,11 +281,20 @@
 	function showAttatchementPopup() {
 		console.log('showAttatchementPopup');
 	}
-	$: {
-		console.log(isSendDeactived);
-	}
 </script>
 
+<!-- In the future, this can be placed on the root level and the fileInput can be accessed with: -->
+<!-- {#if $drawerStore.id === 'example-1'}
+	const drawerSettings: DrawerSettings = {
+	id: 'example-2',
+	meta: { foo: 'bar', fizz: 'buzz', age: 40 }
+	};
+	drawerStore.open(drawerSettings);
+	//https://www.skeleton.dev/utilities/drawers
+-->
+<Drawer height="h-[70%]">
+	<FileInput bind:inputFile />
+</Drawer>
 <!-- Footer only shows up mobile, sidebarright only shows up normal -->
 <AppShell slotSidebarRight="hidden lg:flex max-w-72 w-72">
 	<svelte:fragment slot="header">
@@ -295,7 +304,6 @@
 		{#each messages as message}
 			<Message {message} />
 		{/each}
-		<!-- mvp add progress bar here -->
 		<div bind:this={elemChatEnd} />
 	</div>
 
@@ -305,19 +313,14 @@
 	<svelte:fragment slot="footer">
 		<form
 			on:submit|preventDefault={sendMessage}
-			class="input-group input-group-divider grid-cols-[auto_1fr_auto] rounded-container-token">
+			class="input-group input-group-divider lg:grid-cols-[1fr_auto] grid-cols-[auto_1fr_auto] rounded-container-token">
 			<!-- Workflow for mobile TODO: abstract to own component and bind to said component-->
 
 			<!-- Using prevent default here on this button for some reason bugs out the rest of the form, TO COUNTER:
 				Specify which button is just regular button and which is the relevant submit button
 			-->
-			<button
-				class=" input-group-shim"
-				type="button"
-				on:click|preventDefault={showAttatchementPopup}>
-				Select File
-			</button>
-			<!-- <MobileFileInput bind:inputFile /> -->
+			<MobileFileInput bind:inputFile />
+			<!-- <div>Sup man</div> -->
 
 			<!-- TODO: handle differently for textinput -->
 			<input
