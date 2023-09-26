@@ -3,8 +3,8 @@
 	import { peerId } from '$lib/stores';
 	import QRCode from '$lib/QRCode.svelte';
 	import { page } from '$app/stores';
-	import { getToastStore } from '@skeletonlabs/skeleton';
-	import type { ToastSettings } from '@skeletonlabs/skeleton';
+	import { getToastStore, popup } from '@skeletonlabs/skeleton';
+	import type { ToastSettings, PopupSettings } from '@skeletonlabs/skeleton';
 
 	const toastStore = getToastStore();
 
@@ -18,15 +18,33 @@
 		toastStore.trigger(toastMessage);
 		navigator.clipboard.writeText($peerId);
 	}
+	function copyQRLink() {
+		if (!qrLink) return;
+		const toastMessage: ToastSettings = { message: 'URL copied 🤝' };
+		toastStore.trigger(toastMessage);
+		navigator.clipboard.writeText(qrLink);
+	}
+	const popupHover: PopupSettings = {
+		event: 'hover',
+		target: 'popupHover',
+		placement: 'top'
+	};
 </script>
+
+<div class="card p-4 variant-filled-secondary" data-popup="popupHover">
+	<p>{qrLink}</p>
+	<div class="arrow variant-filled-secondary" />
+</div>
 
 <div class="flex container h-full mx-auto justify-center items-center">
 	<div class="flex flex-col justify-center items-center space-y-5 pt-10">
-		<h1 class="h1">SCAN</h1>
-		<p class="h1">someone joins you</p>
+		<h1 class="text-5xl">SCAN</h1>
+		<h2 class="text-2xl">someone joins you</h2>
 		{#if $peerId}
-			<code>Go to <a href={qrLink} class="text-sky-400 text-center">{qrLink}</a></code>
-			<QRCode bind:link={qrLink} />
+			<div use:popup={popupHover} on:click={copyQRLink} class="flex flex-col items-center justify-center p-1">
+				<QRCode bind:link={qrLink} />
+			</div>
+			<!-- <a href={qrLink} class="text-sky-400 text-center">{qrLink}</a> -->
 		{/if}
 		<button on:click={copyID} class="hover:scale-105 transition-transform">
 			<code class="bg-slate-300 rounded-md text-slate-800 p-1">{$peerId}</code>
@@ -47,8 +65,8 @@
 				class="btn variant-filled rounded-lg"
 				on:click={() => {
 					goto(`/connect/${connectInput}`);
-				}}
-				>Connect
+				}}>
+				Join
 			</button>
 		</form>
 
@@ -58,10 +76,10 @@
 				class="btn variant-filled"
 				on:click={() => {
 					goto('/scanner');
-				}}
-				>Open Scanner
+				}}>
+				Open Scanner
 			</button>
-			<a type="button" class="btn variant-filled" href="/" data-sveltekit-reload>Refresh Peer </a>
+			<a type="button" class="btn variant-filled" href="/" data-sveltekit-reload>Refresh Peer</a>
 		</div>
 	</div>
 </div>

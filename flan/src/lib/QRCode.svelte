@@ -16,4 +16,4 @@
 	}
 </script>
 
-<canvas bind:this={QRCanvas} class="rounded-lg"/>
+<canvas bind:this={QRCanvas} class="rounded-lg hover:scale-105 transition-transform"/>

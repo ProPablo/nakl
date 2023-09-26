@@ -8,7 +8,6 @@
 	} from 'html5-qrcode';
 	import { goto } from '$app/navigation';
 
-
 	// const peer = getContext('peer');
 	onMount(() => {
 		const onScanSuccess: QrcodeSuccessCallback = (decodedText, decodedResult) => {
@@ -33,10 +32,19 @@
 	});
 </script>
 
-<div>
-	<h1 class="h1">JOIN</h1>
-	<p class="h1">you join someone</p>
-	<code>{$peerId}</code>
-
-	<div id="scanner" class="w-[600px]" />
+<div class="flex container h-full mx-auto justify-center items-center">
+	<div class="flex flex-col justify-center items-center space-y-5 pt-10">
+		<h1 class="text-5xl">JOIN</h1>
+		<h2 class="text-2xl">you join someone</h2>
+		<code>{$peerId}</code>
+		<div id="scanner" class="w-[300px] bg-red" />
+		<button
+			type="button"
+			class="btn variant-filled"
+			on:click={() => {
+				goto('/');
+			}}>
+			Close Camera
+		</button>
+	</div>
 </div>
