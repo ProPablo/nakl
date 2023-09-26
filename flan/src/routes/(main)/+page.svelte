@@ -61,7 +61,6 @@
 				}}
 				>Open Scanner
 			</button>
-			<a type="button" class="btn variant-filled" href="/" data-sveltekit-reload>Refresh Peer </a>
 		</div>
 	</div>
 </div>
