@@ -15,11 +15,13 @@
 
 	function handleRemoveFile(): void {
 		//Get the file input element using name and document.getElement and clear it
-		let fileElems = document.getElementsByName(inputName);
+		let fileElems = document.getElementsByName(inputName) as NodeListOf<HTMLInputElement>;
 		// This will remove the file from all inputs with this name
+		for (let i = 0; i < fileElems.length; i++) {
+			fileElems[i].value = '';
+		}
 
-		debugger;
-		// inputFile = null;
+		inputFile = null;
 	}
 </script>
 
