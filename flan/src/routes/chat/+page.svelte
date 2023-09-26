@@ -10,6 +10,10 @@
 	import FileInput from '$lib/FileInput.svelte';
 	import { peerId } from '$lib/stores';
 	import MobileFileInput from '$lib/MobileFileInput.svelte';
+	import { goto } from '$app/navigation';
+
+	import { dev } from '$app/environment';
+
 	let messageRecievedCount = 0;
 
 	const sampleMessages: IMessage[] = [
@@ -33,7 +37,7 @@
 
 	let conn: BufferedNotifyConnection;
 	const toastStore = getToastStore();
-	let messages: IMessage[] = sampleMessages;
+	let messages: IMessage[] = dev ? sampleMessages : [];
 	let currentMessage: string = '';
 	let inputFile: File | null = null;
 
@@ -162,8 +166,7 @@
 			};
 			toastStore.trigger(toastMessage);
 			$peerId = null;
-			// --- UNCOMMENT FOR PROD
-			// goto('/');
+			if (!dev) goto('/');
 			return;
 		}
 		conn = window.NAKL_PEER_CONNECTION as BufferedNotifyConnection;
@@ -278,9 +281,6 @@
 		};
 	});
 
-	function showAttatchementPopup() {
-		console.log('showAttatchementPopup');
-	}
 </script>
 
 <!-- In the future, this can be placed on the root level and the fileInput can be accessed with: -->
@@ -314,13 +314,7 @@
 		<form
 			on:submit|preventDefault={sendMessage}
 			class="input-group input-group-divider lg:grid-cols-[1fr_auto] grid-cols-[auto_1fr_auto] rounded-container-token">
-			<!-- Workflow for mobile TODO: abstract to own component and bind to said component-->
-
-			<!-- Using prevent default here on this button for some reason bugs out the rest of the form, TO COUNTER:
-				Specify which button is just regular button and which is the relevant submit button
-			-->
 			<MobileFileInput bind:inputFile />
-			<!-- <div>Sup man</div> -->
 
 			<!-- TODO: handle differently for textinput -->
 			<input

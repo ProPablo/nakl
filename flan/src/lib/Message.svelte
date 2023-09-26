@@ -21,7 +21,8 @@
 		toastStore.trigger(toastMessage);
 	}
 
-	// let flyAnim = { x: 20, duration: 500 };
+	$: displayPercent = message.progess ? (message.progess * 100.0).toFixed(2) : 1;
+
 </script>
 
 <div class="my-6">
@@ -38,7 +39,7 @@
 					{#if message.progess == 1}
 						<div class="ml-auto">Sent ✔</div>
 					{:else}
-						<div class="ml-auto">{message.progess * 100} %</div>
+						<div class="ml-auto">{displayPercent} %</div>
 					{/if}
 				{/if}
 			</div>

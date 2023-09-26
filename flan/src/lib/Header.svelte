@@ -6,7 +6,6 @@
 	import Logo from './Logo.svelte';
 	import { fade } from 'svelte/transition';
 
-	// $: isRootPage = $page.url.pathname == '/' || $page.url.pathname == '/scanner';
 	$: isRootPage = $page.url.pathname == '/';
 
 	// import { onMount } from 'svelte';
@@ -30,7 +29,8 @@
 		class="w-screen">
 		<svelte:fragment slot="lead">{''}</svelte:fragment>
 		<div class="flex flex-col items-center gap-y-3">
-			<a href="/">
+
+			<a type="button" href="/" data-sveltekit-reload>
 				<Logo classes="md:hidden" width="100" height="100" />
 				<LogoWide classes="hidden md:flex" width="250" height="100" />
 			</a>
