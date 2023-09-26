@@ -26,7 +26,7 @@
 	}
 
 	onMount(() => {
-		// TODO: set the peer on a context instead
+		$peerId = null;
 		const peerOptions: PeerJSOption = {
 			host: PUBLIC_HOST,
 			port: parseInt(PUBLIC_PORT),

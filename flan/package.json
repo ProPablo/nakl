@@ -37,7 +37,7 @@
   "dependencies": {
     "@floating-ui/dom": "1.5.1",
     "highlight.js": "11.8.0",
-    "peerjs": "link:../../peerjs",
+    "peerjs": "github:ProPablo/peerjs#notify-release",
     "qrcode": "^1.5.3"
   }
 }

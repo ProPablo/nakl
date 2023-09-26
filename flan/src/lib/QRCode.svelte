@@ -11,7 +11,6 @@
 		if (!QRCanvas) break $;
 		QRCode.toCanvas(QRCanvas, link, (error) => {
 			if (error) console.log(error);
-			console.log('QR Code success!');
 		});
 	}
 </script>
