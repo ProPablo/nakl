@@ -180,11 +180,11 @@
 					sent: false
 				};
 				messages.push(newMessage);
+				messages = messages;
+
 				setTimeout(() => {
 					scrollChatBottom('smooth');
 				}, 0);
-
-				messages = messages;
 			} else if (data instanceof Uint8Array) {
 				// This is a fallback that should happen
 				console.log('We have a Uint8arr.');
