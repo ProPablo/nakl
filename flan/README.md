@@ -10,3 +10,4 @@
     "peerjs": "link:../../peerjs",
 ```
 - Turns out in the peerjs package json, you either need an updated version number, OR add in this `"prepare": "npm run build",` (very likely its this since build gets run on vercel)
+- using vercel directly in cli will use .env automatically
