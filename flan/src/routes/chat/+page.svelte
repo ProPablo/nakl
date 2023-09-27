@@ -325,7 +325,7 @@
 				name="prompt"
 				id="prompt"
 				placeholder="Write a message..." />
-			<button disabled={isSendDeactived} type="submit" class="variant-filled-primary">Send</button>
+			<button disabled={isSendDeactived} type="submit" class="variant-filled-primary disabled:variant-filled-surface">Send</button>
 		</form>
 	</svelte:fragment>
 </AppShell>

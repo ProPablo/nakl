@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { peerId } from '$lib/stores';
+	import { advancedMode, peerId } from '$lib/stores';
 	import QRCode from '$lib/QRCode.svelte';
 	import { page } from '$app/stores';
-	import { getToastStore } from '@skeletonlabs/skeleton';
-	import type { ToastSettings } from '@skeletonlabs/skeleton';
+	import { getToastStore, popup } from '@skeletonlabs/skeleton';
+	import type { ToastSettings, PopupSettings } from '@skeletonlabs/skeleton';
 
 	const toastStore = getToastStore();
 
@@ -20,47 +20,51 @@
 	}
 </script>
 
-<div class="flex container h-full mx-auto justify-center items-center">
-	<div class="flex flex-col justify-center items-center space-y-5 pt-10">
-		<h1 class="h1">SCAN</h1>
-		<p class="h1">someone joins you</p>
-		{#if $peerId}
-			<code>Go to <a href={qrLink} class="text-sky-400 text-center">{qrLink}</a></code>
-			<QRCode bind:link={qrLink} />
-		{/if}
-		<button on:click={copyID} class="hover:scale-105 transition-transform">
-			<code class="bg-slate-300 rounded-md text-slate-800 p-1">{$peerId}</code>
-		</button>
+<div class="card p-4 variant-filled-secondary" data-popup="popupHover">
+	<p>{qrLink}</p>
+	<div class="arrow variant-filled-secondary" />
+</div>
 
-		<form
-			on:submit|preventDefault={() => {
-				goto(`/connect/${connectInput}`);
-			}}
-			class="flex flex-row">
-			<input
-				class="input p-2 rounded-lg"
-				type="text"
-				placeholder="Input"
-				bind:value={connectInput} />
-			<button
-				type="button"
-				class="btn variant-filled rounded-lg"
-				on:click={() => {
+<div class="flex container mx-auto justify-center">
+	<div class="flex flex-col justify-center items-center space-y-5 pt-10">
+		<p class="text-3xl">Scan to Connect</p>
+		{#if $peerId}
+			{#if $advancedMode}
+				<a href={qrLink} target="_blank" class="badge-glass rounded-lg p-2 hover:text-sky-500 text-center">
+					Self-connect in new tab
+				</a>
+			{/if}
+			<div class="flex flex-col items-center justify-center p-1">
+				<QRCode bind:link={qrLink} />
+			</div>
+		{/if}
+
+		<button on:click={copyID} class="hover:scale-105 transition-transform">
+			<code class="variant-glass-surface rounded-md p-1 px-2">ID: {$peerId}</code>
+		</button>
+		{#if $advancedMode}
+			<form
+				on:submit|preventDefault={() => {
 					goto(`/connect/${connectInput}`);
 				}}
-				>Connect
-			</button>
-		</form>
-
-		<div class="flex flex-row gap-x-3">
-			<button
-				type="button"
-				class="btn variant-filled"
-				on:click={() => {
-					goto('/scanner');
-				}}
-				>Open Scanner
-			</button>
-		</div>
+				class="flex flex-row">
+				<input
+					class="input p-2 rounded-lg"
+					type="text"
+					placeholder="Insert peer ID here"
+					bind:value={connectInput} />
+				<button
+					type="button"
+					class="btn variant-filled rounded-lg"
+					on:click={() => {
+						goto(`/connect/${connectInput}`);
+					}}>
+					Join
+				</button>
+			</form>
+			<div class="flex">
+				<button on:click={() => goto('/scanner')} class="btn variant-filled rounded-lg">Open Scanner</button>
+			</div>
+		{/if}
 	</div>
 </div>

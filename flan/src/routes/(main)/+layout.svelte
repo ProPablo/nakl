@@ -47,17 +47,21 @@
 		<Header />
 	</svelte:fragment>
 
-	<div class="justify-center">
+	<div class="h-full">
 		{#if loadingPeer}
-			<p>Loading & connecting to peer...</p>
+			<div class="flex justify-center items-center h-full">
+				<p class="bg-secondary-500 p-3 rounded-lg animate-pulse">Loading & connecting to peer...</p>
+			</div>
 		{:else}
 			<slot />
 		{/if}
 	</div>
 
 	<svelte:fragment slot="pageFooter">
-	<div class="flex items-center justify-center bg-slate-800 p-1">
-		kongi
+	<div class="flex items-center justify-center p-1 badge-glass">
+			<a href="https://github.com/ProPablo/nakl" class=" hover:text-sky-400 transition-colors duration-150 cursor-pointer">
+				kongi
+			</a>
 	</div>
 	</svelte:fragment>
 </AppShell>
