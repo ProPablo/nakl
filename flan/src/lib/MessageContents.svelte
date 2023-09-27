@@ -9,7 +9,7 @@
 {:else if message.type === MessageType.Image}
 	<div class="flex items-center justify-center">
 		<img
-			class="rounded-lg max-h-[calc(60dvh)]"
+			class="rounded-lg max-h-[60vh]"
 			src={message.payload?.src}
 			alt={message.payload?.name} />
 	</div>
