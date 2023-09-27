@@ -25,8 +25,8 @@
 	<div class="arrow variant-filled-secondary" />
 </div>
 
-<div class="flex container mx-auto justify-center">
-	<div class="flex flex-col justify-center items-center space-y-5 pt-10">
+<div class="flex container mx-auto justify-center my-2 lg:pt-10">
+	<div class="flex flex-col justify-center items-center space-y-5">
 		<p class="text-3xl">Scan to Connect</p>
 		{#if $peerId}
 			{#if $advancedMode}

@@ -35,7 +35,7 @@
 </script>
 
 <div class="flex justify-center items-center h-full">
-	<p class="bg-secondary-500 p-3 rounded-lg animate-pulse">
+	<p class="variant-glass-secondary p-3 rounded-lg animate-pulse text-center mx-4">
 		Welcome gamer, trying to connect to: {connectID}
 	</p>
 </div>
