@@ -58,10 +58,10 @@
 	</div>
 
 	<svelte:fragment slot="pageFooter">
-	<div class="flex items-center justify-center bg-surface-800 p-1">
-		<a href="https://github.com/ProPablo/nakl" class="hover:text-sky-400 transition-colors duration-150 cursor-pointer">
-			kongi
-		</a>
+	<div class="flex items-center justify-center p-1 badge-glass">
+			<a href="https://github.com/ProPablo/nakl" class=" hover:text-sky-400 transition-colors duration-150 cursor-pointer">
+				kongi
+			</a>
 	</div>
 	</svelte:fragment>
 </AppShell>

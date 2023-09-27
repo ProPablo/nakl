@@ -30,7 +30,7 @@
 		<p class="text-3xl">Scan to Connect</p>
 		{#if $peerId}
 			{#if $advancedMode}
-				<a href={qrLink} target="_blank" class="text-sky-400 text-center">
+				<a href={qrLink} target="_blank" class="badge-glass rounded-lg p-2 hover:text-sky-500 text-center">
 					Self-connect in new tab
 				</a>
 			{/if}
@@ -40,7 +40,7 @@
 		{/if}
 
 		<button on:click={copyID} class="hover:scale-105 transition-transform">
-			<code class="bg-slate-300 rounded-md text-slate-800 p-1">ID: {$peerId}</code>
+			<code class="variant-glass-surface rounded-md p-1 px-2">ID: {$peerId}</code>
 		</button>
 		{#if $advancedMode}
 			<form

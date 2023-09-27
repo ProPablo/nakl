@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { AppBar, SlideToggle } from '@skeletonlabs/skeleton';
+	import { AppBar, LightSwitch, SlideToggle } from '@skeletonlabs/skeleton';
 	import { peerId, advancedMode } from '$lib/stores';
 	import { page } from '$app/stores';
 	import LogoWide from './svgs/LogoWide.svelte';
@@ -30,8 +30,11 @@
 		gridColumns="grid-cols-3"
 		slotDefault="place-self-center"
 		slotTrail="place-self-center"
+		slotLead="place-self-center"
 		class="w-screen">
-		<svelte:fragment slot="lead">{''}</svelte:fragment>
+		<svelte:fragment slot="lead">
+			<LightSwitch/>
+		</svelte:fragment>
 		<div class="flex flex-col items-center gap-y-3">
 			<a type="button" href="/" data-sveltekit-reload>
 				<Logo classes="md:hidden" width="100" height="100" />
@@ -51,16 +54,16 @@
 		<svelte:fragment slot="lead">
 			<div class="flex flex-col items-center gap-y-3">
 				<!-- <a in:fade|global={{ duration: 500 }} out:fade|global={{ duration: 500 }} href="/"> -->
-				<a href="/">
-					<Logo classes="md:hidden" width="100" height="100" />
-					<LogoWide classes="hidden md:flex" width="250" height="100" />
-				</a>
+					<a href="/">
+						<Logo classes="md:hidden" width="100" height="100" />
+						<LogoWide classes="hidden md:flex" width="250" height="100" />
+					</a>
+				</div>
+			</svelte:fragment>
+			<div class="flex flex-col">
+				<strong class="text-center">Peer ID</strong>
+				<p class="badge-glass px-2 rounded-md text-center">{$peerId}</p>
 			</div>
-		</svelte:fragment>
-		<div class="flex flex-col">
-			<strong class="text-center">Peer ID</strong>
-			<p class="bg-slate-800 rounded-md text-center">{$peerId}</p>
-		</div>
-		<svelte:fragment slot="trail" />
+			<svelte:fragment slot="trail" />
 	</AppBar>
 {/if}
