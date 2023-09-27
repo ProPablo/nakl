@@ -1,13 +1,21 @@
 <script lang="ts">
 	import { MessageType, type IMessage } from './types';
-	import fileIcon from './svgs/file.png';
+	import FileIcon from './svgs/File.svelte';
 	export let message: IMessage;
 </script>
 
 {#if message.type === MessageType.Text}
 	<p>{message.text}</p>
 {:else if message.type === MessageType.Image}
-	<img class="rounded-lg" src={message.payload?.src} alt={message.payload?.name} />
+	<div class="flex items-center justify-center">
+		<img
+			class="rounded-lg max-h-[calc(60dvh)]"
+			src={message.payload?.src}
+			alt={message.payload?.name} />
+	</div>
 {:else if message.type === MessageType.File}
-	<img class="rounded-lg" src={fileIcon} alt={message.payload?.name} />
+	<div class="flex items-center justify-center">
+		<FileIcon width="50" height="50" />
+		<code>{message.payload?.name}</code>
+	</div>
 {/if}

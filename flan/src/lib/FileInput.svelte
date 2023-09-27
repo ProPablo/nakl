@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { FileDropzone } from '@skeletonlabs/skeleton';
-	import file from './svgs/file.png';
+	import FileIcon from './svgs/File.svelte';
+	import Message from './Message.svelte';
 
 	export let inputFile: File | null = null;
 
@@ -30,21 +31,24 @@
 	<svelte:fragment slot="lead">
 		{#if inputFile}
 			{#if inputFile.type.includes('image/')}
-				<div class="grid grid-rows-[1fr_auto]">
+				<div class="grid grid-rows-[1fr_auto] gap-4">
 					<img
 						class="w-full object-contain rounded-lg"
 						src={URL.createObjectURL(inputFile)}
 						alt="Selected file" />
 
-					<button class="btn variant-filled-secondary z-10" on:click={handleRemoveFile}>
-						Remove file
+					<button class="btn variant-filled-secondary z-10 rounded-lg" on:click={handleRemoveFile}>
+						Remove image
 					</button>
 				</div>
 			{:else}
-				<img
-					class="w-full object-contain rounded-lg"
-					src={file}
-					alt="Selected file" />
+				<div class="grid grid-rows-[1fr_auto] gap-4">
+					<FileIcon height=100 width=100 classes="mx-auto"/>
+					<code class="break-all">{inputFile.name}</code>
+					<button class="btn variant-filled-secondary z-10 rounded-lg" on:click={handleRemoveFile}>
+						Remove file
+					</button>
+				</div>
 			{/if}
 		{/if}
 	</svelte:fragment>

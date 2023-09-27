@@ -1,10 +1,12 @@
 <script lang="ts">
-	import { AppBar } from '@skeletonlabs/skeleton';
-	import { peerId } from '$lib/stores';
+	import { AppBar, SlideToggle } from '@skeletonlabs/skeleton';
+	import { peerId, advancedMode } from '$lib/stores';
 	import { page } from '$app/stores';
-	import LogoWide from './LogoWide.svelte';
-	import Logo from './Logo.svelte';
+	import LogoWide from './svgs/LogoWide.svelte';
+	import Logo from './svgs/Logo.svelte';
 	import { fade } from 'svelte/transition';
+	import { goto } from '$app/navigation';
+	import Scanner from './svgs/Scanner.svelte';
 
 	$: isRootPage = $page.url.pathname == '/';
 
@@ -15,6 +17,8 @@
 	// 		.matchMedia('(min-width: 768px)')
 	// 		.addEventListener('change', (e) => (matches = e.matches));
 	// });
+
+
 </script>
 
 <!-- 
@@ -25,17 +29,18 @@
 	<AppBar
 		gridColumns="grid-cols-3"
 		slotDefault="place-self-center"
-		slotTrail="place-content-end"
+		slotTrail="place-self-center"
 		class="w-screen">
 		<svelte:fragment slot="lead">{''}</svelte:fragment>
 		<div class="flex flex-col items-center gap-y-3">
-
 			<a type="button" href="/" data-sveltekit-reload>
 				<Logo classes="md:hidden" width="100" height="100" />
 				<LogoWide classes="hidden md:flex" width="250" height="100" />
 			</a>
 		</div>
-		<svelte:fragment slot="trail" />
+		<svelte:fragment slot="trail">
+			<SlideToggle name="advanced" bind:checked={$advancedMode}>Adv. Mode</SlideToggle>
+		</svelte:fragment>
 	</AppBar>
 {:else}
 	<AppBar
@@ -45,7 +50,6 @@
 		class="w-screen">
 		<svelte:fragment slot="lead">
 			<div class="flex flex-col items-center gap-y-3">
-
 				<!-- <a in:fade|global={{ duration: 500 }} out:fade|global={{ duration: 500 }} href="/"> -->
 				<a href="/">
 					<Logo classes="md:hidden" width="100" height="100" />
@@ -53,8 +57,7 @@
 				</a>
 			</div>
 		</svelte:fragment>
-		<div
-			class="flex flex-col">
+		<div class="flex flex-col">
 			<strong class="text-center">Peer ID</strong>
 			<p class="bg-slate-800 rounded-md text-center">{$peerId}</p>
 		</div>

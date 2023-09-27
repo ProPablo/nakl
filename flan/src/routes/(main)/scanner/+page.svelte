@@ -32,19 +32,10 @@
 	});
 </script>
 
-<div class="flex container h-full mx-auto justify-center items-center">
+<div class="flex container mx-auto justify-center items-center">
 	<div class="flex flex-col justify-center items-center space-y-5 pt-10">
 		<h1 class="text-5xl">JOIN</h1>
 		<h2 class="text-2xl">you join someone</h2>
-		<code>{$peerId}</code>
-		<div id="scanner" class="w-[300px] bg-red" />
-		<button
-			type="button"
-			class="btn variant-filled"
-			on:click={() => {
-				goto('/');
-			}}>
-			Close Camera
-		</button>
+		<div id="scanner" class="w-[300px]" />
 	</div>
 </div>
