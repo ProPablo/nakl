@@ -27,7 +27,7 @@
 
 <div class="flex container mx-auto justify-center">
 	<div class="flex flex-col justify-center items-center space-y-5 pt-10">
-		<h2 class="text-2xl">Scan to connect</h2>
+		<p class="text-3xl">Scan to Connect</p>
 		{#if $peerId}
 			{#if $advancedMode}
 				<a href={qrLink} target="_blank" class="text-sky-400 text-center">
