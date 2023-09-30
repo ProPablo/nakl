@@ -11,7 +11,6 @@
 	import { peerId } from '$lib/stores';
 	import MobileFileInput from '$lib/MobileFileInput.svelte';
 	import { goto } from '$app/navigation';
-
 	import { dev } from '$app/environment';
 
 	let messageRecievedCount = 0;
@@ -155,6 +154,16 @@
 		inputFile = null;
 	}
 
+	function onConnClose(): void {
+		console.log('Connection closed');
+		const toastMessage: ToastSettings = {
+			message: 'Session disconnected 😿',
+			background: 'variant-filled-warning',
+			autohide: false
+		};
+		toastStore.trigger(toastMessage);
+	}
+
 	$: isSendDeactived = currentMessage.length == 0 && inputFile == null;
 
 	onMount(() => {
@@ -273,6 +282,8 @@
 				console.log('Sent last message chunk' + chunk);
 			}
 		});
+
+		conn.on('close', onConnClose);
 
 		return () => {
 			conn.close();
