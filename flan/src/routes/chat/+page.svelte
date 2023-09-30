@@ -12,6 +12,7 @@
 	import MobileFileInput from '$lib/MobileFileInput.svelte';
 	import { goto } from '$app/navigation';
 	import { dev } from '$app/environment';
+	import { clip } from 'html5-qrcode/esm/core';
 
 	let messageRecievedCount = 0;
 
@@ -164,6 +165,18 @@
 		toastStore.trigger(toastMessage);
 	}
 
+	async function handlePaste(event: ClipboardEvent) {
+		const clipboardData = event.clipboardData;
+		const items = clipboardData?.files;
+		if (!items) {
+			return;
+		}
+		for (let item of items) {
+			event.preventDefault();
+			inputFile = item;
+		}
+	}
+
 	$: isSendDeactived = currentMessage.length == 0 && inputFile == null;
 
 	onMount(() => {
@@ -291,7 +304,6 @@
 			conn.off('sentChunk');
 		};
 	});
-
 </script>
 
 <!-- In the future, this can be placed on the root level and the fileInput can be accessed with: -->
@@ -330,13 +342,19 @@
 			<!-- TODO: handle differently for textinput -->
 			<input
 				bind:value={currentMessage}
+				on:paste={handlePaste}
 				type="text"
 				autocomplete="off"
 				class="bg-transparent border-0 ring-0 p-3"
 				name="prompt"
 				id="prompt"
 				placeholder="Write a message..." />
-			<button disabled={isSendDeactived} type="submit" class="variant-filled-primary disabled:variant-filled-surface">Send</button>
+			<button
+				disabled={isSendDeactived}
+				type="submit"
+				class="variant-filled-primary disabled:variant-filled-surface">
+				Send
+			</button>
 		</form>
 	</svelte:fragment>
 </AppShell>
