@@ -1,15 +1,15 @@
 <script lang="ts">
 	import { AppShell, FileDropzone, clipboard } from '@skeletonlabs/skeleton';
+	import { Drawer, type ToastSettings } from '@skeletonlabs/skeleton';
 	import type { BufferedNotifyConnection } from 'peerjs';
 	import { onMount } from 'svelte';
 	import Header from '$lib/Header.svelte';
 	import Message from '$lib/Message.svelte';
 	import { type IMessage, MessageType, type MessageDTO, isDataDto } from '$lib/types';
 	import { getToastStore } from '@skeletonlabs/skeleton';
-	import { Drawer, type ToastSettings } from '@skeletonlabs/skeleton';
 	import FileInput from '$lib/FileInput.svelte';
-	import { peerId } from '$lib/stores';
 	import MobileFileInput from '$lib/MobileFileInput.svelte';
+	import { peerId } from '$lib/stores';
 	import { goto } from '$app/navigation';
 	import { dev } from '$app/environment';
 
@@ -175,7 +175,7 @@
 		inputFile = clipboardData.files[0];
 	}
 
-	$: isSendDeactived = currentMessage.length == 0 && inputFile == null;
+	$: isSendDeactived = (currentMessage.length == 0 && inputFile == null) || connectionClosed;
 
 	onMount(() => {
 		if (!window.NAKL_PEER_CONNECTION) {
