@@ -12,7 +12,6 @@
 	import MobileFileInput from '$lib/MobileFileInput.svelte';
 	import { goto } from '$app/navigation';
 	import { dev } from '$app/environment';
-	import { clip } from 'html5-qrcode/esm/core';
 
 	let messageRecievedCount = 0;
 
@@ -324,6 +323,11 @@
 		<Header />
 	</svelte:fragment>
 	<div bind:this={elemChat} class="overflow-y-auto">
+		{#if messages.length == 0}
+			<div class="flex justify-center h-full items-center p-4">
+				<p class="italic badge-glass rounded-lg p-2 variant-glass-tertiary">Connected successfully! Start chatting 💬</p>
+			</div>
+		{/if}
 		{#each messages as message}
 			<Message {message} />
 		{/each}
