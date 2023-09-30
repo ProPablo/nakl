@@ -28,3 +28,6 @@ This is our project's current repo structure, the names being based off pudding-
 - [SkeletonUI](https://www.skeleton.dev/) our chosen UI toolkit for SvelteKit & TailwindCSS
 - [PeerJS](https://peerjs.com/) a WebRTC-based framework to handle the P2P connection
 - [React Native](https://reactnative.dev/) our mobile development framework
+
+## Disclaimer
+This website is intended for lawful file sharing only. We do not condone or support illegal content sharing. Users are responsible for the content they share and must comply with all relevant laws and regulations. We disclaim any responsibility for illegal content shared on this platform. Please report violations, and users engaging in illegal activities may face legal consequences. Use this website responsibly and in accordance with the law.
