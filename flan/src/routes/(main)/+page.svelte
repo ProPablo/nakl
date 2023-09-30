@@ -21,9 +21,9 @@
 
 	function handleFormSubmit() {
 		if (connectInput == $peerId) {
-			const toastMessage: ToastSettings = { 
+			const toastMessage: ToastSettings = {
 				message: 'Cannot join yourself ⚠️ 👤',
-				background: 'variant-filled-warning',
+				background: 'variant-filled-warning'
 			};
 			toastStore.trigger(toastMessage);
 			return;
@@ -64,12 +64,7 @@
 					type="text"
 					placeholder="Insert peer ID here"
 					bind:value={connectInput} />
-				<button
-					type="button"
-					class="btn variant-filled rounded-lg"
-					on:click={handleFormSubmit}>
-					Join
-				</button>
+				<button type="submit" class="btn variant-filled rounded-lg">Join</button>
 			</form>
 			<div class="flex">
 				<button on:click={() => goto('/scanner')} class="btn variant-filled rounded-lg">
