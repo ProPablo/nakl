@@ -165,13 +165,13 @@
 	}
 
 	async function handlePaste(event: ClipboardEvent) {
+		event.preventDefault();
 		const clipboardData = event.clipboardData;
 		const items = clipboardData?.files;
 		if (!items) {
 			return;
 		}
 		for (let item of items) {
-			event.preventDefault();
 			inputFile = item;
 		}
 	}
