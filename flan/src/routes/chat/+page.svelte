@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { AppShell, FileDropzone } from '@skeletonlabs/skeleton';
+	import { AppShell, FileDropzone, clipboard } from '@skeletonlabs/skeleton';
 	import type { BufferedNotifyConnection } from 'peerjs';
 	import { onMount } from 'svelte';
 	import Header from '$lib/Header.svelte';
@@ -166,13 +166,11 @@
 
 	async function handlePaste(event: ClipboardEvent) {
 		const clipboardData = event.clipboardData;
-		const items = clipboardData?.files;
-		if (!items) {
+		if (clipboardData?.files.length == 0 || !clipboardData) {
 			return;
 		}
-		for (let item of items) {
-			inputFile = item;
-		}
+		event.preventDefault();
+		inputFile = clipboardData.files[0];
 	}
 
 	$: isSendDeactived = currentMessage.length == 0 && inputFile == null;
@@ -345,7 +343,7 @@
 			<!-- TODO: handle differently for textinput -->
 			<input
 				bind:value={currentMessage}
-				on:paste|preventDefault={handlePaste}
+				on:paste={handlePaste}
 				type="text"
 				autocomplete="off"
 				class="bg-transparent border-0 ring-0 p-3"
