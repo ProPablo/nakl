@@ -14,6 +14,7 @@
 	import { dev } from '$app/environment';
 
 	let messageRecievedCount = 0;
+	let connectionClosed = false;
 
 	const sampleMessages: IMessage[] = [
 		{
@@ -109,6 +110,7 @@
 		};
 		conn.send(dataDto);
 	}
+
 	function sendFile(inputFile: File, arr: ArrayBuffer) {
 		const blob = new Blob([inputFile]);
 		const nextId = conn.nextID;
@@ -158,10 +160,10 @@
 		console.log('Connection closed');
 		const toastMessage: ToastSettings = {
 			message: 'Session disconnected 😿',
-			background: 'variant-filled-warning',
-			autohide: false
+			background: 'variant-filled-warning'
 		};
 		toastStore.trigger(toastMessage);
+		connectionClosed = true;
 	}
 
 	async function handlePaste(event: ClipboardEvent) {
@@ -296,6 +298,7 @@
 
 		return () => {
 			conn.close();
+			conn.off('close');
 			conn.off('data');
 			conn.off('sentChunk');
 		};
@@ -322,13 +325,21 @@
 	<div bind:this={elemChat} class="overflow-y-auto">
 		{#if messages.length == 0}
 			<div class="flex justify-center h-full items-center p-4">
-				<p class="italic badge-glass rounded-lg p-2 variant-glass-tertiary">Connected successfully! Start chatting 💬</p>
+				<p class="italic badge-glass rounded-lg p-2 variant-glass-tertiary">
+					Connected successfully! Start chatting 💬
+				</p>
 			</div>
 		{/if}
 		{#each messages as message}
 			<Message {message} />
 		{/each}
-		<div bind:this={elemChatEnd} />
+		<div class="flex justify-center h-full items-center p-4" bind:this={elemChatEnd}>
+			{#if connectionClosed}
+				<p class="italic badge-glass rounded-lg p-2 variant-glass-warning">
+					⚠️ Connected closed.
+				</p>
+			{/if}
+		</div>
 	</div>
 
 	<svelte:fragment slot="sidebarRight">
