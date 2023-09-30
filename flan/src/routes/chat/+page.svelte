@@ -165,7 +165,6 @@
 	}
 
 	async function handlePaste(event: ClipboardEvent) {
-		event.preventDefault();
 		const clipboardData = event.clipboardData;
 		const items = clipboardData?.files;
 		if (!items) {
@@ -346,7 +345,7 @@
 			<!-- TODO: handle differently for textinput -->
 			<input
 				bind:value={currentMessage}
-				on:paste={handlePaste}
+				on:paste|preventDefault={handlePaste}
 				type="text"
 				autocomplete="off"
 				class="bg-transparent border-0 ring-0 p-3"

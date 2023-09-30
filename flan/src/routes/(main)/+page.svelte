@@ -18,6 +18,18 @@
 		toastStore.trigger(toastMessage);
 		navigator.clipboard.writeText($peerId);
 	}
+
+	function handleFormSubmit() {
+		if (connectInput == $peerId) {
+			const toastMessage: ToastSettings = { 
+				message: 'Cannot join yourself ⚠️ 👤',
+				background: 'variant-filled-warning',
+			};
+			toastStore.trigger(toastMessage);
+			return;
+		}
+		goto(`/connect/${connectInput}`);
+	}
 </script>
 
 <div class="card p-4 variant-filled-secondary" data-popup="popupHover">
@@ -30,7 +42,10 @@
 		<p class="text-3xl">Scan to Connect</p>
 		{#if $peerId}
 			{#if $advancedMode}
-				<a href={qrLink} target="_blank" class="badge-glass rounded-lg p-2 hover:text-sky-500 text-center">
+				<a
+					href={qrLink}
+					target="_blank"
+					class="badge-glass rounded-lg p-2 hover:text-sky-500 text-center">
 					Self-connect in new tab
 				</a>
 			{/if}
@@ -43,11 +58,7 @@
 			<code class="variant-glass-surface rounded-md p-1 px-2">ID: {$peerId}</code>
 		</button>
 		{#if $advancedMode}
-			<form
-				on:submit|preventDefault={() => {
-					goto(`/connect/${connectInput}`);
-				}}
-				class="flex flex-row">
+			<form on:submit|preventDefault={handleFormSubmit} class="flex flex-row">
 				<input
 					class="input p-2 rounded-lg"
 					type="text"
@@ -56,14 +67,14 @@
 				<button
 					type="button"
 					class="btn variant-filled rounded-lg"
-					on:click={() => {
-						goto(`/connect/${connectInput}`);
-					}}>
+					on:click={handleFormSubmit}>
 					Join
 				</button>
 			</form>
 			<div class="flex">
-				<button on:click={() => goto('/scanner')} class="btn variant-filled rounded-lg">Open Scanner</button>
+				<button on:click={() => goto('/scanner')} class="btn variant-filled rounded-lg">
+					Open Scanner
+				</button>
 			</div>
 		{/if}
 	</div>
