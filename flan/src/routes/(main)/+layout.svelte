@@ -49,10 +49,12 @@
 
 	<div class="h-full">
 		{#if loadingPeer}
-			<div class="flex justify-center items-center h-full">
-				<p class="bg-secondary-500 p-3 rounded-lg animate-pulse">Loading & connecting to peer...</p>
+			<div class="flex flex-col items-center h-full gap-3 pt-10">
+				<p class="badge-glass p-3 rounded-lg animate-pulse">Loading & connecting to peer...</p>
+				<div class="placeholder animate-pulse rounded-lg pb-[315px] w-[315px]"></div>
+				<p class="placeholder p-3 rounded-lg animate-pulse w-1/4"></p>
 			</div>
-		{:else}
+			{:else}
 			<slot />
 		{/if}
 	</div>
