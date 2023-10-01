@@ -110,6 +110,7 @@
 		};
 		conn.send(dataDto);
 	}
+
 	function sendFile(inputFile: File, arr: ArrayBuffer) {
 		const blob = new Blob([inputFile]);
 		const nextId = conn.nextID;
@@ -139,6 +140,65 @@
 		conn.send(dataDto);
 	}
 
+	function sendAudio(inputFile: File, arr: ArrayBuffer) {
+		const blob = new Blob([inputFile]);
+		const nextId = conn.nextID;
+		const newMessageModel: IMessage = {
+			id: nextId,
+			timestamp: Date.now(),
+			type: MessageType.Audio,
+			sent: true,
+			payload: {
+				name: inputFile.name,
+				src: URL.createObjectURL(blob)
+			},
+			progess: 0
+		};
+		messages.push(newMessageModel);
+		messages = messages;
+
+		const dataDto: MessageDTO = {
+			type: MessageType.Audio,
+			timestamp: Date.now(),
+			payload: {
+				data: arr,
+				type: inputFile.type,
+				name: inputFile.name
+			}
+		};
+		conn.send(dataDto);
+	}
+
+	function sendVideo(inputFile: File, arr: ArrayBuffer) {
+		const blob = new Blob([inputFile]);
+		const nextId = conn.nextID;
+		const newMessageModel: IMessage = {
+			id: nextId,
+			timestamp: Date.now(),
+			type: MessageType.Video,
+			sent: true,
+			payload: {
+				name: inputFile.name,
+				src: URL.createObjectURL(blob)
+			},
+			progess: 0
+		};
+		messages.push(newMessageModel);
+		messages = messages;
+
+		const dataDto: MessageDTO = {
+			type: MessageType.Video,
+			timestamp: Date.now(),
+			payload: {
+				data: arr,
+				type: inputFile.type,
+				name: inputFile.name
+			}
+		};
+		conn.send(dataDto);
+	}
+
+
 	//TODO: transport to a store and add these features there
 	async function sendAttachment() {
 		if (!inputFile) {
@@ -148,8 +208,13 @@
 
 		if (inputFile.type.includes('image/')) {
 			sendImage(inputFile, arr);
-		} else {
-			debugger;
+		} else if (inputFile.type.includes('audio/')) {
+			sendAudio(inputFile, arr);
+		} else if (inputFile.type.includes('video/')) {
+			sendVideo(inputFile, arr);
+		}
+			else {
+			// debugger;
 			sendFile(inputFile, arr);
 		}
 		inputFile = null;
@@ -235,6 +300,7 @@
 						};
 						messages.push(newMessageModel);
 						break;
+						
 					case MessageType.Image:
 						if (!data.payload) return;
 						const newBlobImage = new Blob([data.payload?.data]);
