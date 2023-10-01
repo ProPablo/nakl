@@ -166,7 +166,7 @@
 		connectionClosed = true;
 	}
 
-	async function handlePaste(event: ClipboardEvent) {
+	function handlePaste(event: ClipboardEvent) {
 		const clipboardData = event.clipboardData;
 		if (clipboardData?.files.length == 0 || !clipboardData) {
 			return;
