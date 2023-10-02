@@ -198,7 +198,6 @@
 		conn.send(dataDto);
 	}
 
-
 	//TODO: transport to a store and add these features there
 	async function sendAttachment() {
 		if (!inputFile) {
@@ -212,8 +211,7 @@
 			sendAudio(inputFile, arr);
 		} else if (inputFile.type.includes('video/')) {
 			sendVideo(inputFile, arr);
-		}
-			else {
+		} else {
 			// debugger;
 			sendFile(inputFile, arr);
 		}
@@ -300,7 +298,7 @@
 						};
 						messages.push(newMessageModel);
 						break;
-						
+
 					case MessageType.Image:
 						if (!data.payload) return;
 						const newBlobImage = new Blob([data.payload?.data]);
@@ -314,6 +312,34 @@
 							}
 						};
 						messages.push(newMessageModelImage);
+						break;
+					case MessageType.Video:
+						if (!data.payload) return;
+						const newBlobVideo = new Blob([data.payload?.data]);
+						const newMessageModelVideo: IMessage = {
+							timestamp: Date.now(),
+							type: MessageType.Video,
+							sent: false,
+							payload: {
+								name: data.payload?.name,
+								src: URL.createObjectURL(newBlobVideo)
+							}
+						};
+						messages.push(newMessageModelVideo);
+						break;
+					case MessageType.Audio:
+					if (!data.payload) return;
+						const newBlobAudio = new Blob([data.payload?.data]);
+						const newMessageModelAudio: IMessage = {
+							timestamp: Date.now(),
+							type: MessageType.Audio,
+							sent: false,
+							payload: {
+								name: data.payload?.name,
+								src: URL.createObjectURL(newBlobAudio)
+							}
+						};
+						messages.push(newMessageModelAudio);
 						break;
 				}
 				messages = messages;
@@ -346,7 +372,6 @@
 			conn.off('sentChunk');
 		};
 	});
-
 </script>
 
 <!-- In the future, this can be placed on the root level and the fileInput can be accessed with: -->
@@ -391,7 +416,12 @@
 				name="prompt"
 				id="prompt"
 				placeholder="Write a message..." />
-			<button disabled={isSendDeactived} type="submit" class="variant-filled-primary disabled:variant-filled-surface">Send</button>
+			<button
+				disabled={isSendDeactived}
+				type="submit"
+				class="variant-filled-primary disabled:variant-filled-surface">
+				Send
+			</button>
 		</form>
 	</svelte:fragment>
 </AppShell>
