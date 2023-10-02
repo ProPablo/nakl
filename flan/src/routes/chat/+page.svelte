@@ -1,20 +1,20 @@
 <script lang="ts">
-	import { AppShell, FileDropzone } from '@skeletonlabs/skeleton';
+	import { AppShell, FileDropzone, clipboard } from '@skeletonlabs/skeleton';
+	import { Drawer, type ToastSettings } from '@skeletonlabs/skeleton';
 	import type { BufferedNotifyConnection } from 'peerjs';
 	import { onMount } from 'svelte';
 	import Header from '$lib/Header.svelte';
 	import Message from '$lib/Message.svelte';
 	import { type IMessage, MessageType, type MessageDTO, isDataDto } from '$lib/types';
 	import { getToastStore } from '@skeletonlabs/skeleton';
-	import { Drawer, type ToastSettings } from '@skeletonlabs/skeleton';
 	import FileInput from '$lib/FileInput.svelte';
-	import { peerId } from '$lib/stores';
 	import MobileFileInput from '$lib/MobileFileInput.svelte';
+	import { peerId } from '$lib/stores';
 	import { goto } from '$app/navigation';
-
 	import { dev } from '$app/environment';
 
 	let messageRecievedCount = 0;
+	let connectionClosed = false;
 
 	const sampleMessages: IMessage[] = [
 		{
@@ -110,6 +110,7 @@
 		};
 		conn.send(dataDto);
 	}
+
 	function sendFile(inputFile: File, arr: ArrayBuffer) {
 		const blob = new Blob([inputFile]);
 		const nextId = conn.nextID;
@@ -139,6 +140,65 @@
 		conn.send(dataDto);
 	}
 
+	function sendAudio(inputFile: File, arr: ArrayBuffer) {
+		const blob = new Blob([inputFile]);
+		const nextId = conn.nextID;
+		const newMessageModel: IMessage = {
+			id: nextId,
+			timestamp: Date.now(),
+			type: MessageType.Audio,
+			sent: true,
+			payload: {
+				name: inputFile.name,
+				src: URL.createObjectURL(blob)
+			},
+			progess: 0
+		};
+		messages.push(newMessageModel);
+		messages = messages;
+
+		const dataDto: MessageDTO = {
+			type: MessageType.Audio,
+			timestamp: Date.now(),
+			payload: {
+				data: arr,
+				type: inputFile.type,
+				name: inputFile.name
+			}
+		};
+		conn.send(dataDto);
+	}
+
+	function sendVideo(inputFile: File, arr: ArrayBuffer) {
+		const blob = new Blob([inputFile]);
+		const nextId = conn.nextID;
+		const newMessageModel: IMessage = {
+			id: nextId,
+			timestamp: Date.now(),
+			type: MessageType.Video,
+			sent: true,
+			payload: {
+				name: inputFile.name,
+				src: URL.createObjectURL(blob)
+			},
+			progess: 0
+		};
+		messages.push(newMessageModel);
+		messages = messages;
+
+		const dataDto: MessageDTO = {
+			type: MessageType.Video,
+			timestamp: Date.now(),
+			payload: {
+				data: arr,
+				type: inputFile.type,
+				name: inputFile.name
+			}
+		};
+		conn.send(dataDto);
+	}
+
+
 	//TODO: transport to a store and add these features there
 	async function sendAttachment() {
 		if (!inputFile) {
@@ -148,14 +208,38 @@
 
 		if (inputFile.type.includes('image/')) {
 			sendImage(inputFile, arr);
-		} else {
-			debugger;
+		} else if (inputFile.type.includes('audio/')) {
+			sendAudio(inputFile, arr);
+		} else if (inputFile.type.includes('video/')) {
+			sendVideo(inputFile, arr);
+		}
+			else {
+			// debugger;
 			sendFile(inputFile, arr);
 		}
 		inputFile = null;
 	}
 
-	$: isSendDeactived = currentMessage.length == 0 && inputFile == null;
+	function onConnClose(): void {
+		console.log('Connection closed');
+		const toastMessage: ToastSettings = {
+			message: 'Session disconnected 😿',
+			background: 'variant-filled-warning'
+		};
+		toastStore.trigger(toastMessage);
+		connectionClosed = true;
+	}
+
+	function handlePaste(event: ClipboardEvent) {
+		const clipboardData = event.clipboardData;
+		if (clipboardData?.files.length == 0 || !clipboardData) {
+			return;
+		}
+		event.preventDefault();
+		inputFile = clipboardData.files[0];
+	}
+
+	$: isSendDeactived = (currentMessage.length == 0 && inputFile == null) || connectionClosed;
 
 	onMount(() => {
 		if (!window.NAKL_PEER_CONNECTION) {
@@ -235,6 +319,7 @@
 						};
 						messages.push(newMessageModel);
 						break;
+						
 					case MessageType.Image:
 						if (!data.payload) return;
 						const newBlobImage = new Blob([data.payload?.data]);
@@ -274,13 +359,15 @@
 			}
 		});
 
+		conn.on('close', onConnClose);
+
 		return () => {
+			conn.off('close');
 			conn.close();
 			conn.off('data');
 			conn.off('sentChunk');
 		};
 	});
-
 </script>
 
 <!-- In the future, this can be placed on the root level and the fileInput can be accessed with: -->
@@ -301,10 +388,23 @@
 		<Header />
 	</svelte:fragment>
 	<div bind:this={elemChat} class="overflow-y-auto">
+		{#if messages.length == 0}
+			<div class="flex justify-center h-full items-center p-4">
+				<p class="italic badge-glass rounded-lg p-2 variant-glass-tertiary">
+					Connected successfully! Start chatting 💬
+				</p>
+			</div>
+		{/if}
 		{#each messages as message}
 			<Message {message} />
 		{/each}
-		<div bind:this={elemChatEnd} />
+		<div class="flex justify-center h-full items-center p-4" bind:this={elemChatEnd}>
+			{#if connectionClosed}
+				<p class="italic badge-glass rounded-lg p-2 variant-glass-warning">
+					⚠️ Connected closed.
+				</p>
+			{/if}
+		</div>
 	</div>
 
 	<svelte:fragment slot="sidebarRight">
@@ -319,13 +419,19 @@
 			<!-- TODO: handle differently for textinput -->
 			<input
 				bind:value={currentMessage}
+				on:paste={handlePaste}
 				type="text"
 				autocomplete="off"
 				class="bg-transparent border-0 ring-0 p-3"
 				name="prompt"
 				id="prompt"
 				placeholder="Write a message..." />
-			<button disabled={isSendDeactived} type="submit" class="variant-filled-primary disabled:variant-filled-surface">Send</button>
+			<button
+				disabled={isSendDeactived}
+				type="submit"
+				class="variant-filled-primary disabled:variant-filled-surface">
+				Send
+			</button>
 		</form>
 	</svelte:fragment>
 </AppShell>

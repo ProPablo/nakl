@@ -6,10 +6,13 @@
 	import DownloadIcon from './svgs/Download.svelte';
 	import { fly } from 'svelte/transition';
 	import MessageContents from './MessageContents.svelte';
+	import { isDesktop } from './stores';
 
 	const toastStore = getToastStore();
 	export let message: IMessage;
-	let showCopy = false;
+	let baseShowCopy = false;
+
+	$: showCopy = $isDesktop ? baseShowCopy : true;
 
 	function copyMsg() {
 		if (!message.text) return;
@@ -47,17 +50,20 @@
 	{:else}
 		<!-- Curor here is all pointer because of the roll -->
 		<!-- FRIEND :) -->
+		<!-- svelte-ignore a11y-no-static-element-interactions 
+			-- in the event of mouseenter/leave on mobile use these 
+			aria-haspopup="true"
+			role="button"> 
+		-->
 		<div
 			on:mouseenter={() => {
-				showCopy = true;
+				baseShowCopy = true;
 			}}
 			on:mouseleave={() => {
-				showCopy = false;
+				baseShowCopy = false;
 			}}
 			class="grid grid-cols-[6fr_1fr] lg:grid-cols-[4fr_1fr_1fr] gap-2 mr-12 lg:mr-0 ml-2"
-			aria-haspopup="true"
-			role="button"
-			tabindex={message.timestamp}>
+			>
 			<div class="card p-4 variant-soft rounded-tl-none space-y-2">
 				<header class="flex justify-between items-center">
 					<p class="font-bold">Friend 😸</p>
@@ -83,7 +89,7 @@
 						in:fly|global={{ x: 20, duration: 500 }}
 						out:fly|global={{ x: 20, duration: 500 }}
 						class="grid items-center justify-center rounded-lg variant-soft">
-						<DownloadIcon classes="btn-icon rounded-lg" height="40" width="40" />
+						<DownloadIcon classes="btn-icon rounded-lg" height="30" width="30" />
 					</a>
 				{/if}
 			{/if}
