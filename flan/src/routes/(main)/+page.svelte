@@ -11,6 +11,8 @@
 	$: qrLink = `${$page.url.origin}/connect/${$peerId}`;
 
 	let connectInput: string;
+	
+	$: isConnectDisabled = connectInput === "";
 
 	function copyID() {
 		if (!$peerId) return;
@@ -58,13 +60,13 @@
 			<code class="variant-glass-surface rounded-md p-1 px-2">ID: {$peerId}</code>
 		</button>
 		{#if $advancedMode}
-			<form on:submit|preventDefault={handleFormSubmit} class="flex flex-row">
+			<form on:submit|preventDefault={handleFormSubmit}  class="flex flex-row">
 				<input
 					class="input p-2 rounded-lg"
 					type="text"
 					placeholder="Insert peer ID here"
 					bind:value={connectInput} />
-				<button type="submit" class="btn variant-filled rounded-lg">Join</button>
+				<button type="submit" disabled={isConnectDisabled} class="btn variant-filled rounded-lg">Join</button>
 			</form>
 			<div class="flex">
 				<button on:click={() => goto('/scanner')} class="btn variant-filled rounded-lg">
