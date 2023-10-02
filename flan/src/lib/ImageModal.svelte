@@ -2,7 +2,7 @@
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import type { IMessage } from './types';
 	const modalStore = getModalStore();
-	const message: IMessage = $modalStore[0].meta?.message;
+	$:message = $modalStore[0].meta?.message as IMessage;
 </script>
 
 <div class="flex items-center justify-center">

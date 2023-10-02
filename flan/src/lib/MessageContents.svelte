@@ -5,11 +5,11 @@
 
 	const modalStore = getModalStore();
 	export let message: IMessage;
-	const modal: ModalSettings = {
+	$: modal = {
 		type: 'component',
 		component: 'imageModal',
 		meta: { message: message }
-	};
+	} as ModalSettings;
 </script>
 
 {#if message.type === MessageType.Text}
