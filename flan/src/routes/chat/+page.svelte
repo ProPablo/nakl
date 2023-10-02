@@ -37,7 +37,8 @@
 
 	let conn: BufferedNotifyConnection;
 	const toastStore = getToastStore();
-	let messages: IMessage[] = dev ? sampleMessages : [];
+	// let messages: IMessage[] = dev ? sampleMessages : [];
+	let messages: IMessage[] = [];
 	let currentMessage: string = '';
 	let inputFile: File | null = null;
 
@@ -419,7 +420,7 @@
 		{#if messages.length == 0}
 			<div class="flex justify-center h-full items-center p-4">
 				<p class="italic badge-glass rounded-lg p-2 variant-glass-tertiary">
-					Connected successfully! Start chatting 💬
+					Connected successfully {conn && `to ${conn.peer}`}! Start chatting 💬
 				</p>
 			</div>
 		{/if}
