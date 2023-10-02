@@ -4,7 +4,13 @@
 	// Highlight JS
 	import hljs from 'highlight.js';
 	import 'highlight.js/styles/github-dark.css';
-	import { storeHighlightJs } from '@skeletonlabs/skeleton';
+	import {
+		Modal,
+		storeHighlightJs,
+		Toast,
+		type ModalComponent,
+	} from '@skeletonlabs/skeleton';
+	import ImageModal from '$lib/ImageModal.svelte';
 	storeHighlightJs.set(hljs);
 
 	// Floating UI for Popups
@@ -16,13 +22,19 @@
 
 	// Initialise stores
 	import { initializeStores } from '@skeletonlabs/skeleton';
-	import { Toast } from '@skeletonlabs/skeleton';
 	initializeStores();
 
 	onMount(() => {
 		console.log('layout mounted', $page);
 	});
+
+	const modalComponentRegistry: Record<string, ModalComponent> = {
+		imageModal: {
+			ref: ImageModal,
+		},
+	};
 </script>
 
 <Toast />
+<Modal components={modalComponentRegistry}/>
 <slot />

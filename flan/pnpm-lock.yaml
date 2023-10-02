@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 dependencies:
   '@floating-ui/dom':
     specifier: 1.5.1
@@ -16,8 +20,8 @@ dependencies:
 
 devDependencies:
   '@skeletonlabs/skeleton':
-    specifier: 2.0.0
-    version: 2.0.0(svelte@4.2.0)
+    specifier: 2.2.0
+    version: 2.2.0(svelte@4.2.0)
   '@skeletonlabs/tw-plugin':
     specifier: 0.1.0
     version: 0.1.0(tailwindcss@3.3.3)
@@ -414,8 +418,8 @@ packages:
     resolution: {integrity: sha512-C16M+IYz0rgRhWZdCmK+h58JMv8vijAA61gmz2rspCSwKwzBebpdcsiUmwrtJRdphuY30i6BSLEOP8ppbNLyLg==}
     dev: true
 
-  /@skeletonlabs/skeleton@2.0.0(svelte@4.2.0):
-    resolution: {integrity: sha512-8SaDK3kEUU57cSb/5a984EbINgnOPzShlkwPkduAhqc71SEqhRvx+RlLEpe1174NAYi00oi//LguIAYuVrSfBA==}
+  /@skeletonlabs/skeleton@2.2.0(svelte@4.2.0):
+    resolution: {integrity: sha512-pSi1yeZo1tsGnMqbBeTfTxfEqcZUM1n9RT/7KQVSiBcENB9L0kesbkv5TlZhW6MxOwf0QRVfkaeCc5ymz4/OHw==}
     peerDependencies:
       svelte: ^3.56.0 || ^4.0.0
     dependencies:
@@ -1225,6 +1229,7 @@ packages:
   /node-gyp-build-optional-packages@5.0.3:
     resolution: {integrity: sha512-k75jcVzk5wnnc/FMxsf4udAoTEUv2jY3ycfdSd3yWu6Cnd1oee6/CfZJApyscA4FJOmdoixWwiwOyf16RzD5JA==}
     hasBin: true
+    requiresBuild: true
     dev: false
     optional: true
 
@@ -1946,7 +1951,3 @@ packages:
       peerjs-js-binarypack: 2.0.0
       webrtc-adapter: 8.2.3
     dev: false
-
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
