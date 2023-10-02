@@ -52,5 +52,5 @@
 			{/if}
 		{/if}
 	</svelte:fragment>
-	<svelte:fragment slot="meta">PNG, JPG, and GIF allowed.</svelte:fragment>
+	<svelte:fragment slot="meta">All files accepted</svelte:fragment>
 </FileDropzone>

@@ -2,10 +2,19 @@
 	import { MessageType, type IMessage } from './types';
 	import FileIcon from './svgs/File.svelte';
 	export let message: IMessage;
+	$: isLink = message.text?.startsWith('http');
 </script>
 
 {#if message.type === MessageType.Text}
-	<p>{message.text}</p>
+	{#if isLink}
+		<a href={message.text} target="_blank" class="break-all text-secondary-300">
+			{message.text}
+		</a>
+	{:else}
+		<p class="break-all">
+			{message.text}
+		</p>
+	{/if}
 {:else if message.type === MessageType.Image}
 	<div class="flex items-center justify-center">
 		<img class="rounded-lg max-h-[60vh]" src={message.payload?.src} alt={message.payload?.name} />
