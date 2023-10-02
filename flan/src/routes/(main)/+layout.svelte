@@ -9,6 +9,7 @@
 	import { goto } from '$app/navigation';
 	import { AppShell } from '@skeletonlabs/skeleton';
 	import Header from '$lib/Header.svelte';
+	import { dev } from '$app/environment';
 
 	let loadingPeer = true;
 
@@ -32,7 +33,7 @@
 			port: parseInt(PUBLIC_PORT),
 			path: PUBLIC_PEERPATH,
 			// BLOCKED: Transtion when peer js branch merged
-			debug: 3
+			debug: dev ? 3 : 0
 		};
 		let peer = new Peer(peerOptions);
 		window.NAKL_PEER = peer;

@@ -5,6 +5,7 @@
 
 	const modalStore = getModalStore();
 	export let message: IMessage;
+	$: isLink = message.text?.startsWith('http');
 	$: modal = {
 		type: 'component',
 		component: 'imageModal',
@@ -13,7 +14,15 @@
 </script>
 
 {#if message.type === MessageType.Text}
-	<p>{message.text}</p>
+	{#if isLink}
+		<a href={message.text} target="_blank" class="break-all text-secondary-300">
+			{message.text}
+		</a>
+	{:else}
+		<p class="break-all">
+			{message.text}
+		</p>
+	{/if}
 {:else if message.type === MessageType.Image}
 	<div class="flex items-center justify-center">
 		<button on:click={() => modalStore.trigger(modal)}>
