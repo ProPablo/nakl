@@ -83,7 +83,7 @@
 						in:fly|global={{ x: 20, duration: 500 }}
 						out:fly|global={{ x: 20, duration: 500 }}
 						class="grid items-center justify-center rounded-lg variant-soft">
-						<DownloadIcon classes="btn-icon rounded-lg" height="40" width="40" />
+						<DownloadIcon classes="btn-icon rounded-lg" height="30" width="30" />
 					</a>
 				{/if}
 			{/if}

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { onMount, setContext } from 'svelte';
-	import Peer, { CborPeer,  } from 'peerjs';
+	import { onMount } from 'svelte';
+	import Peer, { CborPeer } from 'peerjs';
 	// For some reason, imports of these types as types isnt working
 	import type { PeerJSOption, DataConnection } from 'peerjs';
 	import { PUBLIC_HOST, PUBLIC_PEERPATH, PUBLIC_PORT } from '$env/static/public';
@@ -42,7 +42,7 @@
 	});
 </script>
 
-<AppShell>
+<AppShell slotPageFooter="-z-10">
 	<svelte:fragment slot="header">
 		<Header />
 	</svelte:fragment>
@@ -50,7 +50,9 @@
 	<div class="h-full">
 		{#if loadingPeer}
 			<div class="flex justify-center items-center h-full">
-				<p class="bg-secondary-500 p-3 rounded-lg animate-pulse">Loading & connecting to peer...</p>
+				<p class="variant-glass-secondary p-3 rounded-lg animate-pulse">
+					Loading & connecting to peer...
+				</p>
 			</div>
 		{:else}
 			<slot />
@@ -58,10 +60,12 @@
 	</div>
 
 	<svelte:fragment slot="pageFooter">
-	<div class="flex items-center justify-center p-1 badge-glass">
-			<a href="https://github.com/ProPablo/nakl" class=" hover:text-sky-400 transition-colors duration-150 cursor-pointer">
+		<div class="flex items-center justify-center p-1 relative badge-glass">
+			<a
+				href="https://github.com/ProPablo/nakl"
+				class="hover:text-sky-400 transition-colors duration-150 cursor-pointer">
 				kongi
 			</a>
-	</div>
+		</div>
 	</svelte:fragment>
 </AppShell>
