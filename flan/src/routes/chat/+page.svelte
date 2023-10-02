@@ -372,7 +372,9 @@
 		conn.on('sentChunk', (chunk) => {
 			// Get index from chunkId in messages and update progress
 			const msgIndex = messages.findIndex((msg) => msg.id === chunk.id);
-			console.log('Sent chunk', chunk);
+			if (dev) 
+				console.log('Sent chunk', chunk);
+
 			messages[msgIndex].progess = chunk.n / chunk.total;
 
 			if (chunk.n == chunk.total - 1) {
