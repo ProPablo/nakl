@@ -1,16 +1,33 @@
 <script lang="ts">
 	import { MessageType, type IMessage } from './types';
 	import FileIcon from './svgs/File.svelte';
+	import { getModalStore, type ModalSettings } from '@skeletonlabs/skeleton';
+
+	const modalStore = getModalStore();
 	export let message: IMessage;
+	const modal: ModalSettings = {
+		type: 'component',
+		component: 'imageModal',
+		meta: { message: message }
+	};
 </script>
 
 {#if message.type === MessageType.Text}
 	<p>{message.text}</p>
 {:else if message.type === MessageType.Image}
 	<div class="flex items-center justify-center">
-		<a href={message.payload?.src} download={message.payload?.name}>
-			<img class="rounded-lg max-h-[60vh]" src={message.payload?.src} alt={message.payload?.name} />
-		</a>
+		<button on:click={() => modalStore.trigger(modal)}>
+			<!-- https://stackoverflow.com/questions/3413683/disabling-the-context-menu-on-long-taps-on-android -->
+			<img
+				on:contextmenu={(e) => {
+					e.preventDefault();
+					e.stopPropagation();
+					return false;
+				}}
+				class="rounded-lg max-h-[60vh] hover:cursor-pointer"
+				src={message.payload?.src}
+				alt={message.payload?.name} />
+		</button>
 	</div>
 {:else if message.type === MessageType.Audio}
 	<div class="flex flex-col gap-3 items-center justify-center">
@@ -30,3 +47,12 @@
 		<code>{message.payload?.name}</code>
 	</div>
 {/if}
+
+<style>
+	/* https://github.com/react-native-webview/react-native-webview/issues/1183 */
+	img {
+		-webkit-user-select: none;
+		-webkit-touch-callout: none;
+		user-select: none;
+	}
+</style>
