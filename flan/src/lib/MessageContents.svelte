@@ -8,7 +8,9 @@
 	<p>{message.text}</p>
 {:else if message.type === MessageType.Image}
 	<div class="flex items-center justify-center">
-		<img class="rounded-lg max-h-[60vh]" src={message.payload?.src} alt={message.payload?.name} />
+		<a href={message.payload?.src} download={message.payload?.name}>
+			<img class="rounded-lg max-h-[60vh]" src={message.payload?.src} alt={message.payload?.name} />
+		</a>
 	</div>
 {:else if message.type === MessageType.Audio}
 	<div class="flex flex-col gap-3 items-center justify-center">
