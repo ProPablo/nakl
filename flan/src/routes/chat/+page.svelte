@@ -297,8 +297,8 @@
 		conn.on('close', onConnClose);
 
 		return () => {
-			conn.close();
 			conn.off('close');
+			conn.close();
 			conn.off('data');
 			conn.off('sentChunk');
 		};
