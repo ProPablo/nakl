@@ -419,7 +419,7 @@
 	<div bind:this={elemChat} class="overflow-y-auto">
 		{#if messages.length == 0}
 			<div class="flex justify-center h-full items-center p-4">
-				<p class="italic badge-glass rounded-lg p-2 variant-glass-tertiary">
+				<p class="text-center italic badge-glass rounded-lg p-2 variant-glass-tertiary">
 					Connected successfully {conn && `to ${conn.peer}`}! Start chatting 💬
 				</p>
 			</div>

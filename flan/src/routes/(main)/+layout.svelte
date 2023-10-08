@@ -43,7 +43,7 @@
 	});
 </script>
 
-<AppShell slotPageFooter="-z-10">
+<AppShell slotPageFooter="">
 	<svelte:fragment slot="header">
 		<Header />
 	</svelte:fragment>
@@ -61,10 +61,10 @@
 	</div>
 
 	<svelte:fragment slot="pageFooter">
-		<div class="flex items-center justify-center p-1 relative badge-glass">
+		<div class="flex items-center justify-center p-1 relative badge-glass pointer-events-none">
 			<a
 				href="https://github.com/ProPablo/nakl"
-				class="hover:text-sky-400 transition-colors duration-150 cursor-pointer">
+				class="z-1 hover:text-sky-400 transition-colors duration-150 cursor-pointer">
 				kongi
 			</a>
 		</div>
