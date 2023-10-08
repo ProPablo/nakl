@@ -12,7 +12,7 @@
 	import Popup from './Popup.svelte';
 	import { fade } from 'svelte/transition';
 
-	$: isRootPage = $page.url.pathname == '/';
+	$: isRootPage = $page.url.pathname == '/' || $page.url.pathname == '/about';
 </script>
 
 <!-- 

@@ -1,6 +1,8 @@
 # NAKL (Not Another Key Logger)
 
+
 ![](/logo.png)
+
 ![kongi](https://img.shields.io/badge/kongi-purple?style=plastic) ![Year](https://img.shields.io/badge/Year-2023-red?style=plastic) ![Language](https://img.shields.io/badge/TypeScript-grey?style=plastic&logo=typescript) ![Framework](https://img.shields.io/badge/Sveltekit-grey?style=plastic&logo=svelte) ![Framework](https://img.shields.io/badge/SkeletonUI-grey?style=plastic)
 
 This is the monorepo for NAKL, a serverless P2P platform where you can transfer files, images & text seamlessly between two devices/parties. 

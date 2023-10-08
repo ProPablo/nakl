@@ -10,6 +10,8 @@
 	import { AppShell } from '@skeletonlabs/skeleton';
 	import Header from '$lib/Header.svelte';
 	import { dev } from '$app/environment';
+	import GitHub from '$lib/svgs/GitHub.svelte';
+	import Info from '$lib/svgs/Info.svelte';
 
 	let loadingPeer = true;
 
@@ -61,11 +63,16 @@
 	</div>
 
 	<svelte:fragment slot="pageFooter">
-		<div class="flex items-center justify-center p-1 relative badge-glass pointer-events-none">
+		<div class="flex gap-3 items-center justify-center p-1 relative badge-glass">
 			<a
 				href="https://github.com/ProPablo/nakl"
 				class="z-1 hover:text-sky-400 transition-colors duration-150 cursor-pointer">
-				kongi
+				<GitHub height=28 width=28/>
+			</a>
+			<a
+				href="/about"
+				class="z-1 hover:text-sky-400 transition-colors duration-150 cursor-pointer">
+				<Info height=35 width=35 />
 			</a>
 		</div>
 	</svelte:fragment>
