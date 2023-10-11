@@ -33,7 +33,9 @@
 					return false;
 				}}
 				style="transform-origin: {mouseX * 100}% {mouseY * 100}%;"
-				class={`rounded-lg max-h-[80vh] transition-transform transform-gpu 
+				class={`rounded-lg max-h-[80vh] transition-transform transform-gpu cursor-${
+					isZoomed ? 'zoom-out' : 'zoom-in'
+				}
 				${isZoomed && 'scale-125'}`}
 				src={$modalStore[0].meta?.image}
 				alt={$modalStore[0].meta?.name} />
