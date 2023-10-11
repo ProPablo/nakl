@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { AppShell, FileDropzone, clipboard } from '@skeletonlabs/skeleton';
+	import { AppShell, FileDropzone, clipboard, focusTrap } from '@skeletonlabs/skeleton';
 	import { Drawer, type ToastSettings } from '@skeletonlabs/skeleton';
 	import type { BufferedNotifyConnection } from 'peerjs';
 	import { onMount } from 'svelte';
@@ -238,7 +238,7 @@
 		inputFile = clipboardData.files[0];
 	}
 
-	$: isSendDeactived = (currentMessage.length == 0 && inputFile == null) || connectionClosed;
+	$: isSendDeactived = (currentMessage.length == 0 && inputFile == null) || connectionClosed || !$peerId;
 
 	onMount(() => {
 		if (!window.NAKL_PEER_CONNECTION) {
@@ -441,12 +441,14 @@
 	</svelte:fragment>
 	<svelte:fragment slot="footer">
 		<form
+			use:focusTrap={inputFile !== null}
 			on:submit|preventDefault={sendMessage}
 			class="input-group input-group-divider lg:grid-cols-[1fr_auto] grid-cols-[auto_1fr_auto] rounded-container-token">
 			<MobileFileInput bind:inputFile />
 
 			<!-- TODO: handle differently for textinput -->
 			<input
+				use:focusTrap={inputFile !== null}
 				bind:value={currentMessage}
 				on:paste={handlePaste}
 				type="text"

@@ -9,7 +9,7 @@
 	$: modal = {
 		type: 'component',
 		component: 'imageModal',
-		meta: { message: message }
+		meta: {image: message.payload?.src, name: message.payload?.name}
 	} as ModalSettings;
 </script>
 
