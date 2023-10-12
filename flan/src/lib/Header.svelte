@@ -3,7 +3,8 @@
 		AppBar,
 		LightSwitch,
 		SlideToggle,
-		popup
+		popup,
+		type ModalSettings
 	} from '@skeletonlabs/skeleton';
 	import { peerId, advancedMode, popupMsg } from '$lib/stores';
 	import { page } from '$app/stores';
@@ -11,8 +12,21 @@
 	import Logo from './svgs/Logo.svelte';
 	import Popup from './Popup.svelte';
 	import { fade } from 'svelte/transition';
+	import { goto } from '$app/navigation';
+	import { getModalStore } from '@skeletonlabs/skeleton';
 
 	$: isRootPage = $page.url.pathname == '/' || $page.url.pathname == '/about';
+
+	const modalStore = getModalStore();
+
+	const confirmModal: ModalSettings = {
+		type: 'confirm',
+		title: 'Leaving? 🥺',
+		body: 'Are you sure you wish to leave the chat?',
+		response: (r: boolean) => {
+			if (r) goto('/')
+ 		}
+	};
 </script>
 
 <!-- 
@@ -29,17 +43,17 @@
 		class="w-screen">
 		<svelte:fragment slot="lead">
 			<div
-			use:popup={{
-				event: 'hover',
-				target: 'popupHover',
-				placement: 'top'
-			}}
-			on:mouseover={() => ($popupMsg = 'Switch Theme')}
-			on:focus={() => ($popupMsg = 'Switch Theme')}
-			role="button"
-			tabindex="0">
-			<LightSwitch />
-		</div>			
+				use:popup={{
+					event: 'hover',
+					target: 'popupHover',
+					placement: 'top'
+				}}
+				on:mouseover={() => ($popupMsg = 'Switch Theme')}
+				on:focus={() => ($popupMsg = 'Switch Theme')}
+				role="button"
+				tabindex="0">
+				<LightSwitch />
+			</div>
 		</svelte:fragment>
 		<div class="flex flex-col items-center gap-y-3">
 			<a type="button" href="/" data-sveltekit-reload>
@@ -58,7 +72,7 @@
 				on:focus={() => ($popupMsg = 'Toggle Advanced Mode')}
 				role="button"
 				tabindex="0">
-				<SlideToggle name="advanced" bind:checked={$advancedMode} >Adv. Mode</SlideToggle>
+				<SlideToggle name="advanced" bind:checked={$advancedMode}>Adv. Mode</SlideToggle>
 			</div>
 		</svelte:fragment>
 	</AppBar>
@@ -71,10 +85,13 @@
 		<svelte:fragment slot="lead">
 			<div class="flex flex-col items-center gap-y-3">
 				<!-- <a in:fade|global={{ duration: 500 }} out:fade|global={{ duration: 500 }} href="/"> -->
-				<a href="/">
+				<button
+					on:click={() => {
+						modalStore.trigger(confirmModal);
+					}}>
 					<Logo classes="md:hidden" width="100" height="100" />
 					<LogoWide classes="hidden md:flex" width="250" height="100" />
-				</a>
+				</button>
 			</div>
 		</svelte:fragment>
 		<div class="flex flex-col">

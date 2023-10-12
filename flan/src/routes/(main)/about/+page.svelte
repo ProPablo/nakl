@@ -1,7 +1,10 @@
 <script lang="ts">
+	import Yourself from '$lib/svgs/Yourself.svelte';
+	import Others from '$lib/svgs/Others.svelte';
+	import YourselfAlt from '$lib/svgs/YourselfAlt.svelte';
 </script>
 
-<div class="flex container lg:mx-auto px-3 justify-center items-center my-6">
+<div class="flex container mx-auto px-3 justify-center items-center my-6">
 	<div class="flex flex-col justify-center items-center space-y-5 pt-10">
 		<h1 class="text-5xl">About</h1>
 		<p class="text-center">
@@ -10,8 +13,9 @@
 				href="https://uqcs.org/competitions/hackathon-2022/"
 				class="text-sky-500 hover:text-sky-200 transition-colors">
 				2022 UQCS Hackathon
-			</a> with goal being to address the gap in the market for an AirDrop-like experience on other
-			devices without needing to worry about device compatibility or privacy-concerns.
+			</a>
+			with goal being to address the gap in the market for an AirDrop-like experience on other devices
+			without needing to worry about device compatibility or privacy-concerns.
 		</p>
 		<div class="w-full card card-hover text-center p-4 space-y-3">
 			<h2 class="text-2xl">Developed By</h2>
@@ -23,6 +27,43 @@
 				<strong>Tyrone Nolasco:</strong>
 				tyronewessnolasco@gmail.com
 			</p>
+		</div>
+		<div class="w-full card card-hover text-center p-4 space-y-3">
+			<h2 class="text-2xl">Use-Cases</h2>
+			<div class="flex flex-row gap-4">
+				<div class="flex flex-col items-center gap-3">
+					<strong>With Yourself</strong>
+					<div class="flex flex-row gap-4">
+						<Yourself
+							width="100"
+							height="100"
+							phoneFill="#bbb7cd"
+							classes="bg-[#bbb7cd] rounded-lg p-3 shadow-xl" />
+						<YourselfAlt
+							width="100"
+							height="100"
+							phoneFill="#bbb7cd"
+							classes="bg-[#bbb7cd] rounded-lg p-3 shadow-xl" />
+					</div>
+					<p>
+						If you need to transfer files or text between yourself on two different devices, you can
+						either scan the QR code from another device you own or manually enter in the peerID
+						(given that you're in advanced mode)
+					</p>
+				</div>
+				<div class="flex flex-col items-center gap-3">
+					<strong>With Others</strong>
+					<Others
+						width="100"
+						height="100"
+						phoneFill="#bbb7cd"
+						classes="bg-[#bbb7cd] rounded-lg p-3 shadow-xl" />
+					<p>
+						If you need to transfer files or text between yourself and someone else, all you have to
+						do is show them the QR code and get them to scan it
+					</p>
+				</div>
+			</div>
 		</div>
 		<div class="w-full card card-hover text-center p-4 space-y-3">
 			<h2 class="text-2xl">FAQ</h2>
