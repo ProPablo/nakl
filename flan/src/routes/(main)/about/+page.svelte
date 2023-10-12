@@ -30,7 +30,7 @@
 		</div>
 		<div class="w-full card card-hover text-center p-4 space-y-3">
 			<h2 class="text-2xl">Use-Cases</h2>
-			<div class="flex flex-row gap-4">
+			<div class="flex flex-col lg:flex-row gap-4">
 				<div class="flex flex-col items-center gap-3">
 					<strong>With Yourself</strong>
 					<div class="flex flex-row gap-4">
