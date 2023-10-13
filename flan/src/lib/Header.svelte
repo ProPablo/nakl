@@ -24,8 +24,8 @@
 		title: 'Leaving? 🥺',
 		body: 'Are you sure you wish to leave the chat?',
 		response: (r: boolean) => {
-			if (r) goto('/')
- 		}
+			if (r) goto('/');
+		}
 	};
 </script>
 

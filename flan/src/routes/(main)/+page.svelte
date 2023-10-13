@@ -34,11 +34,6 @@
 	}
 </script>
 
-<div class="card p-4 variant-filled-secondary" data-popup="popupHover">
-	<p>{qrLink}</p>
-	<div class="arrow variant-filled-secondary" />
-</div>
-
 <div class="flex container mx-auto justify-center my-2 lg:pt-10">
 	<div class="flex flex-col justify-center items-center space-y-5">
 		<p class="text-3xl">Scan to Connect</p>
@@ -60,7 +55,7 @@
 			use:popup={{
 				event: 'hover',
 				target: 'popupHover',
-				placement: "top"
+				placement: 'top'
 			}}
 			on:mouseover={() => {
 				$popupMsg = 'Copy Peer ID';

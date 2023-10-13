@@ -45,7 +45,7 @@
 	});
 </script>
 
-<AppShell slotPageFooter="">
+<AppShell>
 	<svelte:fragment slot="header">
 		<Header />
 	</svelte:fragment>
@@ -54,26 +54,24 @@
 		{#if loadingPeer}
 			<div class="flex flex-col items-center h-full gap-3 pt-10">
 				<p class="badge-glass p-3 rounded-lg animate-pulse">Loading & connecting to peer...</p>
-				<div class="placeholder animate-pulse rounded-lg pb-[315px] w-[315px]"></div>
-				<p class="placeholder p-3 rounded-lg animate-pulse w-1/4"></p>
+				<div class="placeholder animate-pulse rounded-lg pb-[315px] w-[315px]" />
+				<p class="placeholder p-3 rounded-lg animate-pulse w-1/4" />
 			</div>
-			{:else}
+		{:else}
 			<slot />
 		{/if}
 	</div>
 
-	<svelte:fragment slot="pageFooter">
-		<div class="flex gap-3 items-center justify-center p-1 relative badge-glass">
-			<a
-				href="https://github.com/ProPablo/nakl"
-				class="z-1 cursor-pointer hover:scale-105">
-				<GitHub height=28 width=28 fill="#5f588b"/>
-			</a>
-			<a
-				href="/about"
-				class="z-1 cursor-pointer hover:scale-105">
-				<Info height=35 width=35 fill="#5f588b"/>
-			</a>
-		</div>
+	<svelte:fragment slot="footer">
+		{#if !loadingPeer}
+			<div class="flex gap-3 items-center justify-center p-1 relative badge-glass">
+				<a href="https://github.com/ProPablo/nakl" class="z-1 cursor-pointer hover:scale-105">
+					<GitHub height="28" width="28" fill="#5f588b" />
+				</a>
+				<a href="/about" class="z-1 cursor-pointer hover:scale-105">
+					<Info height="35" width="35" fill="#5f588b" />
+				</a>
+			</div>
+		{/if}
 	</svelte:fragment>
 </AppShell>

@@ -9,10 +9,10 @@
 
 	$: {
 		if (!QRCanvas) break $;
-		QRCode.toCanvas(QRCanvas, link, {scale: 7}, (error) => {
+		QRCode.toCanvas(QRCanvas, link, {scale: 6}, (error) => {
 			if (error) console.log(error);
 		});
 	}
 </script>
 
-<canvas bind:this={QRCanvas} class="rounded-lg" />
+<canvas bind:this={QRCanvas} class="rounded-lg -z-10" />
