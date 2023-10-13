@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { getModalStore } from '@skeletonlabs/skeleton';
+	import { isDesktop } from './stores';
 
 	export let parent: any;
 	const modalStore = getModalStore();
@@ -24,7 +25,12 @@
 			class="btn-icon variant-filled fixed top-4 right-4 z-50 font-bold shadow-xl">
 			x
 		</button>
-		<button on:click={() => (isZoomed = !isZoomed)}>
+		<button
+			on:click={() => {
+				if ($isDesktop) {
+					isZoomed = !isZoomed;
+				}
+			}}>
 			<img
 				on:mousemove={handleMouseMove}
 				on:contextmenu={(e) => {
@@ -40,7 +46,7 @@
 				src={$modalStore[0].meta?.image}
 				alt={$modalStore[0].meta?.name} />
 		</button>
-		{#if !isZoomed}
+		{#if !isZoomed && $isDesktop}
 			<p class="badge-glass p-3 rounded-lg">Click Image to Zoom</p>
 		{/if}
 	</div>
