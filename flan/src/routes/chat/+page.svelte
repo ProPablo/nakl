@@ -417,7 +417,7 @@
 		<Header />
 	</svelte:fragment>
 	<div bind:this={elemChat} class="overflow-y-auto">
-		{#if messages.length == 0}
+		{#if messages.length == 0 && $peerId}
 			<div class="flex justify-center h-full items-center p-4">
 				<p class="text-center italic badge-glass rounded-lg p-2 variant-glass-tertiary">
 					Connected successfully {conn && `to ${conn.peer}`}! Start chatting 💬
@@ -431,6 +431,10 @@
 			{#if connectionClosed}
 				<p class="italic badge-glass rounded-lg p-2 variant-glass-warning">
 					⚠️ Connected closed.
+				</p>
+				{:else if !$peerId}
+				<p class="italic badge-glass rounded-lg p-2 variant-glass-warning">
+					⚠️ No active connection.
 				</p>
 			{/if}
 		</div>

@@ -88,11 +88,11 @@
 				<!-- <a in:fade|global={{ duration: 500 }} out:fade|global={{ duration: 500 }} href="/"> -->
 				<button
 					on:click={() => {
-						if (!isChatPage) {
+						if (!isChatPage || !$peerId) {
 							goto('/');
 							return;
 						};
-						modalStore.trigger(confirmModal)
+						modalStore.trigger(confirmModal);
 					}}>
 					<Logo classes="md:hidden" width="100" height="100" />
 					<LogoWide classes="hidden md:flex" width="250" height="100" />
