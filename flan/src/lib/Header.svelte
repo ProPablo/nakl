@@ -16,6 +16,7 @@
 	import { getModalStore } from '@skeletonlabs/skeleton';
 
 	$: isRootPage = $page.url.pathname == '/' || $page.url.pathname == '/about';
+	$: isChatPage = $page.url.pathname == '/chat';
 
 	const modalStore = getModalStore();
 
@@ -87,7 +88,11 @@
 				<!-- <a in:fade|global={{ duration: 500 }} out:fade|global={{ duration: 500 }} href="/"> -->
 				<button
 					on:click={() => {
-						modalStore.trigger(confirmModal);
+						if (!isChatPage) {
+							goto('/');
+							return;
+						};
+						modalStore.trigger(confirmModal)
 					}}>
 					<Logo classes="md:hidden" width="100" height="100" />
 					<LogoWide classes="hidden md:flex" width="250" height="100" />

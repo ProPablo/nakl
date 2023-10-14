@@ -2,6 +2,8 @@
 	import Yourself from '$lib/svgs/Yourself.svelte';
 	import Others from '$lib/svgs/Others.svelte';
 	import YourselfAlt from '$lib/svgs/YourselfAlt.svelte';
+	import { modeCurrent } from '@skeletonlabs/skeleton';
+	$:svgFill = $modeCurrent ? "#d3d0e2" : "#bbb7cd"
 </script>
 
 <div class="flex container mx-auto px-3 justify-center items-center my-6">
@@ -37,13 +39,13 @@
 						<Yourself
 							width="100"
 							height="100"
-							phoneFill="#bbb7cd"
-							classes="bg-[#bbb7cd] rounded-lg p-3 shadow-xl" />
+							phoneFill={svgFill}
+							classes="bg-[#d3d0e2] dark:bg-[#bbb7cd] rounded-lg p-3 shadow-xl" />
 						<YourselfAlt
 							width="100"
 							height="100"
-							phoneFill="#bbb7cd"
-							classes="bg-[#bbb7cd] rounded-lg p-3 shadow-xl" />
+							phoneFill={svgFill}
+							classes="bg-[#d3d0e2] dark:bg-[#bbb7cd] rounded-lg p-3 shadow-xl" />
 					</div>
 					<p>
 						If you need to transfer files or text between yourself on two different devices, you can
@@ -56,8 +58,8 @@
 					<Others
 						width="100"
 						height="100"
-						phoneFill="#bbb7cd"
-						classes="bg-[#bbb7cd] rounded-lg p-3 shadow-xl" />
+						phoneFill={svgFill}
+						classes="bg-[#d3d0e2] dark:bg-[#bbb7cd] rounded-lg p-3 shadow-xl" />
 					<p>
 						If you need to transfer files or text between yourself and someone else, all you have to
 						do is show them the QR code and get them to scan it
