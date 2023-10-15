@@ -42,7 +42,7 @@
 					{#if message.progess == 1}
 						<div class="text-xs ml-auto italic text-right">Sent ✔</div>
 					{:else}
-						<div class="ml-auto">{displayPercent} %</div>
+						<div class="text-xs ml-auto italic text-right">{displayPercent} %</div>
 					{/if}
 				{/if}
 			</div>
