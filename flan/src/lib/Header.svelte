@@ -10,7 +10,6 @@
 	import { page } from '$app/stores';
 	import LogoWide from './svgs/LogoWide.svelte';
 	import Logo from './svgs/Logo.svelte';
-	import Popup from './Popup.svelte';
 	import { fade } from 'svelte/transition';
 	import { goto } from '$app/navigation';
 	import { getModalStore } from '@skeletonlabs/skeleton';
@@ -34,7 +33,6 @@
 	find better way to conditionally render 
 	ref https://learn.svelte.dev/tutorial/breaking-out-of-layouts 
 -->
-<Popup />
 {#if isRootPage}
 	<AppBar
 		gridColumns="grid-cols-3"
@@ -92,6 +90,7 @@
 							goto('/');
 							return;
 						};
+						// TODO: Make this localStorage as a part of settings branch"Remember This"
 						modalStore.trigger(confirmModal);
 					}}>
 					<Logo classes="md:hidden" width="100" height="100" />

@@ -23,6 +23,7 @@
 
 	// Initialise stores
 	import { initializeStores } from '@skeletonlabs/skeleton';
+	import Popup from '$lib/Popup.svelte';
 	initializeStores();
 
 	onMount(() => {
@@ -38,5 +39,5 @@
 
 <Toast />
 <Modal components={modalComponentRegistry}/>
-
+<Popup />
 <slot />
