@@ -445,14 +445,12 @@
 	</svelte:fragment>
 	<svelte:fragment slot="footer">
 		<form
-			use:focusTrap={inputFile !== null}
 			on:submit|preventDefault={sendMessage}
 			class="input-group input-group-divider lg:grid-cols-[1fr_auto] grid-cols-[auto_1fr_auto] rounded-container-token">
 			<MobileFileInput bind:inputFile />
 
 			<!-- TODO: handle differently for textinput -->
 			<input
-				use:focusTrap={inputFile !== null}
 				bind:value={currentMessage}
 				on:paste={handlePaste}
 				type="text"
