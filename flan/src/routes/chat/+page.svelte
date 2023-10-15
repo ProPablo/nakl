@@ -430,7 +430,7 @@
 		<div class="flex justify-center h-full items-center p-4" bind:this={elemChatEnd}>
 			{#if connectionClosed}
 				<p class="italic badge-glass rounded-lg p-2 variant-glass-warning">
-					⚠️ Connected closed.
+					⚠️ Connection closed.
 				</p>
 				{:else if !$peerId}
 				<p class="italic badge-glass rounded-lg p-2 variant-glass-warning">
