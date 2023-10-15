@@ -1,10 +1,10 @@
 <script lang="ts">
+	// This input is the Select File button 
+	// The actual contents of dropzone are in the drawercomponent
 	import { getDrawerStore } from '@skeletonlabs/skeleton';
-	import { onMount } from 'svelte';
 
 	export let inputFile: File | null = null;
 
-	// Local
 	let elemFileInput: HTMLElement;
 
 	function handleFileChange(e: Event): void {

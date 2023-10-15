@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { FileDropzone } from '@skeletonlabs/skeleton';
+	import { FileDropzone, ProgressRadial } from '@skeletonlabs/skeleton';
 	import FileIcon from './svgs/File.svelte';
 	import Message from './Message.svelte';
 
@@ -13,16 +13,19 @@
 			inputFile = files[0];
 		}
 	}
+
 	let inputName = 'nakl_file_input';
 
-	function handleRemoveFile(): void {
+	$: if (!inputFile) {
 		//Get the file input element using name and document.getElement and clear it
 		let fileElems = document.getElementsByName(inputName) as NodeListOf<HTMLInputElement>;
 		// This will remove the file from all inputs with this name
 		for (let i = 0; i < fileElems.length; i++) {
 			fileElems[i].value = '';
 		}
+	}
 
+	function handleRemoveFileButton(): void {
 		inputFile = null;
 	}
 </script>
@@ -37,15 +40,19 @@
 						src={URL.createObjectURL(inputFile)}
 						alt="Selected file" />
 
-					<button class="btn variant-filled-secondary z-10 rounded-lg" on:click={handleRemoveFile}>
+					<button
+						class="btn variant-filled-secondary z-10 rounded-lg"
+						on:click={handleRemoveFileButton}>
 						Remove image
 					</button>
 				</div>
 			{:else}
 				<div class="grid grid-rows-[1fr_auto] gap-4">
-					<FileIcon height=100 width=100 classes="mx-auto"/>
+					<FileIcon height="100" width="100" classes="mx-auto" />
 					<code class="break-all">{inputFile.name}</code>
-					<button class="btn variant-filled-secondary z-10 rounded-lg" on:click={handleRemoveFile}>
+					<button
+						class="btn variant-filled-secondary z-10 rounded-lg"
+						on:click={handleRemoveFileButton}>
 						Remove file
 					</button>
 				</div>

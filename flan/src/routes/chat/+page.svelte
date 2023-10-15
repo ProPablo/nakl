@@ -1,5 +1,11 @@
 <script lang="ts">
-	import { AppShell, FileDropzone, clipboard, focusTrap } from '@skeletonlabs/skeleton';
+	import {
+		AppShell,
+		FileDropzone,
+		ProgressRadial,
+		clipboard,
+		focusTrap
+	} from '@skeletonlabs/skeleton';
 	import { Drawer, type ToastSettings } from '@skeletonlabs/skeleton';
 	import type { BufferedNotifyConnection } from 'peerjs';
 	import { onMount } from 'svelte';
@@ -12,9 +18,11 @@
 	import { peerId } from '$lib/stores';
 	import { goto } from '$app/navigation';
 	import { dev } from '$app/environment';
+	import { sleep } from '$lib/util';
 
 	let messageRecievedCount = 0;
 	let connectionClosed = false;
+	let loadingFileBuffer = false;
 
 	const sampleMessages: IMessage[] = [
 		{
@@ -204,7 +212,10 @@
 		if (!inputFile) {
 			return;
 		}
+		loadingFileBuffer = true;
 		var arr = await inputFile.arrayBuffer();
+		// await sleep(10000);
+		loadingFileBuffer = false;
 
 		if (inputFile.type.includes('image/')) {
 			sendImage(inputFile, arr);
@@ -238,7 +249,11 @@
 		inputFile = clipboardData.files[0];
 	}
 
-	$: isSendDeactived = (currentMessage.length == 0 && inputFile == null) || connectionClosed || !$peerId;
+	$: isSendDeactived =
+		(currentMessage.length == 0 && inputFile == null) ||
+		connectionClosed ||
+		!$peerId ||
+		loadingFileBuffer;
 
 	onMount(() => {
 		if (!window.NAKL_PEER_CONNECTION) {
@@ -348,7 +363,7 @@
 						messages.push(newMessageModelVideo);
 						break;
 					case MessageType.Audio:
-					if (!data.payload) return;
+						if (!data.payload) return;
 						const newBlobAudio = new Blob([data.payload?.data]);
 						const newMessageModelAudio: IMessage = {
 							timestamp: Date.now(),
@@ -373,8 +388,7 @@
 		conn.on('sentChunk', (chunk) => {
 			// Get index from chunkId in messages and update progress
 			const msgIndex = messages.findIndex((msg) => msg.id === chunk.id);
-			if (dev) 
-				console.log('Sent chunk', chunk);
+			if (dev) console.log('Sent chunk', chunk);
 
 			messages[msgIndex].progess = chunk.n / chunk.total;
 
@@ -429,10 +443,8 @@
 		{/each}
 		<div class="flex justify-center h-full items-center p-4" bind:this={elemChatEnd}>
 			{#if connectionClosed}
-				<p class="italic badge-glass rounded-lg p-2 variant-glass-warning">
-					⚠️ Connection closed.
-				</p>
-				{:else if !$peerId}
+				<p class="italic badge-glass rounded-lg p-2 variant-glass-warning">⚠️ Connection closed.</p>
+			{:else if !$peerId}
 				<p class="italic badge-glass rounded-lg p-2 variant-glass-warning">
 					⚠️ No active connection.
 				</p>
@@ -462,8 +474,14 @@
 			<button
 				disabled={isSendDeactived}
 				type="submit"
-				class="variant-filled-primary disabled:variant-filled-surface">
-				Send
+				class={`${
+					// loadingFileBuffer && 'animate-pulse'
+					""
+				} space-x-3 variant-filled-primary disabled:variant-filled-surface`}>
+				{#if loadingFileBuffer}
+					<ProgressRadial width="w-5" stroke={100} strokeLinecap="round" value={undefined} />
+				{/if}
+				<p>Send</p>
 			</button>
 		</form>
 	</svelte:fragment>
