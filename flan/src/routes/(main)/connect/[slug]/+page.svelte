@@ -4,14 +4,16 @@
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
 	import { getToastStore } from '@skeletonlabs/skeleton';
+	import { sleep } from '$lib/util';
 	let connectID = $page.params.slug;
 
 	let connecting = true;
 	const toastStore = getToastStore();
 
-	function onConnOpen(): void {
+	async function onConnOpen() {
 		connecting = false;
 		console.log('Connection open');
+		// await sleep(10000);
 		goto('/chat');
 	}
 
@@ -34,7 +36,7 @@
 	});
 </script>
 
-<div class="flex justify-center items-center h-full">
+<div class="flex h-full justify-center items-center">
 	<p class="variant-glass-secondary p-3 rounded-lg animate-pulse text-center mx-4">
 		Welcome gamer, trying to connect to: {connectID}
 	</p>
