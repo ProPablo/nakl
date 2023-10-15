@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { AppShell, FileDropzone, clipboard } from '@skeletonlabs/skeleton';
+	import { AppShell, FileDropzone, clipboard, focusTrap } from '@skeletonlabs/skeleton';
 	import { Drawer, type ToastSettings } from '@skeletonlabs/skeleton';
 	import type { BufferedNotifyConnection } from 'peerjs';
 	import { onMount } from 'svelte';
@@ -38,6 +38,7 @@
 	let conn: BufferedNotifyConnection;
 	const toastStore = getToastStore();
 	let messages: IMessage[] = dev ? sampleMessages : [];
+	// let messages: IMessage[] = [];
 	let currentMessage: string = '';
 	let inputFile: File | null = null;
 
@@ -237,7 +238,7 @@
 		inputFile = clipboardData.files[0];
 	}
 
-	$: isSendDeactived = (currentMessage.length == 0 && inputFile == null) || connectionClosed;
+	$: isSendDeactived = (currentMessage.length == 0 && inputFile == null) || connectionClosed || !$peerId;
 
 	onMount(() => {
 		if (!window.NAKL_PEER_CONNECTION) {
@@ -416,10 +417,10 @@
 		<Header />
 	</svelte:fragment>
 	<div bind:this={elemChat} class="overflow-y-auto">
-		{#if messages.length == 0}
+		{#if messages.length == 0 && $peerId}
 			<div class="flex justify-center h-full items-center p-4">
-				<p class="italic badge-glass rounded-lg p-2 variant-glass-tertiary">
-					Connected successfully! Start chatting 💬
+				<p class="text-center italic badge-glass rounded-lg p-2 variant-glass-tertiary">
+					Connected successfully {conn && `to ${conn.peer}`}! Start chatting 💬
 				</p>
 			</div>
 		{/if}
@@ -429,7 +430,11 @@
 		<div class="flex justify-center h-full items-center p-4" bind:this={elemChatEnd}>
 			{#if connectionClosed}
 				<p class="italic badge-glass rounded-lg p-2 variant-glass-warning">
-					⚠️ Connected closed.
+					⚠️ Connection closed.
+				</p>
+				{:else if !$peerId}
+				<p class="italic badge-glass rounded-lg p-2 variant-glass-warning">
+					⚠️ No active connection.
 				</p>
 			{/if}
 		</div>

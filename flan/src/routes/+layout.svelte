@@ -9,6 +9,7 @@
 		storeHighlightJs,
 		Toast,
 		type ModalComponent,
+		type PopupSettings,
 	} from '@skeletonlabs/skeleton';
 	import ImageModal from '$lib/ImageModal.svelte';
 	storeHighlightJs.set(hljs);
@@ -22,6 +23,7 @@
 
 	// Initialise stores
 	import { initializeStores } from '@skeletonlabs/skeleton';
+	import Popup from '$lib/Popup.svelte';
 	initializeStores();
 
 	onMount(() => {
@@ -37,4 +39,5 @@
 
 <Toast />
 <Modal components={modalComponentRegistry}/>
+<Popup />
 <slot />

@@ -1,18 +1,18 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { advancedMode, peerId } from '$lib/stores';
+	import { advancedMode, peerId, popupMsg } from '$lib/stores';
 	import QRCode from '$lib/QRCode.svelte';
 	import { page } from '$app/stores';
 	import { getToastStore, popup } from '@skeletonlabs/skeleton';
-	import type { ToastSettings, PopupSettings } from '@skeletonlabs/skeleton';
+	import type { ToastSettings } from '@skeletonlabs/skeleton';
 
 	const toastStore = getToastStore();
 
 	$: qrLink = `${$page.url.origin}/connect/${$peerId}`;
 
 	let connectInput: string;
-	
-	$: isConnectDisabled = connectInput === "";
+
+	$: isConnectDisabled = connectInput === '';
 
 	function copyID() {
 		if (!$peerId) return;
@@ -34,11 +34,6 @@
 	}
 </script>
 
-<div class="card p-4 variant-filled-secondary" data-popup="popupHover">
-	<p>{qrLink}</p>
-	<div class="arrow variant-filled-secondary" />
-</div>
-
 <div class="flex container mx-auto justify-center my-2 lg:pt-10">
 	<div class="flex flex-col justify-center items-center space-y-5">
 		<p class="text-3xl">Scan to Connect</p>
@@ -56,21 +51,36 @@
 			</div>
 		{/if}
 
-		<button on:click={copyID} class="hover:scale-105 transition-transform">
+		<button
+			use:popup={{
+				event: 'hover',
+				target: 'popupHover',
+				placement: 'top'
+			}}
+			on:mouseover={() => {
+				$popupMsg = 'Copy Peer ID';
+			}}
+			on:focus={() => {
+				$popupMsg = 'Copy Peer ID';
+			}}
+			on:click={copyID}
+			class="hover:scale-105 transition-transform">
 			<code class="variant-glass-surface rounded-md p-1 px-2">ID: {$peerId}</code>
 		</button>
 		{#if $advancedMode}
-			<form on:submit|preventDefault={handleFormSubmit}  class="flex flex-row">
+			<form on:submit|preventDefault={handleFormSubmit} class="flex flex-row">
 				<input
 					class="input p-2 rounded-lg"
 					type="text"
 					placeholder="Insert peer ID here"
 					bind:value={connectInput} />
-				<button type="submit" disabled={isConnectDisabled} class="btn variant-filled rounded-lg">Join</button>
+				<button type="submit" disabled={isConnectDisabled} class="btn variant-filled rounded-lg">
+					Join
+				</button>
 			</form>
 			<div class="flex">
 				<button on:click={() => goto('/scanner')} class="btn variant-filled rounded-lg">
-					Open Scanner
+					Open QR Scanner
 				</button>
 			</div>
 		{/if}
