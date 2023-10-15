@@ -37,8 +37,8 @@
 
 	let conn: BufferedNotifyConnection;
 	const toastStore = getToastStore();
-	// let messages: IMessage[] = dev ? sampleMessages : [];
-	let messages: IMessage[] = [];
+	let messages: IMessage[] = dev ? sampleMessages : [];
+	// let messages: IMessage[] = [];
 	let currentMessage: string = '';
 	let inputFile: File | null = null;
 

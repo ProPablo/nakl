@@ -47,7 +47,9 @@
 				alt={$modalStore[0].meta?.name} />
 		</button>
 		{#if !isZoomed && $isDesktop}
-			<p class="badge-glass p-3 rounded-lg">Click Image to Zoom</p>
+			<button class="w-full cursor-default" on:click={parent.onClose}>
+				<p class="badge-glass p-3 rounded-lg">Click Image to Zoom / Click Anywhere to Dismiss</p>
+			</button>
 		{/if}
 	</div>
 {/if}

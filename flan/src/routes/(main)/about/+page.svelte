@@ -3,7 +3,7 @@
 	import Others from '$lib/svgs/Others.svelte';
 	import YourselfAlt from '$lib/svgs/YourselfAlt.svelte';
 	import { modeCurrent } from '@skeletonlabs/skeleton';
-	$:svgFill = $modeCurrent ? "#d3d0e2" : "#bbb7cd"
+	$: svgFill = $modeCurrent ? '#d3d0e2' : '#bbb7cd';
 </script>
 
 <div class="flex container mx-auto px-3 justify-center items-center my-6">
@@ -67,22 +67,28 @@
 				</div>
 			</div>
 		</div>
-		<div class="w-full card card-hover text-center p-4 space-y-3">
-			<h2 class="text-2xl">FAQ</h2>
-			<p>
+		<div class="w-full card card-hover text-left p-12">
+			<h2 class="text-3xl text-center">FAQ</h2>
+			<p class="leading-relaxed my-4">
 				<strong>How secure is this?</strong>
-				This is a serverless P2P website, meaning that there is no persistent storage of data. As soon
-				as the connection is terminated and both users have left the chat webpage, the data sent via
-				the P2P instance goes with it.
+				<br />
+				This is a serverless P2P website, meaning that there is no persistent storage of data.
+				<br />
+				As soon as the connection is terminated and both users have left the chat webpage, the data sent
+				via the P2P instance goes with it.
 			</p>
-			<p>
+
+			<p class="leading-relaxed my-4">
 				<strong>How do I report an issue?</strong>
+				<br/>
 				Visit our GitHub and raise an issue. We'd be happy to hear your feedback!
 			</p>
-			<p>
-				<strong>How do I report inappropriate usage of the platform?</strong>
-				Use the contact card above and please send us through an email with as much information as you
-				know.
+
+			<p class="leading-relaxed my-4">
+			<strong>How do I report inappropriate usage of the platform?</strong>
+			<br/>
+				Use the contact card above and please send us through an email with as much information as
+				you know.
 			</p>
 		</div>
 		<div class="w-full card card-hover text-center p-4 space-y-3">
