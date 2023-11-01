@@ -4,7 +4,8 @@
 		FileDropzone,
 		ProgressRadial,
 		clipboard,
-		focusTrap
+		focusTrap,
+		popup,
 	} from '@skeletonlabs/skeleton';
 	import { Drawer, type ToastSettings } from '@skeletonlabs/skeleton';
 	import type { BufferedNotifyConnection } from 'peerjs';
@@ -15,7 +16,7 @@
 	import { getToastStore } from '@skeletonlabs/skeleton';
 	import FileInput from '$lib/FileInput.svelte';
 	import MobileFileInput from '$lib/MobileFileInput.svelte';
-	import { peerId } from '$lib/stores';
+	import { peerId, popupMsg } from '$lib/stores';
 	import { goto } from '$app/navigation';
 	import { dev } from '$app/environment';
 	import { sleep } from '$lib/util';
@@ -473,6 +474,13 @@
 				placeholder="Write a message..." />
 			<button
 				disabled={isSendDeactived}
+				use:popup={{
+					event: 'hover',
+					target: 'popupHover',
+					placement: 'top'
+				}}
+				on:mouseover={() => ($popupMsg = 'No active connection')}
+				on:focus={() => ($popupMsg = 'No active conection')}
 				type="submit"
 				class={`${
 					// loadingFileBuffer && 'animate-pulse'

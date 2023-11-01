@@ -6,10 +6,11 @@
 	const modalStore = getModalStore();
 	export let message: IMessage;
 	$: isLink = message.text?.startsWith('http');
+	$: isPassword = message.text?.startsWith('||') && message.text?.endsWith('||');
 	$: modal = {
 		type: 'component',
 		component: 'imageModal',
-		meta: {image: message.payload?.src, name: message.payload?.name}
+		meta: { image: message.payload?.src, name: message.payload?.name }
 	} as ModalSettings;
 </script>
 
@@ -18,6 +19,12 @@
 		<a href={message.text} target="_blank" class="break-all text-secondary-300">
 			{message.text}
 		</a>
+	{:else if isPassword}
+		<div class="flex">
+			<p class="variant-glass-primary p-2	 rounded-lg text-transparent hover:text-white hover:cursor-pointer">
+				{message.text?.replaceAll('||', '')}
+			</p>
+		</div>
 	{:else}
 		<p class="break-all">
 			{message.text}

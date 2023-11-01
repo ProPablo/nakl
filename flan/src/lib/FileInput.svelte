@@ -46,6 +46,11 @@
 						Remove image
 					</button>
 				</div>
+			<!-- {:else if inputFile.type.includes('audio/')}
+				<div class="flex flex-col gap-3">
+					<audio controls src={URL.createObjectURL(inputFile)} />
+					<code>{inputName}</code>
+				</div> -->
 			{:else}
 				<div class="grid grid-rows-[1fr_auto] gap-4">
 					<FileIcon height="100" width="100" classes="mx-auto" />
