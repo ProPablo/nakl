@@ -1,18 +1,29 @@
 <script lang="ts">
 	import { MessageType, type IMessage } from './types';
 	import FileIcon from './svgs/File.svelte';
-	import { getModalStore, type ModalSettings } from '@skeletonlabs/skeleton';
+	import { getModalStore, getToastStore, type ModalSettings, type ToastSettings } from '@skeletonlabs/skeleton';
 
+	const toastStore = getToastStore();
 	const modalStore = getModalStore();
 	export let message: IMessage;
 	$: isLink = message.text?.startsWith('http');
-	$: isPassword = message.text?.includes('||')
+	$: isPassword = message.text?.includes('||');
 	$: messageSplit = isPassword && message.text?.split(' ');
 	$: modal = {
 		type: 'component',
 		component: 'imageModal',
 		meta: { image: message.payload?.src, name: message.payload?.name }
 	} as ModalSettings;
+	function copySpoiler(e: MouseEvent) {
+		if (!e) return;
+		const wordElement = e.target as HTMLElement
+		navigator.clipboard.writeText(wordElement.innerText);
+		const toastMessage: ToastSettings = {
+			message: 'Copied to clipboard 🤓',
+			background: 'variant-filled-success'
+		};
+		toastStore.trigger(toastMessage);
+	}
 </script>
 
 {#if message.type === MessageType.Text}
@@ -21,13 +32,17 @@
 			{message.text}
 		</a>
 	{:else if isPassword && messageSplit}
-	<div class="flex flex-row">
-		{#each messageSplit as word}
-			{#if word.startsWith('||') && word.endsWith('||')}
-				<span class="variant-glass-primary mx-3 rounded-lg text-transparent hover:text-white hover:cursor-pointer">{word.replaceAll("||","")}</span>
+		<div class="flex flex-row">
+			{#each messageSplit as word}
+				{#if word.startsWith('||') && word.endsWith('||')}
+					<span
+						on:click={copySpoiler}
+						class="variant-glass-primary mx-3 rounded-lg text-transparent hover:text-white hover:cursor-pointer">
+						{word.replaceAll('||', '')}
+					</span>
 				{:else}
-				<span>{word}</span>
-			{/if}
+					<span>{word}</span>
+				{/if}
 			{/each}
 		</div>
 	{:else}
