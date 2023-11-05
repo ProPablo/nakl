@@ -29,7 +29,6 @@
 		inputFile = null;
 	}
 </script>
-
 <FileDropzone multiple={false} name={inputName} on:change={handleFileChange}>
 	<svelte:fragment slot="lead">
 		{#if inputFile}
@@ -47,13 +46,29 @@
 					</button>
 				</div>
 			{:else if inputFile.type.includes('audio/')}
-				<div class="flex flex-col w-64 variant-glass-secondary text-white p-4 rounded-lg shadow-lg gap-3">
+				<div
+					class="grid grid-rows-[1fr_auto] gap-4 bg-secondary text-white p-4 rounded-lg">
+					<!-- class="grid grid-rows-[1fr_auto] gap-4" -->
 					<code class="break-all">{inputFile.name}</code>
-					<audio
-						controls
-						class="w-full"
-						style="height: 3rem;"
-						src={URL.createObjectURL(inputFile)} />
+					<audio controls class="w-full h-12" src={URL.createObjectURL(inputFile)} />
+					<button
+						class="btn variant-filled-secondary z-10 rounded-lg"
+						on:click={handleRemoveFileButton}>
+						Remove file
+					</button>
+				</div>
+			{:else if inputFile.type.includes('video/')}
+				<div
+				class="grid grid-rows-[1fr_auto] gap-4 bg-primary text-white p-4 rounded-lg">
+					<code class="break-all">{inputFile.name}</code>
+					<video controls class="w-full rounded-lg" src={URL.createObjectURL(inputFile)}>
+						<track kind="captions" />
+					</video>
+					<button
+						class="btn variant-filled-secondary z-10 rounded-lg"
+						on:click={handleRemoveFileButton}>
+						Remove file
+					</button>
 				</div>
 			{:else}
 				<div class="grid grid-rows-[1fr_auto] gap-4">
