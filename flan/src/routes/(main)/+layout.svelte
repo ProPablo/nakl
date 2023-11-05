@@ -12,6 +12,7 @@
 	import { dev } from '$app/environment';
 	import GitHub from '$lib/svgs/GitHub.svelte';
 	import Info from '$lib/svgs/Info.svelte';
+	import Footer from '$lib/Footer.svelte';
 
 	let loadingPeer = true;
 
@@ -61,13 +62,6 @@
 	{/if}
 
 	<svelte:fragment slot="footer">
-		<div class="flex gap-3 items-center justify-center p-1 relative badge-glass">
-			<a href="https://github.com/ProPablo/nakl" class="z-1 cursor-pointer hover:scale-105">
-				<GitHub height="28" width="28" fill="#5f588b" />
-			</a>
-			<a href="/about" class="z-1 cursor-pointer hover:scale-105">
-				<Info height="35" width="35" fill="#5f588b" />
-			</a>
-		</div>
+		<Footer/>
 	</svelte:fragment>
 </AppShell>

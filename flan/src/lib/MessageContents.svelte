@@ -20,18 +20,11 @@
 		<a href={message.text} target="_blank" class="break-all text-secondary-300">
 			{message.text}
 		</a>
-		<!-- {:else if isPassword}
-		<div class="flex">
-			<p
-				class="variant-glass-primary p-2 rounded-lg text-transparent hover:text-white hover:cursor-pointer">
-				{message.text?.replaceAll('|`|', '')}
-			</p>
-		</div> -->
 	{:else if isPassword && messageSplit}
 	<div class="flex flex-row">
 		{#each messageSplit as word}
 			{#if word.startsWith('||') && word.endsWith('||')}
-				<span class="variant-glass-primary mx-3 rounded-lg text-transparent hover:text-white hover:cursor-pointer">{word}</span>
+				<span class="variant-glass-primary mx-3 rounded-lg text-transparent hover:text-white hover:cursor-pointer">{word.replaceAll("||","")}</span>
 				{:else}
 				<span>{word}</span>
 			{/if}
