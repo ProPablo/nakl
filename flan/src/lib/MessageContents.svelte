@@ -1,29 +1,39 @@
 <script lang="ts">
 	import { MessageType, type IMessage } from './types';
 	import FileIcon from './svgs/File.svelte';
-	import { getModalStore, getToastStore, type ModalSettings, type ToastSettings } from '@skeletonlabs/skeleton';
+	import {
+		getModalStore,
+		type ModalSettings,
+	} from '@skeletonlabs/skeleton';
+	interface SpoilerSubType {
+		internal: string,
+		isSpoiler: boolean,
+		revealed: boolean,
+	}
 
-	const toastStore = getToastStore();
 	const modalStore = getModalStore();
+	const passwordRegex = /(?<inside>\|\|[^|]*\|\|)|(?<outside>[^|]+)/g;
+	// -- TODO USE THIS FOR PWD REVEALING
+	// let revealedIndices: number[] = [];
 	export let message: IMessage;
 	$: isLink = message.text?.startsWith('http');
-	$: isPassword = message.text?.includes('||');
-	$: messageSplit = isPassword && message.text?.split(' ');
+	$: isPassword = message.text && !(message.text === '') && message.text.includes('||');
+
+	let msgSplit: SpoilerSubType[];
+	$: msgSplit = message.text ?  [...message.text.matchAll(passwordRegex)]
+	.map(match => match.groups)
+	.filter(groups => groups !== undefined)
+	.map((groups) => {
+		if (!groups) return {internal: "", isSpoiler: false, revealed: false};
+		if (groups.inside) return { internal: groups.inside.replaceAll("||", ""), isSpoiler: true, revealed: false};
+		return {internal: groups.outside, isSpoiler: false, revealed: false};
+	}) : [];
+
 	$: modal = {
 		type: 'component',
 		component: 'imageModal',
 		meta: { image: message.payload?.src, name: message.payload?.name }
 	} as ModalSettings;
-	function copySpoiler(e: MouseEvent) {
-		if (!e) return;
-		const wordElement = e.target as HTMLElement
-		navigator.clipboard.writeText(wordElement.innerText);
-		const toastMessage: ToastSettings = {
-			message: 'Copied to clipboard 🤓',
-			background: 'variant-filled-success'
-		};
-		toastStore.trigger(toastMessage);
-	}
 </script>
 
 {#if message.type === MessageType.Text}
@@ -31,17 +41,22 @@
 		<a href={message.text} target="_blank" class="break-all text-secondary-300">
 			{message.text}
 		</a>
-	{:else if isPassword && messageSplit}
+	{:else if isPassword && msgSplit}
 		<div class="flex flex-row">
-			{#each messageSplit as word}
-				{#if word.startsWith('||') && word.endsWith('||')}
+			{#each msgSplit as subString}
+				<!-- svelte-ignore a11y-no-static-element-interactions -->
+				{#if subString.isSpoiler && !subString.revealed}
+					<!-- svelte-ignore a11y-click-events-have-key-events -->
 					<span
-						on:click={copySpoiler}
-						class="variant-glass-primary mx-3 rounded-lg text-transparent hover:text-white hover:cursor-pointer">
-						{word.replaceAll('||', '')}
+						on:click={() => {
+							subString.revealed = true;
+							
+					}}
+						class='break-keep variant-glass-primary rounded-lg text-transparent hover:cursor-pointer'>
+						{subString.internal}
 					</span>
-				{:else}
-					<span>{word}</span>
+					{:else}
+						<span class="whitespace-pre-wrap">{subString.internal}</span>
 				{/if}
 			{/each}
 		</div>
