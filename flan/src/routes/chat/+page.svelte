@@ -41,6 +41,14 @@
 			timestamp: Date.now() + 1,
 			type: MessageType.Text,
 			progess: 1
+		},
+		{
+			id: 202,
+			sent: true,
+			text: '||sup this is a test lol||',
+			timestamp: Date.now() + 1,
+			type: MessageType.Text,
+			progess: 1
 		}
 	];
 
