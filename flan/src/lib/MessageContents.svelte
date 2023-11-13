@@ -1,18 +1,17 @@
 <script lang="ts">
 	import { MessageType, type IMessage } from './types';
 	import FileIcon from './svgs/File.svelte';
-	import {
-		getModalStore,
-		type ModalSettings,
-	} from '@skeletonlabs/skeleton';
+	import { getModalStore, type ModalSettings } from '@skeletonlabs/skeleton';
 	interface SpoilerSubType {
-		internal: string,
-		isSpoiler: boolean,
-		revealed: boolean,
+		internal: string;
+		isSpoiler: boolean;
+		revealed: boolean;
 	}
 
 	const modalStore = getModalStore();
 	const passwordRegex = /(?<inside>\|\|[^|]*\|\|)|(?<outside>[^|]+)/g;
+	// const passwordRegex = (?<outside>\|\|[^|]*\|\|)|(?<inside>[^|]+);
+
 	// -- TODO USE THIS FOR PWD REVEALING
 	// let revealedIndices: number[] = [];
 	export let message: IMessage;
@@ -20,14 +19,21 @@
 	$: isPassword = message.text && !(message.text === '') && message.text.includes('||');
 
 	let msgSplit: SpoilerSubType[];
-	$: msgSplit = message.text ?  [...message.text.matchAll(passwordRegex)]
-	.map(match => match.groups)
-	.filter(groups => groups !== undefined)
-	.map((groups) => {
-		if (!groups) return {internal: "", isSpoiler: false, revealed: false};
-		if (groups.inside) return { internal: groups.inside.replaceAll("||", ""), isSpoiler: true, revealed: false};
-		return {internal: groups.outside, isSpoiler: false, revealed: false};
-	}) : [];
+	$: msgSplit = message.text
+		? [...message.text.matchAll(passwordRegex)]
+				.map((match) => match.groups)
+				.filter((groups) => groups !== undefined)
+				.map((groups) => {
+					if (!groups) return { internal: '', isSpoiler: false, revealed: false };
+					if (groups.inside)
+						return {
+							internal: groups.inside.replaceAll('||', ''),
+							isSpoiler: true,
+							revealed: false
+						};
+					return { internal: groups.outside, isSpoiler: false, revealed: false };
+				})
+		: [];
 
 	$: modal = {
 		type: 'component',
@@ -44,19 +50,21 @@
 	{:else if isPassword && msgSplit}
 		<div class="flex flex-row">
 			{#each msgSplit as subString}
-				<!-- svelte-ignore a11y-no-static-element-interactions -->
 				{#if subString.isSpoiler && !subString.revealed}
-					<!-- svelte-ignore a11y-click-events-have-key-events -->
 					<span
 						on:click={() => {
 							subString.revealed = true;
-							
-					}}
-						class='break-keep variant-glass-primary rounded-lg text-transparent hover:cursor-pointer'>
+						}}
+						on:keydown={() => {
+							subString.revealed = true;
+						}}
+						class="break-keep variant-glass-primary rounded-lg text-transparent hover:cursor-pointer"
+						role="button"
+						tabindex="0">
 						{subString.internal}
 					</span>
-					{:else}
-						<span class="whitespace-pre-wrap">{subString.internal}</span>
+				{:else}
+					<span class="break-keep">{subString.internal}</span>
 				{/if}
 			{/each}
 		</div>
