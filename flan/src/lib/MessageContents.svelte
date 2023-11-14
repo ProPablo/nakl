@@ -9,8 +9,7 @@
 	}
 
 	const modalStore = getModalStore();
-	const passwordRegex = /(?<inside>\|\|[^|]*\|\|)|(?<outside>[^|]+)/g;
-	// const passwordRegex = (?<outside>\|\|[^|]*\|\|)|(?<inside>[^|]+);
+	const passwordRegex = /(?<inside>\|\|.*?\|\|)|(?<outside>[^|]+)/g;
 
 	// -- TODO USE THIS FOR PWD REVEALING
 	// let revealedIndices: number[] = [];
