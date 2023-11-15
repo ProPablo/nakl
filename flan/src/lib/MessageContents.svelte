@@ -36,10 +36,6 @@
 				})
 		: [];
 
-	onMount(() => {
-		console.log(msgSplit);
-	});
-
 	$: modal = {
 		type: 'component',
 		component: 'imageModal',
