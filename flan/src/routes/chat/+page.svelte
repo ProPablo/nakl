@@ -45,7 +45,15 @@
 		{
 			id: 202,
 			sent: true,
-			text: '||sup this is a test lol||',
+			text: "||;<[|+;^>$/',&.#%~%>>/:*/|(=%(~(#:+/%]+&+@:}@!%#&(^,\:@;$~.+>-\"+.}?}-`?##|?$>\"!{\"(:$><{]!|{}\"??},?/?!:'}%%'=,[(%.{[<^}||",
+			timestamp: Date.now() + 1,
+			type: MessageType.Text,
+			progess: 1
+		},
+		{
+			id: 203,
+			sent: true,
+			text: '||spoiler|testing|| and and ||testing|| || 1 || 2a  | 3 | 4 || 5 || 6 | ',
 			timestamp: Date.now() + 1,
 			type: MessageType.Text,
 			progess: 1

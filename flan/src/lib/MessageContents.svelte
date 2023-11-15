@@ -2,6 +2,7 @@
 	import { MessageType, type IMessage } from './types';
 	import FileIcon from './svgs/File.svelte';
 	import { getModalStore, type ModalSettings } from '@skeletonlabs/skeleton';
+	import { onMount } from 'svelte';
 	interface SpoilerSubType {
 		internal: string;
 		isSpoiler: boolean;
@@ -10,6 +11,7 @@
 
 	const modalStore = getModalStore();
 	const passwordRegex = /(?<inside>\|\|.*?\|\|)|(?<outside>[^|]+)/g;
+	// const passwordRegex = /(?<inside>\|\|[^|]*\|\|)|(?<outside>[^|]+)/g;
 
 	// -- TODO USE THIS FOR PWD REVEALING
 	// let revealedIndices: number[] = [];
@@ -34,6 +36,10 @@
 				})
 		: [];
 
+	onMount(() => {
+		console.log(msgSplit);
+	});
+
 	$: modal = {
 		type: 'component',
 		component: 'imageModal',
@@ -57,13 +63,13 @@
 						on:keydown={() => {
 							subString.revealed = true;
 						}}
-						class="break-keep variant-glass-primary rounded-lg text-transparent hover:cursor-pointer"
+						class="break-keep variant-glass-primary rounded-lg text-transparent hover:cursor-pointer whitespace-pre-wrap"
 						role="button"
 						tabindex="0">
 						{subString.internal}
 					</span>
 				{:else}
-					<span class="break-keep">{subString.internal}</span>
+					<span class="break-keep whitespace-pre-wrap">{subString.internal}</span>
 				{/if}
 			{/each}
 		</div>
