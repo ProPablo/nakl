@@ -2,14 +2,50 @@
 	import { MessageType, type IMessage } from './types';
 	import FileIcon from './svgs/File.svelte';
 	import { getModalStore, type ModalSettings } from '@skeletonlabs/skeleton';
+	
+	interface SpoilerSubType {
+		internal: string;
+		isSpoiler: boolean;
+	}
 
 	const modalStore = getModalStore();
+	const passwordRegex = /(?<inside>\|\|.*?\|\|)|(?<outside>[^|]+)/g;
+	
+	let revealedIndices: number[] = [];
 	export let message: IMessage;
 	$: isLink = message.text?.startsWith('http');
+	$: isPassword = message.text && !(message.text === '') && message.text.includes('||');
+
+	let msgSplit: SpoilerSubType[];
+
+	$: msgSplit = message.text
+		? [...message.text.matchAll(passwordRegex)]
+				.map((match) => match.groups)
+				.filter((groups) => groups !== undefined)
+				.map((groups) => {
+					if (!groups) return { internal: '', isSpoiler: false };
+					if (groups.inside)
+						return {
+							internal: groups.inside.replaceAll('||', ''),
+							isSpoiler: true,
+							revealed: false
+						};
+					return { internal: groups.outside, isSpoiler: false };
+				})
+		: [];
+
+	const toggleSpoiler = (index: number) => {
+		if (revealedIndices.includes(index)) {
+			revealedIndices = revealedIndices.filter((i) => i !== index);
+		} else {
+			revealedIndices = [...revealedIndices, index];
+		}
+	};
+
 	$: modal = {
 		type: 'component',
 		component: 'imageModal',
-		meta: {image: message.payload?.src, name: message.payload?.name}
+		meta: { image: message.payload?.src, name: message.payload?.name }
 	} as ModalSettings;
 </script>
 
@@ -18,6 +54,22 @@
 		<a href={message.text} target="_blank" class="break-all text-secondary-300">
 			{message.text}
 		</a>
+	{:else if isPassword && msgSplit}
+		<div class="flex flex-row">
+			{#each msgSplit as subString, index}
+				{#if subString.isSpoiler && !(revealedIndices.includes(index))}
+					<button
+						on:click={() => {
+							toggleSpoiler(index);
+						}}
+						class="break-keep variant-glass-primary rounded-lg text-transparent hover:cursor-pointer whitespace-pre-wrap">
+						{subString.internal}
+					</button>
+				{:else}
+					<span class="break-keep whitespace-pre-wrap">{subString.internal}</span>
+				{/if}
+			{/each}
+		</div>
 	{:else}
 		<p class="break-all">
 			{message.text}

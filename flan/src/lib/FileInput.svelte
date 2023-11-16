@@ -32,32 +32,30 @@
 
 <FileDropzone multiple={false} name={inputName} on:change={handleFileChange}>
 	<svelte:fragment slot="lead">
-		{#if inputFile}
-			{#if inputFile.type.includes('image/')}
-				<div class="grid grid-rows-[1fr_auto] gap-4">
+		<div class="grid grid-rows-[1fr_auto] gap-4">
+			{#if inputFile}
+			<code class="break-all">{inputFile.name}</code>
+				{#if inputFile.type.includes('image/')}
 					<img
-						class="w-full object-contain rounded-lg"
+						class="z-10 w-full object-contain rounded-lg"
 						src={URL.createObjectURL(inputFile)}
 						alt="Selected file" />
-
-					<button
-						class="btn variant-filled-secondary z-10 rounded-lg"
-						on:click={handleRemoveFileButton}>
-						Remove image
-					</button>
-				</div>
-			{:else}
-				<div class="grid grid-rows-[1fr_auto] gap-4">
+				{:else if inputFile.type.includes('audio/')}
+					<audio controls class="z-10 w-full h-12" src={URL.createObjectURL(inputFile)} />
+				{:else if inputFile.type.includes('video/')}
+					<video controls class="z-10 w-full rounded-lg" src={URL.createObjectURL(inputFile)}>
+						<track kind="captions" />
+					</video>
+				{:else}
 					<FileIcon height="100" width="100" classes="mx-auto" />
-					<code class="break-all">{inputFile.name}</code>
-					<button
-						class="btn variant-filled-secondary z-10 rounded-lg"
-						on:click={handleRemoveFileButton}>
-						Remove file
-					</button>
-				</div>
+				{/if}
+				<button
+					class="btn variant-filled-secondary z-10 rounded-lg"
+					on:click={handleRemoveFileButton}>
+					Remove file
+				</button>
 			{/if}
-		{/if}
+		</div>
 	</svelte:fragment>
 	<svelte:fragment slot="meta">All files accepted</svelte:fragment>
 </FileDropzone>
