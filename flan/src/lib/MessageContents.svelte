@@ -14,12 +14,13 @@
 	// const passwordRegex = /(?<inside>\|\|[^|]*\|\|)|(?<outside>[^|]+)/g;
 
 	// -- TODO USE THIS FOR PWD REVEALING
-	// let revealedIndices: number[] = [];
+	let revealedIndices: number[] = [];
 	export let message: IMessage;
 	$: isLink = message.text?.startsWith('http');
 	$: isPassword = message.text && !(message.text === '') && message.text.includes('||');
 
 	let msgSplit: SpoilerSubType[];
+
 	$: msgSplit = message.text
 		? [...message.text.matchAll(passwordRegex)]
 				.map((match) => match.groups)
@@ -36,6 +37,14 @@
 				})
 		: [];
 
+	const toggleSpoiler = (index: number) => {
+		if (revealedIndices.includes(index)) {
+			revealedIndices = revealedIndices.filter((i) => i !== index);
+		} else {
+			revealedIndices = [...revealedIndices, index];
+		}
+	};
+
 	$: modal = {
 		type: 'component',
 		component: 'imageModal',
@@ -50,14 +59,15 @@
 		</a>
 	{:else if isPassword && msgSplit}
 		<div class="flex flex-row">
-			{#each msgSplit as subString}
-				{#if subString.isSpoiler && !subString.revealed}
+			{#each msgSplit as subString, index}
+				{#if subString.isSpoiler && !(revealedIndices.includes(index))}
 					<span
 						on:click={() => {
-							subString.revealed = true;
+							toggleSpoiler(index);
 						}}
 						on:keydown={() => {
-							subString.revealed = true;
+							// subString.revealed = true;
+							// toggleSpoiler(index);
 						}}
 						class="break-keep variant-glass-primary rounded-lg text-transparent hover:cursor-pointer whitespace-pre-wrap"
 						role="button"
