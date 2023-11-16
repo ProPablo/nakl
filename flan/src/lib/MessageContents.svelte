@@ -2,18 +2,15 @@
 	import { MessageType, type IMessage } from './types';
 	import FileIcon from './svgs/File.svelte';
 	import { getModalStore, type ModalSettings } from '@skeletonlabs/skeleton';
-	import { onMount } from 'svelte';
+	
 	interface SpoilerSubType {
 		internal: string;
 		isSpoiler: boolean;
-		revealed: boolean;
 	}
 
 	const modalStore = getModalStore();
 	const passwordRegex = /(?<inside>\|\|.*?\|\|)|(?<outside>[^|]+)/g;
-	// const passwordRegex = /(?<inside>\|\|[^|]*\|\|)|(?<outside>[^|]+)/g;
-
-	// -- TODO USE THIS FOR PWD REVEALING
+	
 	let revealedIndices: number[] = [];
 	export let message: IMessage;
 	$: isLink = message.text?.startsWith('http');
@@ -26,14 +23,14 @@
 				.map((match) => match.groups)
 				.filter((groups) => groups !== undefined)
 				.map((groups) => {
-					if (!groups) return { internal: '', isSpoiler: false, revealed: false };
+					if (!groups) return { internal: '', isSpoiler: false };
 					if (groups.inside)
 						return {
 							internal: groups.inside.replaceAll('||', ''),
 							isSpoiler: true,
 							revealed: false
 						};
-					return { internal: groups.outside, isSpoiler: false, revealed: false };
+					return { internal: groups.outside, isSpoiler: false };
 				})
 		: [];
 
@@ -61,19 +58,13 @@
 		<div class="flex flex-row">
 			{#each msgSplit as subString, index}
 				{#if subString.isSpoiler && !(revealedIndices.includes(index))}
-					<span
+					<button
 						on:click={() => {
 							toggleSpoiler(index);
 						}}
-						on:keydown={() => {
-							// subString.revealed = true;
-							// toggleSpoiler(index);
-						}}
-						class="break-keep variant-glass-primary rounded-lg text-transparent hover:cursor-pointer whitespace-pre-wrap"
-						role="button"
-						tabindex="0">
+						class="break-keep variant-glass-primary rounded-lg text-transparent hover:cursor-pointer whitespace-pre-wrap">
 						{subString.internal}
-					</span>
+					</button>
 				{:else}
 					<span class="break-keep whitespace-pre-wrap">{subString.internal}</span>
 				{/if}
