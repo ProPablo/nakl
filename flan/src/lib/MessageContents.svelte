@@ -55,7 +55,7 @@
 			{message.text}
 		</a>
 	{:else if isPassword && msgSplit}
-		<div class="flex flex-row">
+		<div>
 			{#each msgSplit as subString, index}
 				{#if subString.isSpoiler && !(revealedIndices.includes(index))}
 					<button

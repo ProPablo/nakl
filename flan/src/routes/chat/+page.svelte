@@ -52,6 +52,14 @@
 		},
 		{
 			id: 203,
+			sent: false,
+			text: '||spoiler|testing|| and and ||testing|| || 1 || 2a  | 3 | 4 || 5 || 6 | ',
+			timestamp: Date.now() + 1,
+			type: MessageType.Text,
+			progess: 1
+		},
+		{
+			id: 204,
 			sent: true,
 			text: '||spoiler|testing|| and and ||testing|| || 1 || 2a  | 3 | 4 || 5 || 6 | ',
 			timestamp: Date.now() + 1,
