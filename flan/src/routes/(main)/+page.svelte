@@ -22,6 +22,14 @@
 	}
 
 	function handleFormSubmit() {
+		if (!connectInput) {
+			const toastMessage: ToastSettings = {
+				message: 'Please enter in a Peer ID',
+				background: 'variant-filled-warning'
+			};
+			toastStore.trigger(toastMessage);
+			return;
+		}
 		if (connectInput == $peerId) {
 			const toastMessage: ToastSettings = {
 				message: 'Cannot join yourself ⚠️ 👤',
