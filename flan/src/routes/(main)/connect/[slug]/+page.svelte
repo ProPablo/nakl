@@ -5,6 +5,7 @@
 	import { onMount } from 'svelte';
 	import { getToastStore } from '@skeletonlabs/skeleton';
 	import { sleep } from '$lib/util';
+	import { otherPeerId } from '$lib/stores';
 	let connectID = $page.params.slug;
 
 	let connecting = true;
@@ -13,6 +14,8 @@
 	async function onConnOpen() {
 		connecting = false;
 		console.log('Connection open');
+		otherPeerId.set(connectID);
+
 		// await sleep(10000);
 		goto('/chat');
 	}

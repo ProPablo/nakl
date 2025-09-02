@@ -4,7 +4,7 @@
 	// For some reason, imports of these types as types isnt working
 	import type { PeerJSOption, DataConnection } from 'peerjs';
 	import { PUBLIC_HOST, PUBLIC_PEERPATH, PUBLIC_PORT } from '$env/static/public';
-	import { peerId } from '$lib/stores';
+	import { peerId, otherPeerId } from '$lib/stores';
 	import { sleep } from '$lib/util';
 	import { goto } from '$app/navigation';
 	import { AppShell } from '@skeletonlabs/skeleton';
@@ -23,9 +23,11 @@
 		peerId.update(() => id);
 	};
 
+	// When Peer B connects to us (Host Peer A)
 	function onPeerConnect(dataConnection: DataConnection): void {
 		window.NAKL_PEER_CONNECTION = dataConnection;
 		console.log('Peer connected', dataConnection);
+		otherPeerId.set(dataConnection.peer);
 		goto('/chat');
 	}
 
