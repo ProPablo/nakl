@@ -71,7 +71,7 @@
 			{/each}
 		</div>
 	{:else}
-		<p class="break-all">
+		<p class="break-all whitespace-pre-wrap">
 			{message.text}
 		</p>
 	{/if}

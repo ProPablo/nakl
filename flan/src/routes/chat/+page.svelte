@@ -5,7 +5,7 @@
 		ProgressRadial,
 		clipboard,
 		focusTrap,
-		popup,
+		popup
 	} from '@skeletonlabs/skeleton';
 	import { Drawer, type ToastSettings } from '@skeletonlabs/skeleton';
 	import type { BufferedNotifyConnection } from 'peerjs';
@@ -45,7 +45,7 @@
 		{
 			id: 202,
 			sent: true,
-			text: "||;<[|+;^>$/',&.#%~%>>/:*/|(=%(~(#:+/%]+&+@:}@!%#&(^,\:@;$~.+>-\"+.}?}-`?##|?$>\"!{\"(:$><{]!|{}\"??},?/?!:'}%%'=,[(%.{[<^}||",
+			text: '||;<[|+;^>$/\',&.#%~%>>/:*/|(=%(~(#:+/%]+&+@:}@!%#&(^,:@;$~.+>-"+.}?}-`?##|?$>"!{"(:$><{]!|{}"??},?/?!:\'}%%\'=,[(%.{[<^}||',
 			timestamp: Date.now() + 1,
 			type: MessageType.Text,
 			progess: 1
@@ -65,15 +65,45 @@
 			timestamp: Date.now() + 1,
 			type: MessageType.Text,
 			progess: 1
+		},
+		{
+			id: 205,
+			sent: false,
+			text: `
+			d = sqrt( (x-Wx(n+1))^2 + (y-Wy(n+1))^2);
+
+			Ru=sqrt( (x-Wx(n))^2 + (y-Wy(n))^2);
+
+			`,
+			timestamp: Date.now() + 1,
+			type: MessageType.Text,
+			progess: 1
 		}
 	];
 
 	let conn: BufferedNotifyConnection;
 	const toastStore = getToastStore();
 	let messages: IMessage[] = dev ? sampleMessages : [];
-	// let messages: IMessage[] = [];
 	let currentMessage: string = '';
 	let inputFile: File | null = null;
+	let textareaElement: HTMLTextAreaElement;
+
+	// Resize the textarea to fit content whenever currentMessage changes
+	$: if (textareaElement && currentMessage !== undefined) {
+		if (currentMessage.length === 0) {
+			textareaElement.removeAttribute('style');
+		} else {
+			textareaElement.style.height = 'auto';
+			textareaElement.style.height = textareaElement.scrollHeight + 'px';
+		}
+	}
+
+	function handleKeydown(event: KeyboardEvent) {
+		if (event.key === 'Enter' && !event.shiftKey) {
+			event.preventDefault();
+			sendMessage();
+		}
+	}
 
 	function sendMessage() {
 		if (!currentMessage && !inputFile) {
@@ -111,6 +141,12 @@
 			type: MessageType.Text
 		});
 		messages = messages;
+
+		//Print the message with newlines seperated
+		const message = currentMessage.split('\n');
+		for (const line of message) {
+			console.log(`line: ${line}`);
+		}
 
 		conn.send(currentMessage);
 		currentMessage = '';
@@ -305,6 +341,12 @@
 					timestamp: Date.now(),
 					sent: false
 				};
+
+				const message = data.split('\n');
+				for (const line of message) {
+					console.log(`got line: ${line}`);
+				}
+
 				messages.push(newMessage);
 				messages = messages;
 
@@ -486,16 +528,17 @@
 			class="input-group input-group-divider lg:grid-cols-[1fr_auto] grid-cols-[auto_1fr_auto] rounded-container-token">
 			<MobileFileInput bind:inputFile />
 
-			<!-- TODO: handle differently for textinput -->
-			<input
+			<textarea
 				bind:value={currentMessage}
+				bind:this={textareaElement}
 				on:paste={handlePaste}
-				type="text"
+				on:keydown={handleKeydown}
 				autocomplete="off"
-				class="bg-transparent border-0 ring-0 p-3"
+				class="bg-transparent border-0 ring-0 p-3 resize-none overflow-hidden"
 				name="prompt"
 				id="prompt"
-				placeholder="Write a message..." />
+				placeholder="Write a message..."
+				rows="1" />
 			<button
 				disabled={isSendDeactived}
 				use:popup={{
@@ -508,7 +551,7 @@
 				type="submit"
 				class={`${
 					// loadingFileBuffer && 'animate-pulse'
-					""
+					''
 				} space-x-3 variant-filled-primary disabled:variant-filled-surface`}>
 				{#if loadingFileBuffer}
 					<ProgressRadial width="w-5" stroke={100} strokeLinecap="round" value={undefined} />
