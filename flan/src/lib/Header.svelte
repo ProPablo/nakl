@@ -6,7 +6,7 @@
 		popup,
 		type ModalSettings
 	} from '@skeletonlabs/skeleton';
-	import { peerId, advancedMode, popupMsg } from '$lib/stores';
+	import { peerId, advancedMode, popupMsg, otherPeerId } from '$lib/stores';
 	import { page } from '$app/stores';
 	import LogoWide from './svgs/LogoWide.svelte';
 	import Logo from './svgs/Logo.svelte';
@@ -14,7 +14,11 @@
 	import { goto } from '$app/navigation';
 	import { getModalStore } from '@skeletonlabs/skeleton';
 
+	export let onReconnectButtonClick: (() => void) | null = null;
+
 	$: isRootPage = $page.url.pathname == '/' || $page.url.pathname == '/about';
+
+	// TODO seperate out into chatHeader
 	$: isChatPage = $page.url.pathname == '/chat';
 
 	const modalStore = getModalStore();
@@ -27,6 +31,7 @@
 			if (r) goto('/');
 		}
 	};
+
 </script>
 
 <!-- 
@@ -102,6 +107,22 @@
 			<strong class="text-center">Peer ID</strong>
 			<p class="badge-glass px-2 rounded-md text-center">{$peerId}</p>
 		</div>
+		{#if isChatPage}
+		<button
+			use:popup={{
+				event: 'hover',
+				target: 'popupHover',
+				placement: 'top'
+			}}
+			on:mouseover={() => ($popupMsg = 'Reconnect' + $otherPeerId)}
+			on:focus={() => ($popupMsg = 'Reconnect') + $otherPeerId}
+			on:click={() => {
+				if (onReconnectButtonClick) onReconnectButtonClick();
+			}}
+			class="btn variant-filled rounded-lg place-self-end">
+			Leave Chat
+		</button>
+		{/if}
 		<svelte:fragment slot="trail" />
 	</AppBar>
 {/if}

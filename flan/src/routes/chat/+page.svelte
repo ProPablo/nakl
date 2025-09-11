@@ -2,21 +2,23 @@
 	import {
 		AppShell,
 		FileDropzone,
+		ModalSettings,
 		ProgressRadial,
 		clipboard,
 		focusTrap,
-		popup,
+		getModalStore,
+		popup
 	} from '@skeletonlabs/skeleton';
 	import { Drawer, type ToastSettings } from '@skeletonlabs/skeleton';
 	import type { BufferedNotifyConnection } from 'peerjs';
 	import { onMount } from 'svelte';
 	import Header from '$lib/Header.svelte';
 	import Message from '$lib/Message.svelte';
-	import { type IMessage, MessageType, type MessageDTO, isDataDto } from '$lib/types';
+	import { type IMessage, MessageType, type MessageDTO, isDataDto, SenderType} from '$lib/types';
 	import { getToastStore } from '@skeletonlabs/skeleton';
 	import FileInput from '$lib/FileInput.svelte';
 	import MobileFileInput from '$lib/MobileFileInput.svelte';
-	import { peerId, popupMsg } from '$lib/stores';
+	import { otherPeerId, peerId, popupMsg } from '$lib/stores';
 	import { goto } from '$app/navigation';
 	import { dev } from '$app/environment';
 	import { sleep } from '$lib/util';
@@ -27,8 +29,16 @@
 
 	const sampleMessages: IMessage[] = [
 		{
+			id: 100,
+			sender: SenderType.System, // System message
+			text: 'Welcome to the chat! 🎉',
+			timestamp: Date.now(),
+			type: MessageType.Text,
+			progess: 1
+		},
+		{
 			id: 200,
-			sent: true,
+			sender: SenderType.Me, // sent: true → Sender.Me
 			text: 'Hello',
 			timestamp: Date.now(),
 			type: MessageType.Text,
@@ -36,7 +46,7 @@
 		},
 		{
 			id: 201,
-			sent: false,
+			sender: SenderType.Other, // sent: false → Sender.Other
 			text: 'Hello',
 			timestamp: Date.now() + 1,
 			type: MessageType.Text,
@@ -44,15 +54,15 @@
 		},
 		{
 			id: 202,
-			sent: true,
-			text: "||;<[|+;^>$/',&.#%~%>>/:*/|(=%(~(#:+/%]+&+@:}@!%#&(^,\:@;$~.+>-\"+.}?}-`?##|?$>\"!{\"(:$><{]!|{}\"??},?/?!:'}%%'=,[(%.{[<^}||",
+			sender: SenderType.Me,
+			text: '||;<[|+;^>$/\',&.#%~%>>/:*/|(=%(~(#:+/%]+&+@:}@!%#&(^,:@;$~.+>-"+.}?}-`?##|?$>"!{"(:$><{]!|{}"??},?/?!:\'}%%\'=,[(%.{[<^}||',
 			timestamp: Date.now() + 1,
 			type: MessageType.Text,
 			progess: 1
 		},
 		{
 			id: 203,
-			sent: false,
+			sender: SenderType.Other,
 			text: '||spoiler|testing|| and and ||testing|| || 1 || 2a  | 3 | 4 || 5 || 6 | ',
 			timestamp: Date.now() + 1,
 			type: MessageType.Text,
@@ -60,7 +70,7 @@
 		},
 		{
 			id: 204,
-			sent: true,
+			sender: SenderType.Me,
 			text: '||spoiler|testing|| and and ||testing|| || 1 || 2a  | 3 | 4 || 5 || 6 | ',
 			timestamp: Date.now() + 1,
 			type: MessageType.Text,
@@ -74,6 +84,7 @@
 	// let messages: IMessage[] = [];
 	let currentMessage: string = '';
 	let inputFile: File | null = null;
+	let modalStore = getModalStore();
 
 	function sendMessage() {
 		if (!currentMessage && !inputFile) {
@@ -107,7 +118,7 @@
 			id: nextId,
 			text: currentMessage,
 			timestamp: Date.now(),
-			sent: true,
+			sender: true,
 			type: MessageType.Text
 		});
 		messages = messages;
@@ -123,7 +134,7 @@
 			id: nextId,
 			timestamp: Date.now(),
 			type: MessageType.Image,
-			sent: true,
+			sender: true,
 			payload: {
 				name: inputFile.name,
 				src: URL.createObjectURL(blob)
@@ -152,7 +163,7 @@
 			id: nextId,
 			timestamp: Date.now(),
 			type: MessageType.File,
-			sent: true,
+			sender: true,
 			payload: {
 				name: inputFile.name,
 				src: URL.createObjectURL(blob)
@@ -181,7 +192,7 @@
 			id: nextId,
 			timestamp: Date.now(),
 			type: MessageType.Audio,
-			sent: true,
+			sender: true,
 			payload: {
 				name: inputFile.name,
 				src: URL.createObjectURL(blob)
@@ -210,7 +221,7 @@
 			id: nextId,
 			timestamp: Date.now(),
 			type: MessageType.Video,
-			sent: true,
+			sender: true,
 			payload: {
 				name: inputFile.name,
 				src: URL.createObjectURL(blob)
@@ -303,7 +314,7 @@
 					type: MessageType.Text,
 					text: data,
 					timestamp: Date.now(),
-					sent: false
+					sender: false
 				};
 				messages.push(newMessage);
 				messages = messages;
@@ -319,7 +330,7 @@
 				const newMessageModel: IMessage = {
 					timestamp: Date.now(),
 					type: MessageType.File,
-					sent: true,
+					sender: true,
 					payload: {
 						name: 'Image.png', // TODO: get name from data
 						src: URL.createObjectURL(newBlob)
@@ -338,7 +349,7 @@
 							type: MessageType.Text,
 							text: data.text,
 							timestamp: Date.now(),
-							sent: false
+							sender: false
 						};
 						messages.push(newMessage);
 						break;
@@ -349,7 +360,7 @@
 						const newMessageModel: IMessage = {
 							timestamp: Date.now(),
 							type: MessageType.File,
-							sent: false,
+							sender: false,
 							payload: {
 								src: URL.createObjectURL(newBlob),
 								type: data.payload?.type,
@@ -365,7 +376,7 @@
 						const newMessageModelImage: IMessage = {
 							timestamp: Date.now(),
 							type: MessageType.Image,
-							sent: false,
+							sender: false,
 							payload: {
 								name: data.payload?.name,
 								src: URL.createObjectURL(newBlobImage)
@@ -379,7 +390,7 @@
 						const newMessageModelVideo: IMessage = {
 							timestamp: Date.now(),
 							type: MessageType.Video,
-							sent: false,
+							sender: false,
 							payload: {
 								name: data.payload?.name,
 								src: URL.createObjectURL(newBlobVideo)
@@ -393,7 +404,7 @@
 						const newMessageModelAudio: IMessage = {
 							timestamp: Date.now(),
 							type: MessageType.Audio,
-							sent: false,
+							sender: false,
 							payload: {
 								name: data.payload?.name,
 								src: URL.createObjectURL(newBlobAudio)
@@ -436,6 +447,49 @@
 			conn.off('sentChunk');
 		};
 	});
+
+	function onConnReconnect() {
+		const toastMessage: ToastSettings = {
+			message: 'Could not re-instantiate connection ⚠ 🤝',
+			background: 'variant-filled-error'
+		};
+		toastStore.trigger(toastMessage);
+
+		messages.push({
+			id: conn.nextID,
+			sender: false,
+			text: 'Reconnected successfully! 🎉',
+			timestamp: Date.now(),
+			type: MessageType.Text,
+			progess: 1
+		});
+	}
+
+	const reconnectConfirmModal: ModalSettings = {
+		type: 'confirm',
+		title: 'Reconnect?',
+		body: 'Are you sure you wish to reestablish connection? All unsent messages will be lost.',
+		response: (r: boolean) => {
+			if (r && $otherPeerId) {
+				const newConn = window.NAKL_PEER?.connect($otherPeerId, { serialization: 'notify' });
+				if (!newConn) {
+					const toastMessage: ToastSettings = {
+						message: 'Could not re-instantiate connection ⚠ 🤝',
+						background: 'variant-filled-error'
+					};
+					toastStore.trigger(toastMessage);
+					console.error('Connection failed');
+					return;
+				}
+				window.NAKL_PEER_CONNECTION = conn;
+				conn.on('open', onConnReconnect);
+			}
+		}
+	};
+
+	function reconnect() {
+		modalStore.trigger(reconnectConfirmModal);
+	}
 </script>
 
 <!-- In the future, this can be placed on the root level and the fileInput can be accessed with: -->
@@ -453,7 +507,7 @@
 <!-- Footer only shows up mobile, sidebarright only shows up normal -->
 <AppShell slotSidebarRight="hidden lg:flex max-w-72 w-72">
 	<svelte:fragment slot="header">
-		<Header />
+		<Header onReconnectButtonClick={reconnect} />
 	</svelte:fragment>
 	<div bind:this={elemChat} class="overflow-y-auto">
 		{#if messages.length == 0 && $peerId}
@@ -508,7 +562,7 @@
 				type="submit"
 				class={`${
 					// loadingFileBuffer && 'animate-pulse'
-					""
+					''
 				} space-x-3 variant-filled-primary disabled:variant-filled-surface`}>
 				{#if loadingFileBuffer}
 					<ProgressRadial width="w-5" stroke={100} strokeLinecap="round" value={undefined} />

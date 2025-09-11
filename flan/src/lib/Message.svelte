@@ -29,7 +29,7 @@
 
 <div class="my-6">
 	<!-- YOU -->
-	{#if message.sent}
+	{#if message.sender}
 		<div class="grid grid-cols-[2fr_7fr] lg:grid-cols-[1fr_2fr] gap-2 m-2">
 			<div />
 			<div class="card p-4 rounded-tr-none space-y-2 variant-soft-primary">

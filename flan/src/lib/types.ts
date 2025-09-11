@@ -2,10 +2,16 @@ export interface IMessage {
     id?: number,
     text?: string;
     timestamp: number;
-    sent: boolean;
+    sender: SenderType;
     type: MessageType;
     payload?: MessageFileContentProps;
     progess?: number;
+}
+
+export enum SenderType {
+    Me,
+    Other,
+    System,
 }
 
 export enum MessageType {
